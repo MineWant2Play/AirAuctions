@@ -1,6 +1,7 @@
 package com.ftxeven.airauctions.gui.render;
 
 import com.ftxeven.airauctions.config.ConfigManager;
+import com.ftxeven.airauctions.util.MiniText;
 
 import java.util.LinkedHashMap;
 
@@ -23,7 +24,7 @@ public final class FilterOptions {
         LinkedHashMap<String, String> options = new LinkedHashMap<>();
         configs.expansions().economy().providers().forEach((key, provider) -> {
             if (provider.enabled() && (includeAll || !key.equals("all"))) {
-                options.put(key, provider.displayName());
+                options.put(key, MiniText.plain(provider.displayName()));
             }
         });
         return options;
