@@ -1,12 +1,15 @@
 package com.ftxeven.airauctions.gui.render;
 
 import com.ftxeven.airauctions.config.ConfigManager;
+import com.ftxeven.airauctions.core.gui.GuiManager;
 import com.ftxeven.airauctions.database.query.ListingQuery;
 import com.ftxeven.airauctions.economy.EconomyProvider;
+import com.ftxeven.airauctions.gui.impl.BuyAmountGui;
 import com.ftxeven.airauctions.model.HistoryEntry;
 import com.ftxeven.airauctions.model.Listing;
 import com.ftxeven.airauctions.model.ListingScope;
 import com.ftxeven.airauctions.model.ListingType;
+import com.ftxeven.airauctions.service.Eligibility;
 import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.service.listing.ListingValidator;
@@ -27,10 +30,12 @@ public final class ListingFlags {
 
     private final ConfigManager configs;
     private final ServiceManager services;
+    private final GuiManager guis;
 
-    public ListingFlags(ConfigManager configs, ServiceManager services) {
+    public ListingFlags(ConfigManager configs, ServiceManager services, GuiManager guis) {
         this.configs = configs;
         this.services = services;
+        this.guis = guis;
     }
 
     // Entry points
@@ -163,7 +168,7 @@ public final class ListingFlags {
 
     private boolean resolveCan(Player viewer, ListingScope scope, Listing listing, String value) {
         return switch (value) {
-            case "buy" -> listing instanceof Listing.Auction auction && services.auctions().eligibleToPurchase(viewer, auction).ok();
+            case "buy" -> listing instanceof Listing.Auction auction && eligibleToBuy(viewer, auction).ok();
             case "bid" -> listing instanceof Listing.Bid bid && services.bids().eligibleToBid(viewer, bid).ok();
             case "cancel" -> services.listings().eligibleToCancel(viewer, listing).ok();
             case "claim" -> scope == ListingScope.EXPIRED && services.reclaims().eligibleToReclaim(ReclaimService.ReclaimKind.CLAIM, viewer, listing).ok();
@@ -172,7 +177,18 @@ public final class ListingFlags {
         };
     }
 
-    // is:*
+    private Eligibility eligibleToBuy(Player viewer, Listing.Auction auction) {
+        boolean amountFlow = buyAmountGuiEnabled() && services.auctions().usesAmountSelection(auction);
+        return amountFlow
+                ? services.auctions().eligibleToOpenBuyAmount(viewer, auction)
+                : services.auctions().eligibleToPurchase(viewer, auction);
+    }
+
+    private boolean buyAmountGuiEnabled() {
+        return guis.definition(BuyAmountGui.ID).map(gui -> gui.settings().enabled()).orElse(false);
+    }
+
+    // is:valid / is:owned
 
     private boolean isValid(@Nullable ListingScope scope, @Nullable Listing listing) {
         return listing != null && scope != null && services.listings().belongsToScope(listing, scope);

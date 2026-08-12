@@ -54,28 +54,34 @@ economy:
     vault:
       enabled: true
       type: VAULT
-      display-name: "Money"
+      # Used for ECONOMY_OPTIONS tab-complete source
+      key: "Money"
+      # Used for %economy% placeholders
+      display-name: "<green>Money</green>"
       format: "<green>$%amount%</green>"
       allow-decimals: true
 
     exp:
       enabled: true
       type: EXP
-      display-name: "Experience"
+      key: "Experience"
+      display-name: "<aqua>Experience</aqua>"
       format: "<aqua>%amount% XP</aqua>"
       allow-decimals: false
 
     points:
       enabled: false
       type: PLAYERPOINTS
-      display-name: "Points"
+      key: "Points"
+      display-name: "<yellow>Points</yellow>"
       format: "<yellow>%amount% Points</yellow>"
       allow-decimals: false
 
     coins:
       enabled: false
       type: EXCELLENTECONOMY
-      display-name: "Coins"
+      key: "Coins"
+      display-name: "<gold>Coins</gold>"
       format: "<gold>%amount% Coins</gold>"
       allow-decimals: true
       settings:
@@ -84,7 +90,8 @@ economy:
     crystals:
       enabled: false
       type: PLACEHOLDER
-      display-name: "Crystals"
+      key: "Crystals"
+      display-name: "<gold>Crystals</gold>"
       format: "<gold>%amount% Crystals</gold>"
       allow-decimals: false
       settings:

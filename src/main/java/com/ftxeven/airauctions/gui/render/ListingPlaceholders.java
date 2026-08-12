@@ -43,7 +43,7 @@ public final class ListingPlaceholders {
         Listing.Info info = auction.info();
         Map<String, String> map = new HashMap<>();
         putCommon(map, info.id(), info.seller(), auction.remainingAmount(), info.category(), info.economy(), info.createdAt(), info.item());
-        services.economy().formatInto(map, "price", info.economy(), auction.price());
+        services.economy().formatInto(map, "price", info.economy(), services.auctions().remainingValue(auction));
         map.put("per_price", perPrice(info.economy(), auction.price(), info.amount()));
 
         if (info.status() == ListingStatus.ACTIVE) {

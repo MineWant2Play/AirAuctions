@@ -64,7 +64,7 @@ public final class ListingGuiManager {
         ListingGuiRegistry registry = new ListingGuiRegistry(plugin, guis);
         registry.load();
 
-        ListingGuiManager manager = new ListingGuiManager(guis, registry, new ListingFlags(configs, services),
+        ListingGuiManager manager = new ListingGuiManager(guis, registry, new ListingFlags(configs, services, guis),
                 new ListingPlaceholders(configs, services), messenger);
         manager.registerActions(services, configs);
         manager.registerGuis(services, configs);

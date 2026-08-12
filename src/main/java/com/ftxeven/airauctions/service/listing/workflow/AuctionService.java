@@ -164,8 +164,7 @@ public final class AuctionService {
         }
         EconomyProvider provider = providerLookup.get();
 
-        double fullPrice = quote(auction, auction.remainingAmount(), provider).price();
-        double required = Math.min(economy.minPartialPrice(), fullPrice);
+        double required = Math.min(economy.minPartialPrice(), remainingValue(auction));
         if (!provider.has(buyer, required)) {
             Map<String, String> placeholders = new HashMap<>();
             economy.formatInto(placeholders, "amount", info.economy(), required);
@@ -177,6 +176,10 @@ public final class AuctionService {
         }
 
         return Eligibility.eligible();
+    }
+
+    public boolean usesAmountSelection(Listing.Auction auction) {
+        return auction.remainingAmount() >= configs.expansions().economy().buyAmountTrigger();
     }
 
     // Purchase
@@ -253,6 +256,15 @@ public final class AuctionService {
         }
         double share = total * sold / originalAmount;
         return provider.allowDecimals() ? share : Math.round(share);
+    }
+
+    public double remainingValue(Listing.Auction auction) {
+        Optional<EconomyProvider> provider = economy.get(auction.info().economy());
+        if (provider.isPresent()) {
+            return quote(auction, auction.remainingAmount(), provider.get()).price();
+        }
+        int originalAmount = auction.info().amount();
+        return originalAmount <= 0 ? auction.price() : auction.price() * auction.remainingAmount() / originalAmount;
     }
 
     // Messaging
