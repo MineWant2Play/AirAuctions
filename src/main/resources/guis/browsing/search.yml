@@ -74,7 +74,15 @@ items:
     actions:
       any:
         - "[sound] $click"
-        - "[open] gui:browsing/global"
+        - "[open] context:true"
+    priority:
+      # No screen to return to when this GUI was opened directly (e.g. /ah search)
+      - conditions:
+          - "%previous_gui% == null"
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] gui:browsing/global"
 
   close:
     template: close-button
@@ -128,18 +136,6 @@ contexts:
       listing:
         template: row-active
 
-    items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
   target/active:
     settings:
       title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s Listings</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
@@ -149,17 +145,6 @@ contexts:
         template: row-active
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       filler:
         template: filler
         slots: [1-3, 5-7, 9, 17, 27, 35-44]
@@ -186,17 +171,6 @@ contexts:
         template: row-expired
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       claim-all:
         slots: 45
         priority:
@@ -243,17 +217,6 @@ contexts:
         template: row-expired
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       filler:
         template: filler
         slots: [1-3, 5-7, 9, 17, 27, 35-44]
@@ -291,17 +254,6 @@ contexts:
           template: row-history-sale
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       sort-history:
         slots: 50
         template: sort-history
@@ -325,17 +277,6 @@ contexts:
           template: row-history-sale
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       filler:
         template: filler
         slots: [1-3, 5-7, 9, 17, 27, 35-44]
@@ -370,17 +311,6 @@ contexts:
         template: row-storage
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       collect-all:
         slots: 45
         priority:
@@ -427,17 +357,6 @@ contexts:
         template: row-storage
 
     items:
-      back:
-        slots: 0
-        material: DARK_OAK_DOOR
-        display-name: "<white><bold>Back</bold>"
-        lore:
-          - "<gray>Return to the previous menu."
-        actions:
-          any:
-            - "[sound] $click"
-            - "[open] context:true"
-
       filler:
         template: filler
         slots: [1-3, 5-7, 9, 17, 27, 35-44]
