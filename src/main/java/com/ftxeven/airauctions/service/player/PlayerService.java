@@ -60,6 +60,11 @@ public final class PlayerService {
         });
     }
 
+    public void registerSynthetic(UUID uuid, String name) {
+        database.players().upsert(uuid, name, PlayerData.Skin.EMPTY);
+        database.players().find(uuid).ifPresent(cache.players()::warm);
+    }
+
     private PlayerData.Skin captureSkin(Player player) {
         for (ProfileProperty property : player.getPlayerProfile().getProperties()) {
             if ("textures".equals(property.getName())

@@ -19,7 +19,7 @@ commands:
   airauctions:
     description: Plugin management command.
     aliases: []
-    usage: /airauctions reload|version
+    usage: /airauctions reload|version|simulate
     permission: airauctions.admin
 
 permissions:

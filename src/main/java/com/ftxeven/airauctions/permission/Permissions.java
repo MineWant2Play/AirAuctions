@@ -3,6 +3,7 @@ package com.ftxeven.airauctions.permission;
 public final class Permissions {
 
     public static final String ADMIN = "airauctions.admin";
+    public static final String SIMULATE = "airauctions.admin.simulate";
 
     private Permissions() {
     }

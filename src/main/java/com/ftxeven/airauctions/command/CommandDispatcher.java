@@ -88,22 +88,26 @@ public final class CommandDispatcher {
     }
 
     private List<String> matchingNames(CommandRegistry registry, CommandSender sender, String prefix) {
-        String lowerPrefix = prefix.toLowerCase(Locale.ROOT);
-        List<String> matches = new ArrayList<>();
+        List<String> candidates = new ArrayList<>();
         for (SubCommand subCommand : registry.all()) {
             if (!subCommand.enabled() || (subCommand.permission() != null && !sender.hasPermission(subCommand.permission()))) {
                 continue;
             }
-            addIfMatches(matches, subCommand.name(), lowerPrefix);
-            subCommand.aliases().forEach(alias -> addIfMatches(matches, alias, lowerPrefix));
+            candidates.add(subCommand.name());
+            candidates.addAll(subCommand.aliases());
         }
-        return matches;
+        return filterPrefix(candidates, prefix);
     }
 
-    private void addIfMatches(List<String> target, String candidate, String lowerPrefix) {
-        if (candidate.toLowerCase(Locale.ROOT).startsWith(lowerPrefix)) {
-            target.add(candidate);
+    public static List<String> filterPrefix(List<String> candidates, String typed) {
+        String lowerTyped = typed.toLowerCase(Locale.ROOT);
+        List<String> matches = new ArrayList<>();
+        for (String candidate : candidates) {
+            if (candidate.toLowerCase(Locale.ROOT).startsWith(lowerTyped)) {
+                matches.add(candidate);
+            }
         }
+        return matches;
     }
 
     private static String[] tail(String[] args) {

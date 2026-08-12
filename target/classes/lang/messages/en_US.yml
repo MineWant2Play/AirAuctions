@@ -38,6 +38,38 @@ general:
       - "  <gray>Latest: <gradient:#00ffcc:#0066ff>%latest%"
       - "  <gray>Download on <yellow><click:open_url:'<ref:url_spigot>'><hover:show_text:'<yellow>Click to go to SpigotMC'>[SpigotMC]</hover></click> <green><click:open_url:'<ref:url_modrinth>'><hover:show_text:'<green>Click to go to Modrinth'>[Modrinth]</hover></click>"
 
+  # --------------------------------------------------
+  # SIMULATE
+  # --------------------------------------------------
+  simulate:
+    invalid-count: "<ref:prefix> <red>Count must be a whole number greater than 0."
+
+    confirm-required:
+      - "<ref:prefix> <gold>Generating <white>%count%</white> listings is a large operation."
+      - "<gray>  Re-run the command with <white>confirm</white> appended to proceed."
+
+    started: "<ref:prefix> <gray>Generating <white>%count%</white> simulated listings..."
+
+    started-progress: "<actionbar:'<gray>Generating listings... <white>%percent%%</white> <dark_gray>(<white>%count%</white>/<white>%total%</white>)'>"
+
+    result:
+      - "<ref:prefix> <green>Simulation complete!"
+      - "<gray>  Auctions: <white>%auctions%</white> <dark_gray>| <gray>Bids: <white>%bids%</white> <dark_gray>| <gray>Purchases: <white>%purchases%"
+      - "<gray>  Players used: <white>%players%</white> <dark_gray>| <gray>Seed: <white>%seed%"
+      - "<sound:entity.experience_orb.pickup:1:1.5>"
+
+    clear-progress: "<actionbar:'<gray>Clearing listings... <white>%percent%%</white> <dark_gray>(<white>%count%</white>/<white>%total%</white>)'>"
+
+    cleared: "<ref:prefix> <green>Cleared <white>%count%</white> simulated listing(s)."
+
+    status:
+      - "<ref:prefix> <white>Simulation status:"
+      - "<gray>  Tracked listings: <white>%listings%"
+      - "<gray>  Last player pool size: <white>%players%"
+      - "<gray>  Usable economy providers: <white>%providers%"
+
+    failed: "<ref:prefix> <red>Simulation failed. Check console for details."
+
 # --------------------------------------------------
 # PLACEHOLDERS
 # Values inserted into messages and GUIs.

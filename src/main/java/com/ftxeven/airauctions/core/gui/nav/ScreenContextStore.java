@@ -41,6 +41,7 @@ public final class ScreenContextStore {
 
     public void recordLive(UUID player, ScreenKey screen, ScreenState state) {
         live.computeIfAbsent(player, ignored -> new ConcurrentHashMap<>()).put(screen, state);
+        clampLockedPage(player, screen, state.page());
     }
 
     public void forget(UUID player) {
@@ -58,5 +59,13 @@ public final class ScreenContextStore {
         Map<ScreenKey, LockedContext> byScreen = locked.get(player);
         LockedContext state = byScreen != null ? byScreen.get(screen) : null;
         return state != null ? state : LockedContext.EMPTY;
+    }
+
+    private void clampLockedPage(UUID player, ScreenKey screen, int correctedPage) {
+        Map<ScreenKey, LockedContext> byScreen = locked.get(player);
+        LockedContext existing = byScreen != null ? byScreen.get(screen) : null;
+        if (existing != null && existing.page() != null && existing.page() != correctedPage) {
+            byScreen.put(screen, new LockedContext(correctedPage, existing.attributes()));
+        }
     }
 }

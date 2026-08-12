@@ -16,6 +16,7 @@ import com.ftxeven.airauctions.service.listing.workflow.BidService;
 import com.ftxeven.airauctions.service.listing.workflow.ReclaimService;
 import com.ftxeven.airauctions.service.player.NotificationService;
 import com.ftxeven.airauctions.service.player.PlayerService;
+import com.ftxeven.airauctions.service.simulation.SimulationService;
 
 public final class ServiceManager {
 
@@ -40,6 +41,8 @@ public final class ServiceManager {
 
     private final ConfirmationService confirmations;
 
+    private final SimulationService simulation;
+
     public ServiceManager(AirAuctions plugin) {
         economy = new EconomyService(plugin.economy(), plugin.configs());
 
@@ -61,6 +64,7 @@ public final class ServiceManager {
         notifications = new NotificationService(plugin.configs(), players, economy, listings, bids, plugin.messenger());
         confirmations = new ConfirmationService();
         expiry = new ExpiryTask(plugin.configs(), listings, auctions, bids, plugin.getLogger());
+        simulation = new SimulationService(plugin.configs(), listings, history, economy, players, auctions, bids);
     }
 
     public void reload() {
@@ -98,4 +102,6 @@ public final class ServiceManager {
     public ConfirmationService confirmations() { return confirmations; }
 
     public ExpiryTask expiry() { return expiry; }
+
+    public SimulationService simulation() { return simulation; }
 }

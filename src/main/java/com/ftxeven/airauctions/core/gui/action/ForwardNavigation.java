@@ -102,7 +102,7 @@ public final class ForwardNavigation {
         String resolvedGuiId = Placeholders.apply(context.viewer(), guiId, context.placeholders());
         UUID target = parsed.target() != null
                 ? resolveTarget(parsed.target(), currentScreen.target(), context)
-                : currentScreen.target();
+                : null;
         return new ScreenKey(resolvedGuiId, target);
     }
 
