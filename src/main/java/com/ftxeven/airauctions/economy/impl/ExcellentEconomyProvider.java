@@ -9,15 +9,17 @@ import su.nightexpress.excellenteconomy.api.currency.ExcellentCurrency;
 public final class ExcellentEconomyProvider implements EconomyProvider {
 
     private final String id;
+    private final String key;
     private final String displayName;
     private final String template;
     private final boolean allowDecimals;
     private final ExcellentEconomyAPI api;
     private final ExcellentCurrency currency;
 
-    public ExcellentEconomyProvider(String id, String displayName, String template, boolean allowDecimals,
+    public ExcellentEconomyProvider(String id, String key, String displayName, String template, boolean allowDecimals,
                                     ExcellentEconomyAPI api, ExcellentCurrency currency) {
         this.id = id;
+        this.key = key;
         this.displayName = displayName;
         this.template = template;
         this.allowDecimals = allowDecimals;
@@ -28,6 +30,11 @@ public final class ExcellentEconomyProvider implements EconomyProvider {
     @Override
     public String id() {
         return id;
+    }
+
+    @Override
+    public String key() {
+        return key;
     }
 
     @Override

@@ -7,12 +7,14 @@ import org.bukkit.entity.Player;
 public final class ExpProvider implements EconomyProvider {
 
     private final String id;
+    private final String key;
     private final String displayName;
     private final String template;
     private final boolean allowDecimals;
 
-    public ExpProvider(String id, String displayName, String template, boolean allowDecimals) {
+    public ExpProvider(String id, String key, String displayName, String template, boolean allowDecimals) {
         this.id = id;
+        this.key = key;
         this.displayName = displayName;
         this.template = template;
         this.allowDecimals = allowDecimals;
@@ -21,6 +23,11 @@ public final class ExpProvider implements EconomyProvider {
     @Override
     public String id() {
         return id;
+    }
+
+    @Override
+    public String key() {
+        return key;
     }
 
     @Override

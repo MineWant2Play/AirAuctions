@@ -62,7 +62,7 @@ public final class EconomyRegistry {
         try {
             return switch (providerConfig.type()) {
                 case VAULT -> buildVault(id, providerConfig);
-                case EXP -> Optional.of(new ExpProvider(id, providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals()));
+                case EXP -> Optional.of(new ExpProvider(id, providerConfig.key(), providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals()));
                 case PLACEHOLDER -> buildPlaceholder(id, providerConfig);
                 case PLAYERPOINTS -> buildPlayerPoints(id, providerConfig);
                 case EXCELLENTECONOMY -> buildExcellentEconomy(id, providerConfig);
@@ -85,7 +85,7 @@ public final class EconomyRegistry {
             return Optional.empty();
         }
 
-        return Optional.of(new VaultProvider(id, providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals(), registration.getProvider()));
+        return Optional.of(new VaultProvider(id, providerConfig.key(), providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals(), registration.getProvider()));
     }
 
     private Optional<EconomyProvider> buildPlaceholder(String id, ExpansionsConfig.Provider providerConfig) {
@@ -97,7 +97,7 @@ public final class EconomyRegistry {
             return Optional.empty();
         }
 
-        return Optional.of(new PlaceholderProvider(id, providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals(), providerConfig.settings()));
+        return Optional.of(new PlaceholderProvider(id, providerConfig.key(), providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals(), providerConfig.settings()));
     }
 
     private Optional<EconomyProvider> buildPlayerPoints(String id, ExpansionsConfig.Provider providerConfig) {
@@ -112,7 +112,7 @@ public final class EconomyRegistry {
             return Optional.empty();
         }
 
-        return Optional.of(new PlayerPointsProvider(id, providerConfig.displayName(), providerConfig.format(), api));
+        return Optional.of(new PlayerPointsProvider(id, providerConfig.key(), providerConfig.displayName(), providerConfig.format(), api));
     }
 
     private Optional<EconomyProvider> buildExcellentEconomy(String id, ExpansionsConfig.Provider providerConfig) {
@@ -138,6 +138,6 @@ public final class EconomyRegistry {
             return Optional.empty();
         }
 
-        return Optional.of(new ExcellentEconomyProvider(id, providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals(), api, currency));
+        return Optional.of(new ExcellentEconomyProvider(id, providerConfig.key(), providerConfig.displayName(), providerConfig.format(), providerConfig.allowDecimals(), api, currency));
     }
 }

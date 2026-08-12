@@ -40,15 +40,17 @@ public final class EconomyService {
         return economy.get(configs.expansions().economy().defaultCurrency());
     }
 
-    public Optional<EconomyProvider> findByDisplayName(String displayName) {
-        String needle = displayName.trim();
+    // matches a provider by its user-typable 'key' (e.g. "Money") - used for the [economy]
+    // command argument, distinct from the internal storage 'id' (e.g. "vault")
+    public Optional<EconomyProvider> findByKey(String key) {
+        String needle = key.trim();
         return economy.providers().values().stream()
-                .filter(provider -> provider.displayName().equalsIgnoreCase(needle))
+                .filter(provider -> provider.key().equalsIgnoreCase(needle))
                 .findFirst();
     }
 
-    public List<String> economyDisplaynames() {
-        return economy.providers().values().stream().map(EconomyProvider::displayName).toList();
+    public List<String> economyKeys() {
+        return economy.providers().values().stream().map(EconomyProvider::key).toList();
     }
 
     public boolean multiCurrency() {
@@ -88,6 +90,22 @@ public final class EconomyService {
     // Writes %key%/%key_plain% for an amount that might not exist yet
     public void formatInto(Map<String, String> placeholders, String key, String economyId, OptionalDouble amount, String emptyLangKey) {
         put(placeholders, key, amount.isPresent() ? format(economyId, amount.getAsDouble()) : emptyText(emptyLangKey));
+    }
+
+    // Writes %economy% (+ %economy_plain%) and %economy_id% for a resolved provider
+    public void formatEconomy(Map<String, String> placeholders, EconomyProvider provider) {
+        formatEconomy(placeholders, provider.id(), provider.displayName());
+    }
+
+    // Same, resolved by economy id
+    // falls back to the raw id as its own display text if that provider is no longer active
+    public void formatEconomy(Map<String, String> placeholders, String economyId) {
+        formatEconomy(placeholders, economyId, displayName(economyId));
+    }
+
+    private void formatEconomy(Map<String, String> placeholders, String economyId, String displayName) {
+        placeholders.put("economy_id", economyId);
+        put(placeholders, "economy", displayName);
     }
 
     private void put(Map<String, String> placeholders, String key, String formatted) {

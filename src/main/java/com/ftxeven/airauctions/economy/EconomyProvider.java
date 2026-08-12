@@ -6,6 +6,8 @@ public interface EconomyProvider {
 
     String id();
 
+    String key();
+
     String displayName();
 
     boolean allowDecimals();

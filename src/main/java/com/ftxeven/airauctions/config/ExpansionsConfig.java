@@ -84,38 +84,39 @@ public final class ExpansionsConfig extends BaseConfig {
             return Map.of();
         }
         Map<String, Provider> providers = new LinkedHashMap<>();
-        for (String key : sec.getKeys(false)) {
-            providers.put(key, readProvider(sec.getConfigurationSection(key), key));
+        for (String providerId : sec.getKeys(false)) {
+            providers.put(providerId, readProvider(sec.getConfigurationSection(providerId), providerId));
         }
         return Collections.unmodifiableMap(providers);
     }
 
     // "all" is a reserved pseudo-provider (the "no filter" option in the economy cycle)
-    // and legitimately has no type/settings, so it's built directly rather than warned about
-    private Provider readProvider(ConfigurationSection sec, String key) {
+    // and legitimately has no type/settings/key, so it's built directly rather than warned about
+    private Provider readProvider(ConfigurationSection sec, String providerId) {
         sec = orEmpty(sec);
-        if (key.equals("all")) {
-            return new Provider(true, null, sec.getString("display-name", key), "%amount%", false, null, null);
+        if (providerId.equals("all")) {
+            return new Provider(true, null, providerId, sec.getString("display-name", providerId), "%amount%", false, null, null);
         }
 
-        ProviderType type = providerType(sec.getString("type", ""), key);
+        ProviderType type = providerType(sec.getString("type", ""), providerId);
         PlaceholderSettings placeholderSettings = type == ProviderType.PLACEHOLDER
-                ? readPlaceholderSettings(sec.getConfigurationSection("settings"), key)
+                ? readPlaceholderSettings(sec.getConfigurationSection("settings"), providerId)
                 : null;
         ExcellentEconomySettings excellentEconomySettings = type == ProviderType.EXCELLENTECONOMY
-                ? readExcellentEconomySettings(sec.getConfigurationSection("settings"), key)
+                ? readExcellentEconomySettings(sec.getConfigurationSection("settings"), providerId)
                 : null;
 
         boolean allowDecimals = getBoolean(sec, "allow-decimals", false);
         if (type == ProviderType.PLAYERPOINTS && allowDecimals) {
-            plugin.getLogger().warning("Provider '" + key + "' is type PLAYERPOINTS but has 'allow-decimals: true' in " + fileName() + ", PlayerPoints only supports whole numbers, forcing it to false");
+            plugin.getLogger().warning("Provider '" + providerId + "' is type PLAYERPOINTS but has 'allow-decimals: true' in " + fileName() + ", PlayerPoints only supports whole numbers, forcing it to false");
             allowDecimals = false;
         }
 
         return new Provider(
                 getBoolean(sec, "enabled", true),
                 type,
-                getString(sec, "display-name", key),
+                getString(sec, "key", providerId),
+                getString(sec, "display-name", providerId),
                 getString(sec, "format", "%amount%"),
                 allowDecimals,
                 placeholderSettings,
@@ -123,32 +124,32 @@ public final class ExpansionsConfig extends BaseConfig {
         );
     }
 
-    private ExcellentEconomySettings readExcellentEconomySettings(ConfigurationSection sec, String providerKey) {
+    private ExcellentEconomySettings readExcellentEconomySettings(ConfigurationSection sec, String providerId) {
         sec = orEmpty(sec);
         String currency = getString(sec, "currency", "");
         if (currency.isBlank()) {
-            plugin.getLogger().warning("Provider '" + providerKey + "' is type EXCELLENTECONOMY but has no 'settings.currency' set in " + fileName() + ", it will not work");
+            plugin.getLogger().warning("Provider '" + providerId + "' is type EXCELLENTECONOMY but has no 'settings.currency' set in " + fileName() + ", it will not work");
             return null;
         }
         return new ExcellentEconomySettings(currency);
     }
 
-    private ProviderType providerType(String raw, String providerKey) {
+    private ProviderType providerType(String raw, String providerId) {
         if (raw.isBlank()) {
-            plugin.getLogger().warning("Provider '" + providerKey + "' has no 'type' set in " + fileName() + ", it will be disabled");
+            plugin.getLogger().warning("Provider '" + providerId + "' has no 'type' set in " + fileName() + ", it will be disabled");
             return null;
         }
         try {
             return ProviderType.valueOf(raw.trim().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().warning("Invalid provider type '" + raw + "' for provider '" + providerKey + "' in " + fileName() + ", it will be disabled");
+            plugin.getLogger().warning("Invalid provider type '" + raw + "' for provider '" + providerId + "' in " + fileName() + ", it will be disabled");
             return null;
         }
     }
 
-    private PlaceholderSettings readPlaceholderSettings(ConfigurationSection sec, String providerKey) {
+    private PlaceholderSettings readPlaceholderSettings(ConfigurationSection sec, String providerId) {
         if (sec == null) {
-            plugin.getLogger().warning("Provider '" + providerKey + "' is type PLACEHOLDER but has no 'settings' block in " + fileName() + ", it will not work");
+            plugin.getLogger().warning("Provider '" + providerId + "' is type PLACEHOLDER but has no 'settings' block in " + fileName() + ", it will not work");
             return null;
         }
         return new PlaceholderSettings(
@@ -289,10 +290,13 @@ public final class ExpansionsConfig extends BaseConfig {
 
     public record ExcellentEconomySettings(String currency) {}
 
-    // type is null for pseudo-providers like "all"; settings is null except for PLACEHOLDER
+    // type is null for pseudo-providers like "all"; settings is null except for PLACEHOLDER.
+    // 'key' is the user-typable identifier (ECONOMY_OPTIONS / command parsing); 'id' (the
+    // providers-map key this Provider is stored under) stays the internal/storage identifier.
     public record Provider(
             boolean enabled,
             ProviderType type,
+            String key,
             String displayName,
             String format,
             boolean allowDecimals,

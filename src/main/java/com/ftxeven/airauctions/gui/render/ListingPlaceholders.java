@@ -145,8 +145,7 @@ public final class ListingPlaceholders {
         map.put("item_lore", itemLore(draft.itemSnapshot()));
 
         services.economy().formatInto(map, "price", provider.id(), draft.price());
-        map.put("economy", provider.displayName());
-        map.put("economy_id", provider.id());
+        services.economy().formatEconomy(map, provider);
 
         if (draft.type() == ListingType.AUCTION) {
             map.put("expires", services.auctions().previewExpires(seller));
@@ -217,8 +216,7 @@ public final class ListingPlaceholders {
         map.put("amount", String.valueOf(amount));
         map.put("category", categoryDisplayName(category));
         map.put("category_id", category);
-        map.put("economy", services.economy().displayName(economyId));
-        map.put("economy_id", economyId);
+        services.economy().formatEconomy(map, economyId);
         map.put("date", TimeFormatter.date(createdAt, configs.main().formatting()));
         map.put("time", TimeFormatter.time(createdAt, configs.main().formatting()));
         map.put("item_lore", itemLore(item));

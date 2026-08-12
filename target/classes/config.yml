@@ -17,7 +17,7 @@ general:
 formatting:
 
   # How durations are displayed in placeholders.
-  # DETAILED    - "2 days 3 hours 4 minutes"
+  # DETAILED    - "2 days 3 hours 4 minutes 36 seconds"
   # SEQUENTIAL  - One unit at a time, largest first
   # CUSTOM      - Up to <granularity> units
   duration:
@@ -122,6 +122,7 @@ auctions:
   # --- Listing flow ---
   require-confirmation: true         # Require the seller to confirm before the listing goes live
   confirmation-timeout: 60           # Seconds before an unconfirmed listing is discarded. -1 = never
+                                     # Only used as a fallback when confirm/auction.yml has 'enabled: false'.
   announce-to-seller: false          # Send the global broadcast to the seller as well
 
 # --------------------------------------------------
@@ -142,6 +143,7 @@ bids:
   # --- Listing flow ---
   require-confirmation: true         # Require the seller to confirm before the listing goes live
   confirmation-timeout: 60           # Seconds before an unconfirmed listing is discarded. -1 = never
+                                     # Only used as a fallback when confirm/bid.yml has 'enabled: false'.
   announce-to-seller: false          # Send the global broadcast to the seller as well
 
   # --- Sniper protection ---

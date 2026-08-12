@@ -246,6 +246,15 @@ public final class AuctionService {
         return new Quote(price, tax, price - tax);
     }
 
+    public double remainingValue(Listing.Auction auction) {
+        Optional<EconomyProvider> provider = economy.get(auction.info().economy());
+        if (provider.isPresent()) {
+            return quote(auction, auction.remainingAmount(), provider.get()).price();
+        }
+        int originalAmount = auction.info().amount();
+        return originalAmount <= 0 ? auction.price() : auction.price() * auction.remainingAmount() / originalAmount;
+    }
+
     private double slice(double total, int soldBefore, int soldAfter, int originalAmount, EconomyProvider provider) {
         return cumulative(total, soldAfter, originalAmount, provider) - cumulative(total, soldBefore, originalAmount, provider);
     }
@@ -256,15 +265,6 @@ public final class AuctionService {
         }
         double share = total * sold / originalAmount;
         return provider.allowDecimals() ? share : Math.round(share);
-    }
-
-    public double remainingValue(Listing.Auction auction) {
-        Optional<EconomyProvider> provider = economy.get(auction.info().economy());
-        if (provider.isPresent()) {
-            return quote(auction, auction.remainingAmount(), provider.get()).price();
-        }
-        int originalAmount = auction.info().amount();
-        return originalAmount <= 0 ? auction.price() : auction.price() * auction.remainingAmount() / originalAmount;
     }
 
     // Messaging

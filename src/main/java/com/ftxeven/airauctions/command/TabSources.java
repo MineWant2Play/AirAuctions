@@ -20,7 +20,7 @@ public final class TabSources {
 
     public static TabSourceRegistry build(ServiceManager services, ConfigManager configs, GuiManager guis, DurationUnits durationUnits) {
         return TabSourceRegistry.withBuiltins(durationUnits)
-                .register("ECONOMY_OPTIONS", (context, param) -> services.economy().economyDisplaynames())
+                .register("ECONOMY_OPTIONS", (context, param) -> services.economy().economyKeys())
                 .register("LISTING_IDS", (context, param) -> listingIds(services, context, param))
                 .register("GUI_IDS", (context, param) -> List.copyOf(guis.ids()))
                 .register("FILTER_CATEGORIES", (context, param) -> List.copyOf(configs.filter().categories().keySet()))

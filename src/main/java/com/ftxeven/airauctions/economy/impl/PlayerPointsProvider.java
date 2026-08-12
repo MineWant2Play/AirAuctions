@@ -7,12 +7,14 @@ import org.bukkit.OfflinePlayer;
 public final class PlayerPointsProvider implements EconomyProvider {
 
     private final String id;
+    private final String key;
     private final String displayName;
     private final String template;
     private final PlayerPointsAPI api;
 
-    public PlayerPointsProvider(String id, String displayName, String template, PlayerPointsAPI api) {
+    public PlayerPointsProvider(String id, String key, String displayName, String template, PlayerPointsAPI api) {
         this.id = id;
+        this.key = key;
         this.displayName = displayName;
         this.template = template;
         this.api = api;
@@ -21,6 +23,11 @@ public final class PlayerPointsProvider implements EconomyProvider {
     @Override
     public String id() {
         return id;
+    }
+
+    @Override
+    public String key() {
+        return key;
     }
 
     @Override

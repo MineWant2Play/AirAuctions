@@ -302,7 +302,7 @@ public abstract class DraftSubcommand<E> implements SubCommand {
             return requireProvider(player, economy.defaultProvider());
         }
 
-        Optional<EconomyProvider> provider = economy.findByDisplayName(args[index]);
+        Optional<EconomyProvider> provider = economy.findByKey(args[index]);
         if (provider.isEmpty()) {
             messenger.send(player, configs.lang().get("errors.economy.not-found"));
         }
