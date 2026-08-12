@@ -1,0 +1,313 @@
+# AirAuctions - browsing/view_bid.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+# contexts:
+#   Override any combination of fields for a specific source GUI.
+#   Key = the GUI id that triggered the search (e.g. target/active).
+
+settings:
+  title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- Page %page%/%pages%"
+  rows: 6
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how listing is displayed.
+# --------------------------------------------------
+layout:
+  # Slots where the target listing is displayed.
+  listing-slots: 4
+
+  # How the listing is rendered inside listing-slots.
+  listing:
+    template: view-bid-card
+
+  # Slots where the bidders are displayed.
+  bidder-slots: [18-44]
+
+  # How the bidder is rendered inside bidder-slots.
+  bidder:
+    material: head-%bidder%
+    display-name: "<white><bold>%bidder%</bold> <gray>(#%position%)"
+    lore:
+      - "<dark_gray>Offer"
+      - " "
+      - " <dark_gray>- <gray>Offer: <white>%offer%"
+      - " <dark_gray>- <gray>Amount of offers: <white>%total_offers%"
+    priority:
+      - conditions:
+          - "%position% == 1"
+        lore:
+          - "<dark_gray>Offer"
+          - " "
+          - " <dark_gray>- <gray>Offer: <white>%offer% <gold>(Leader)"
+          - " <dark_gray>- <gray>Amount of offers: <white>%total_offers%"
+
+# --------------------------------------------------
+# ITEMS
+# Define the static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filler:
+    template: filler
+    slots: [9-17, 45-47, 51-53]
+
+  offer:
+    slots: 8
+    priority:
+      - conditions:
+          - "%economy_id% == vault"
+          - "%player% != %seller%"
+        material: EMERALD
+        display-name: "<aqua><bold>Offer</bold>"
+        lore:
+          - "<gray>Your offer: %your_offer%"
+          - " "
+          - "<aqua>Click <gray>to offer for this listing."
+        actions:
+          any:
+            - "=is:valid [sound] $click"
+            - "[place_bid]"
+      - conditions:
+          - "%economy_id% == exp"
+          - "%player% != %seller%"
+        material: EXPERIENCE_BOTTLE
+        display-name: "<aqua><bold>Offer</bold>"
+        lore:
+          - "<gray>Your offer: %your_offer%"
+          - " "
+          - "<aqua>Click <gray>to offer for this listing."
+        actions:
+          any:
+            - "=is:valid [sound] $click"
+            - "[place_bid]"
+
+  back:
+    slots: 0
+    material: OAK_DOOR
+    display-name: "<white><bold>Back</bold>"
+    lore:
+      - "<gray>Return to the previous menu."
+    actions:
+      any:
+        - "[open] context:true"
+        - "[sound] $click"
+
+  # --- Navigation ---
+  previous-page:
+    template: previous-page
+    slots: 48
+
+  next-page:
+    template: next-page
+    slots: 50
+
+  # --- Footer ---
+  refresh:
+    template: refresh-button
+    slots: 49
+
+# --------------------------------------------------
+# GUI CONTEXTS
+# Override any field based on which GUI triggered the preview.
+# Keys must exactly match the source GUI id.
+# --------------------------------------------------
+contexts:
+  target/active:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s Listing <dark_gray>- Page %page%/%pages%"
+
+    # The rest is inherited from the base config above unless overridden here.
+
+  target/active|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s Listing <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+  target/expired:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s Expired Listing <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-expired
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  target/expired|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s Expired Listing <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-expired
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  target/history:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s History <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        purchase:
+          template: card-history-purchase
+        sale:
+          template: card-history-sale
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  target/history|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s History <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        purchase:
+          template: card-history-purchase
+        sale:
+          template: card-history-sale
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  target/storage:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s Storage <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-storage
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  target/storage|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>%seller%'s Storage <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-storage
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/active:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>Your Listing <dark_gray>- Page %page%/%pages%"
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/active|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>Your Listing <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/expired:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>Expired Listing <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-expired
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/expired|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>Expired Listing <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-expired
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/history:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>History <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        purchase:
+          template: card-history-purchase
+        sale:
+          template: card-history-sale
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/history|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>History <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        purchase:
+          template: card-history-purchase
+        sale:
+          template: card-history-sale
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/storage:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>Storage <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-storage
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  player/storage|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>Storage <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"
+
+    layout:
+      listing:
+        template: card-storage
+
+    items:
+      empty:
+        material: AIR
+        slots: 8
+
+  browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Bid Details</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>- Page %page%/%pages%"

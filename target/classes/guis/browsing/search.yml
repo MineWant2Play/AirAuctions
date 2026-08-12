@@ -1,0 +1,465 @@
+# AirAuctions - browsing/search.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+# contexts:
+#   Override any combination of fields for a specific source GUI.
+#   Key = the GUI id that triggered the confirmation (e.g. target/active).
+
+settings:
+  title: "<gradient:#5AD1F2:#736EFE><bold>Search</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+  rows: 6
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how listings are displayed.
+# --------------------------------------------------
+layout:
+  filters:
+    # Filters excluded from this GUI.
+    excluded: [] # category, type, economy
+
+    format:
+      category: # %filter_CATEGORY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      type: # %filter_TYPE_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      economy: # %filter_ECONOMY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+
+  sorts:
+    # Sort options excluded from this GUI.
+    excluded: [] # active, unclaimed, history
+
+    format:
+      active: # %sort_ACTIVE_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+      unclaimed: # %sort_UNCLAIMED_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+      history: # %sort_HISTORY_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+
+  # Slots where listings are rendered.
+  listing-slots: [10-16, 19-25, 28-34]
+
+  # How each listing is rendered inside listing-slots.
+  listing:
+    template: row-market
+
+# --------------------------------------------------
+# ITEMS (base - used when no context overrides items)
+# Static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filler:
+    template: filler
+    slots: [1-7, 9, 17, 27, 35-44]
+
+  no-results:
+    template: no-listings
+    slots: 22
+
+  # --- Header ---
+  back:
+    slots: 0
+    material: DARK_OAK_DOOR
+    display-name: "<white><bold>Back</bold>"
+    lore:
+      - "<gray>Return to the previous menu."
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global"
+
+  close:
+    template: close-button
+    slots: 8
+
+  # --- Navigation ---
+  previous-page:
+    template: previous-page
+    slots: 18
+
+  next-page:
+    template: next-page
+    slots: 26
+
+  # --- Footer ---
+  search:
+    template: search-button
+    slots: 48
+
+  refresh:
+    template: refresh-button
+    slots: 49
+
+  sort-active:
+    template: sort-active
+    slots: 50
+
+  filter-category:
+    template: filter-category
+    slots: 51
+
+  filter-type:
+    template: filter-type
+    slots: 52
+
+  filter-economy:
+    template: filter-economy
+    slots: 53
+
+# --------------------------------------------------
+# GUI CONTEXTS
+# Override any field based on which GUI triggered the preview.
+# Keys must exactly match the source GUI id.
+# --------------------------------------------------
+contexts:
+  player/active:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Your Listings</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      listing:
+        template: row-active
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+  target/active:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s Listings</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      listing:
+        template: row-active
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      filler:
+        template: filler
+        slots: [1-3, 5-7, 9, 17, 27, 35-44]
+
+      seller-head:
+        slots: 4
+        material: head-%seller%
+        display-name: "<white><bold>%seller%</bold><gray>'s Listings"
+        lore:
+          - "<dark_gray>Query"
+          - " "
+          - " <dark_gray>- <gray>Listings: <white>%current% <gray>out of <white>%total%"
+          - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+
+  player/expired:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Expired Listings</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      filters:
+        excluded: [category, economy, type]
+
+      listing:
+        template: row-expired
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      claim-all:
+        slots: 45
+        priority:
+          - conditions:
+              - "%total% == 0"
+            material: CAULDRON
+            display-name: "<white><bold>Claim All</bold>"
+            lore:
+              - "<dark_gray>Bulk Action"
+              - " "
+              - "<red>You have nothing to claim yet."
+          - conditions:
+              - "%total% > 0"
+            material: CAULDRON
+            display-name: "<white><bold>Claim All</bold>"
+            lore:
+              - "<dark_gray>Bulk Action"
+              - " "
+              - "<gray>Claim all of your <white>filtered</white> expired listings at once."
+              - " "
+              - "<white>Click <gray>to claim all"
+            actions:
+              any:
+                - "=can:claim [sound] $click"
+                - "[confirm:claim_all] filtered:true"
+
+      sort-unclaimed:
+        slots: 50
+        template: sort-unclaimed
+
+      empty:
+        slots: [51-53]
+        material: AIR
+
+  target/expired:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s Expired Listings</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      filters:
+        excluded: [category, economy, type]
+
+      listing:
+        template: row-expired
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      filler:
+        template: filler
+        slots: [1-3, 5-7, 9, 17, 27, 35-44]
+
+      seller-head:
+        slots: 4
+        material: head-%seller%
+        display-name: "<white><bold>%seller%</bold><gray>'s Listings"
+        lore:
+          - "<dark_gray>Query"
+          - " "
+          - " <dark_gray>- <gray>Listings: <white>%current% <gray>out of <white>%total%"
+          - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+
+      sort-unclaimed:
+        slots: 50
+        template: sort-unclaimed
+
+      empty:
+        slots: [51-53]
+        material: AIR
+
+  player/history:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>History</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      filters:
+        excluded: [category, economy, type]
+
+      listing:
+        purchase:
+          template: row-history-purchase
+        sale:
+          template: row-history-sale
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      sort-history:
+        slots: 50
+        template: sort-history
+
+      empty:
+        slots: [51-53]
+        material: AIR
+
+  target/history:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s History</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      filters:
+        excluded: [category, economy, type]
+
+      listing:
+        purchase:
+          template: row-history-purchase
+        sale:
+          template: row-history-sale
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      filler:
+        template: filler
+        slots: [1-3, 5-7, 9, 17, 27, 35-44]
+
+      seller-head:
+        slots: 4
+        material: head-%seller%
+        display-name: "<white><bold>%seller%</bold><gray>'s Transactions"
+        lore:
+          - "<dark_gray>Query"
+          - " "
+          - " <dark_gray>- <gray>Transactions: <white>%current% <gray>out of <white>%total%"
+          - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+
+      sort-history:
+        slots: 50
+        template: sort-history
+
+      empty:
+        slots: [51-53]
+        material: AIR
+
+  player/storage:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Storage</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      filters:
+        excluded: [category, economy, type]
+
+      listing:
+        template: row-storage
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      collect-all:
+        slots: 45
+        priority:
+          - conditions:
+              - "%total% == 0"
+            material: CAULDRON
+            display-name: "<white><bold>Collect All</bold>"
+            lore:
+              - "<dark_gray>Bulk Action"
+              - " "
+              - "<red>You have nothing to collect yet."
+          - conditions:
+              - "%total% > 0"
+            material: CAULDRON
+            display-name: "<white><bold>Collect All</bold>"
+            lore:
+              - "<dark_gray>Bulk Action"
+              - " "
+              - "<gray>Collect all of your <white>filtered</white> items at once."
+              - " "
+              - "<white>Click <gray>to collect all"
+            actions:
+              any:
+                - "=can:collect [sound] $click"
+                - "[confirm:collect_all] filtered:true"
+
+      sort-unclaimed:
+        slots: 50
+        template: sort-unclaimed
+
+      empty:
+        slots: [51-53]
+        material: AIR
+
+  target/storage:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s Storage</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"
+
+    layout:
+      filters:
+        excluded: [category, economy, type]
+
+      listing:
+        template: row-storage
+
+    items:
+      back:
+        slots: 0
+        material: DARK_OAK_DOOR
+        display-name: "<white><bold>Back</bold>"
+        lore:
+          - "<gray>Return to the previous menu."
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] context:true"
+
+      filler:
+        template: filler
+        slots: [1-3, 5-7, 9, 17, 27, 35-44]
+
+      seller-head:
+        slots: 4
+        material: head-%seller%
+        display-name: "<white><bold>%seller%</bold><gray>'s Storage"
+        lore:
+          - "<dark_gray>Query"
+          - " "
+          - " <dark_gray>- <gray>Items: <white>%current% <gray>out of <white>%total%"
+          - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+
+      sort-unclaimed:
+        slots: 50
+        template: sort-unclaimed
+
+      empty:
+        slots: [51-53]
+        material: AIR
+
+  browsing/global:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Search</bold></gradient> <dark_gray>- <white>\"%query%\" <dark_gray>(%page%/%pages%)"

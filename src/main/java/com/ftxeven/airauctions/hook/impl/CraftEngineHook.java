@@ -1,0 +1,28 @@
+package com.ftxeven.airauctions.hook.impl;
+
+import com.ftxeven.airauctions.hook.ItemHook;
+import net.momirealms.craftengine.core.plugin.CraftEngine;
+import net.momirealms.craftengine.core.util.Key;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+
+public final class CraftEngineHook implements ItemHook {
+
+    @Override
+    public String prefix() { return "craftengine"; }
+
+    @Override
+    public @Nullable String rawId(ItemStack item) {
+        return CraftEngine.instance().<ItemStack>itemManager()
+                .wrap(item)
+                .customId()
+                .map(Key::asString)
+                .orElse(null);
+    }
+
+    @Override
+    public @Nullable ItemStack buildItem(String id) {
+        return CraftEngine.instance().<ItemStack>itemManager()
+                .buildItemStack(Key.of(id), null);
+    }
+}

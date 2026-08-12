@@ -1,0 +1,196 @@
+# AirAuctions - confirm/bid.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+settings:
+  # If disabled, it will fallback to chat confirmation
+  enabled: true
+  title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Bid Listing</bold></gradient>"
+  rows: 4
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how the listing is displayed.
+# --------------------------------------------------
+layout:
+  filters:
+    format:
+      economy: # %filter_ECONOMY_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+
+  #  Slots where the target listing is displayed.
+  listing-slots: 13
+
+  #  How the listing is rendered inside listing-slots.
+  listing:
+    lore:
+      - "%item_lore%"
+      - " "
+      - "<dark_gray>Bid Information"
+      - " <dark_gray>- <gray>Starting price: %price% (%economy%)"
+      - " <dark_gray>- <gray>Amount: <white>x%amount%"
+      - " <dark_gray>- <gray>Category: <white>%category%"
+      - " <dark_gray>- <gray>Duration: <white>%duration%"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+# --------------------------------------------------
+# ITEMS
+# Define the static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filter-economy:
+    slots: 4
+    material: NAME_TAG
+    display-name: "<aqua><bold>Selector</bold>"
+    lore:
+      - "<dark_gray>Economies"
+      - " "
+      - "<gray>Selecting: <white>%filter_ECONOMY%"
+      - " "
+      - "%filter_ECONOMY_list%"
+      - " "
+      - "<aqua>Click <gray>to cycle"
+    actions:
+      # 'All' filter is intentionally skipped
+      left:
+        - "[sound] $click"
+        - "[filter] by:economy to:next"
+      right:
+        - "[sound] $click"
+        - "[filter] by:economy to:previous"
+    cooldown: 0.2
+
+  confirm:
+    slots: 11
+    priority:
+      - conditions:
+          - "%valid_min_price% == false"
+        material: RED_STAINED_GLASS_PANE
+        display-name: "<red><bold>Invalid Price</bold>"
+        lore:
+          - "<gray>Minimum initial listing price is %min_price%."
+      - conditions:
+          - "%can_afford_fee% == false"
+        material: RED_STAINED_GLASS_PANE
+        display-name: "<red><bold>Cannot Afford Fee</bold>"
+        lore:
+          - "<gray>You cannot afford the <red>%fee_plain%</red> listing fee."
+      - conditions:
+          - "%valid_max_price% == false"
+        material: RED_STAINED_GLASS_PANE
+        display-name: "<red><bold>Invalid Price</bold>"
+        lore:
+          - "<gray>Maximum initial listing price is %max_price%."
+      - conditions:
+          - "%valid_min_price% == true"
+          - "%can_afford_fee% == true"
+          - "%valid_max_price% == true"
+        material: LIME_STAINED_GLASS_PANE
+        display-name: "<green><bold>Confirm</bold>"
+        lore:
+          - "<gray>Click to confirm this listing."
+          - " "
+          - "<gray>Fee: <red>%fee_plain%"
+        actions:
+          any:
+            - "[list]"
+            - "=can:list [sound] $success"
+            - "[close]"
+
+  cancel:
+    slots: 15
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>Cancel</bold>"
+    lore:
+      - "<gray>Click to cancel this listing."
+    actions:
+      any:
+        - "[close]"
+        - "[sound] $deny"
+
+  # --- Footer ---
+  add-1:
+    slots: 27
+    material: LIME_STAINED_GLASS_PANE
+    display-name: "<green><bold>+1</bold>"
+    lore:
+      - "<gray>Add <green>+1</green> to the current price."
+    actions:
+      any:
+        - "[amount] +1"
+        - "[sound] $click"
+
+  add-10:
+    slots: 28
+    material: LIME_STAINED_GLASS_PANE
+    amount: 2
+    display-name: "<green><bold>+10</bold>"
+    lore:
+      - "<gray>Add <green>+10</green> to the current price."
+    actions:
+      any:
+        - "[amount] +10"
+        - "[sound] $click"
+
+  add-100:
+    slots: 29
+    material: LIME_STAINED_GLASS_PANE
+    amount: 3
+    display-name: "<green><bold>+100</bold>"
+    lore:
+      - "<gray>Add <green>+100</green> to the current price."
+    actions:
+      any:
+        - "[amount] +100"
+        - "[sound] $click"
+
+  set-price:
+    slots: 31
+    material: EXPERIENCE_BOTTLE
+    display-name: "<aqua><bold>Set Price"
+    lore:
+      - "<gray>Click to set a custom price."
+    actions:
+      any:
+        - "[amount]"
+        - "[sound] $click"
+    priority:
+      - conditions:
+          - "%economy_id% == vault"
+        material: EMERALD
+
+  remove-1:
+    slots: 33
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>-1</bold>"
+    lore:
+      - "<gray>Remove <red>-1</red> to the current price."
+    actions:
+      any:
+        - "[amount] -1"
+        - "[sound] $click"
+
+  remove-10:
+    slots: 34
+    material: RED_STAINED_GLASS_PANE
+    amount: 2
+    display-name: "<red><bold>-10</bold>"
+    lore:
+      - "<gray>Remove <red>-10</red> to the current price."
+    actions:
+      any:
+        - "[amount] -10"
+        - "[sound] $click"
+
+  remove-100:
+    slots: 35
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>-100</bold>"
+    lore:
+      - "<gray>Remove <red>-100</red> to the current price."
+    amount: 3
+    actions:
+      any:
+        - "[amount] -100"
+        - "[sound] $click"

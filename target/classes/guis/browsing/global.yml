@@ -1,0 +1,125 @@
+# AirAuctions - browsing/global.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+settings:
+  title: "<gradient:#5AD1F2:#736EFE><bold>Marketplace</bold></gradient> <dark_gray>- Page %page%/%pages%"
+  rows: 6
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how listings are displayed.
+# --------------------------------------------------
+layout:
+  filters:
+    # Filters excluded from this GUI.
+    excluded: [] # category, type, economy
+
+    format:
+      category: # %filter_CATEGORY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      type: # %filter_TYPE_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      economy: # %filter_ECONOMY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+
+  sorts:
+    # Sort options excluded from this GUI.
+    excluded: [] # active
+
+    format:
+      active: # %sort_ACTIVE_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+
+  # Slots where listings are rendered.
+  listing-slots: [10-16, 19-25, 28-34]
+
+  # How each listing is rendered inside listing-slots.
+  listing:
+    template: row-market
+
+# --------------------------------------------------
+# ITEMS
+# Static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filler:
+    template: filler
+    slots: [0-3, 5-7, 9, 17, 27, 35-44]
+
+  no-listings:
+    template: no-listings
+    slots: 22
+
+  # --- Header ---
+  marketplace:
+    slots: 4
+    material: NETHER_STAR
+    display-name: "<aqua><bold>Marketplace</bold>"
+    lore:
+      - "<dark_gray>Global Marketplace"
+      - " "
+      - " <dark_gray>- <gray>Listings: <white>%current% <gray>out of <white>%total%"
+      - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+      - " "
+      - "<aqua>Click <gray>to see categories"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/categories"
+
+  close:
+    template: close-button
+    slots: 8
+
+  # --- Navigation ---
+  previous-page:
+    template: previous-page
+    slots: 18
+
+  next-page:
+    template: next-page
+    slots: 26
+
+  # --- Footer ---
+  your-listings:
+    slots: 45
+    material: CHEST
+    display-name: "<white><bold>Your Listings</bold>"
+    lore:
+      - "<dark_gray>Management"
+      - " "
+      - "<gray>View and manage your active listings."
+      - " "
+      - "<white>Click <gray>to open"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:player/active page:1 restore:<page:current>"
+
+  search:
+    template: search-button
+    slots: 48
+
+  refresh:
+    template: refresh-button
+    slots: 49
+
+  sort-active:
+    template: sort-active
+    slots: 50
+
+  filter-category:
+    template: filter-category
+    slots: 51
+
+  filter-type:
+    template: filter-type
+    slots: 52
+
+  filter-economy:
+    template: filter-economy
+    slots: 53

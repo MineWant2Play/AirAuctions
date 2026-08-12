@@ -1,0 +1,538 @@
+# AirAuctions - Expansions Configuration
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+# --------------------------------------------------
+# ECONOMY
+# --------------------------------------------------
+economy:
+
+  # --- Number display ---
+  number-format: SHORT               # SHORT (1.25M) | FORMATTED (1,250,000) | RAW (1250000)
+  number-format-suffixes: ["", "k", "M", "B", "T", "Q"]
+  allow-shorthand-input: true        # Allow shorthand in commands (e.g. /ah sell 1.5k instead of 1500)
+
+  # --- Decimal handling ---
+  # Only applies when allow-decimals: false on a provider.
+  # FLOOR   - silently truncate to the nearest whole number
+  # REJECT  - treat decimal prices as invalid
+  decimal-handling: REJECT
+
+  # --- Price constraints ---
+  min-price: 1
+  max-price: 10000000                # -1 = no limit
+
+  # --- Purchase check ---
+  # Controls the funds check when a player initiates a purchase.
+  # MINIMUM  - player needs only enough for the minimum partial amount (based on min-partial-price)
+  # FULL     - player must have the full listing price to open the buy_amount GUI
+  buy-check: MINIMUM
+  buy-amount-trigger: 2              # Minimum listing amount to open buy_amount instead of buy. Must be >= 2
+  min-partial-price: 1               # Minimum total price for a partial purchase (prevents sub-cent prorated costs)
+
+  # --- Currency ---
+  multi-currency: true               # When false, only the default provider is used and [economy] args are ignored
+  default-currency: "vault"
+
+  # --------------------------------------------------
+  # PROVIDERS
+  # --------------------------------------------------
+  # Supported types:
+  #   VAULT            - requires Vault + a compatible economy plugin
+  #   EXP              - uses player experience points (no plugin required)
+  #   PLACEHOLDER      - custom provider via PAPI placeholder + console commands
+  #   PLAYERPOINTS     - requires PlayerPoints
+  #   EXCELLENTECONOMY - requires ExcellentEconomy
+  #
+  # Order controls the cycle order in the economy filter menu.
+  # The 'all' entry is reserved and represents no filter (shows all economies).
+  # It can be placed anywhere in the list to control where it appears in the cycle.
+  providers:
+
+    all:
+      display-name: "All"
+
+    vault:
+      enabled: true
+      type: VAULT
+      display-name: "Money"
+      format: "<green>$%amount%</green>"
+      allow-decimals: true
+
+    exp:
+      enabled: true
+      type: EXP
+      display-name: "Experience"
+      format: "<aqua>%amount% XP</aqua>"
+      allow-decimals: false
+
+    points:
+      enabled: false
+      type: PLAYERPOINTS
+      display-name: "Points"
+      format: "<yellow>%amount% Points</yellow>"
+      allow-decimals: false
+
+    coins:
+      enabled: false
+      type: EXCELLENTECONOMY
+      display-name: "Coins"
+      format: "<gold>%amount% Coins</gold>"
+      allow-decimals: true
+      settings:
+        currency: "coins"   # must match a currency ID configured in ExcellentEconomy's own currencies/*.yml
+
+    crystals:
+      enabled: false
+      type: PLACEHOLDER
+      display-name: "Crystals"
+      format: "<gold>%amount% Crystals</gold>"
+      allow-decimals: false
+      settings:
+        balance-placeholder: "%mycurrency_balance%"
+        give-command: "mycurrency give %player% %amount%"
+        take-command: "mycurrency take %player% %amount%"
+
+  # --------------------------------------------------
+  # LISTING FEE
+  # Charged to the seller when a listing is created.
+  # --------------------------------------------------
+  listing-fee:
+    enabled: true
+    type: PERCENTAGE                 # PERCENTAGE of asking price | FIXED flat amount
+    default: 5                       # Default value: 5% or $5. Override: airauctions.bypass.fee.<value>
+    min: 1                           # Minimum charge. Ignored when type is FIXED
+    max: 1000                        # Maximum charge. -1 = no cap. Ignored when type is FIXED
+
+  # --------------------------------------------------
+  # SALES TAX
+  # Deducted from the seller's payout when a sale completes.
+  # --------------------------------------------------
+  sales-tax:
+    enabled: true
+    type: PERCENTAGE                 # PERCENTAGE of sale price | FIXED flat amount
+    default: 10                      # Default value: 10% or $10. Override: airauctions.bypass.tax.<value>
+    min: 1                           # Minimum tax. Ignored when type is FIXED
+    max: 1000                        # Maximum tax. -1 = no cap. Ignored when type is FIXED
+
+# --------------------------------------------------
+# DISCORD
+# Sends webhook embeds to a Discord channel on
+# configurable events. Placeholders supported in
+# all text fields.
+# --------------------------------------------------
+discord:
+  enabled: false
+  webhook-url: ""
+
+  # RELATIVE            - "in a day"
+  # DATETIME            - "August 12, 2026 at 7:42 PM"
+  # DATETIME_RELATIVE   - "August 12, 2026 at 7:42 PM (in a day)"
+  # TEXT                - raw text
+  time-format: RELATIVE
+
+  events:
+
+    # --------------------------------------------------
+    # LISTINGS
+    # --------------------------------------------------
+    listing-deleted:
+      enabled: false
+      webhook-url: ""                # Override the global webhook-url for this event only. Blank = inherit.
+      time-format: ""                # Override the global time-format for this event only. Blank = inherit.
+      color: 15158332                # #E74C3C red
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Listing Deleted by Admin"
+      title-url: ""
+      description: "**%player%**'s listing of **%amount%x %item%** was removed by **%admin%**."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Price"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Deleted by"
+          value: "%admin%"
+          inline: false
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    # --------------------------------------------------
+    # AUCTIONS
+    # --------------------------------------------------
+    auction-new:
+      enabled: true
+      webhook-url: ""
+      time-format: ""
+      color: 5763719                 # #57F287 green
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "New Auction Listed"
+      title-url: ""
+      description: "**%player%** listed **%amount%x %item%** for **%price%**."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Price"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Listing Fee"
+          value: "%fee%"
+          inline: true
+        - name: "Expires"
+          value: "%expires%"
+          inline: true
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    auction-sold:
+      enabled: true
+      webhook-url: ""
+      time-format: ""
+      color: 3066993                 # #2ECC71 dark green
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Auction Sold"
+      title-url: ""
+      description: "**%buyer%** purchased **%amount%x %item%** from **%seller%** for **%price%**."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%buyer%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Price Paid"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Seller Payout"
+          value: "%payout%"
+          inline: true
+        - name: "Tax Deducted"
+          value: "%tax%"
+          inline: true
+        - name: "Seller"
+          value: "%seller%"
+          inline: false
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    auction-partial-sold:
+      enabled: true
+      webhook-url: ""
+      time-format: ""
+      color: 16776960                # #FFFF00 yellow
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Auction Partially Sold"
+      title-url: ""
+      description: "**%buyer%** purchased **%amount%x %item%** from **%seller%** for **%price%**. **%remaining_amount%x** still available."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%buyer%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Purchased"
+          value: "%amount%"
+          inline: true
+        - name: "Remaining"
+          value: "%remaining_amount%"
+          inline: true
+        - name: "Price Paid"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Seller Payout"
+          value: "%payout%"
+          inline: true
+        - name: "Tax Deducted"
+          value: "%tax%"
+          inline: true
+        - name: "Seller"
+          value: "%seller%"
+          inline: false
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    auction-expired:
+      enabled: false
+      webhook-url: ""
+      time-format: ""
+      color: 15158332                # #E74C3C red
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Auction Expired"
+      title-url: ""
+      description: "**%player%**'s listing of **%amount%x %item%** expired with no buyers."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Price"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    # --------------------------------------------------
+    # BIDS
+    # --------------------------------------------------
+    bid-new:
+      enabled: true
+      webhook-url: ""
+      time-format: ""
+      color: 5763719                 # #57F287 green
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "New Bid Opened"
+      title-url: ""
+      description: "**%player%** opened a bid for **%amount%x %item%** starting at **%price%**."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Starting Price"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Listing Fee"
+          value: "%fee%"
+          inline: true
+        - name: "Duration"
+          value: "%duration%"
+          inline: true
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    bid-placed:
+      enabled: true
+      webhook-url: ""
+      time-format: ""
+      color: 3447003                 # #3498DB blue
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Bid Placed"
+      title-url: ""
+      description: "**%bidder%** placed a bid of **%bid%** on **%amount%x %item%** from **%seller%**."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%bidder%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Bid Amount"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Total Bids"
+          value: "%bid_count%"
+          inline: true
+        - name: "Seller"
+          value: "%seller%"
+          inline: true
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    bid-ended:
+      enabled: true
+      webhook-url: ""
+      time-format: ""
+      color: 15844367                # #F1C40F gold
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Bid Ended - Winner Found"
+      title-url: ""
+      description: "**%winner%** won **%amount%x %item%** from **%seller%** with a bid of **%bid%**."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%winner%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Winning Bid"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+        - name: "Seller Payout"
+          value: "%payout%"
+          inline: true
+        - name: "Tax Deducted"
+          value: "%tax%"
+          inline: true
+        - name: "Total Bids"
+          value: "%bid_count%"
+          inline: true
+        - name: "Seller"
+          value: "%seller%"
+          inline: false
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true
+
+    bid-expired:
+      enabled: false
+      webhook-url: ""
+      time-format: ""
+      color: 15158332                # #E74C3C red
+
+      author:
+        name: ""
+        icon-url: ""
+        url: ""
+
+      title: "Bid Expired - No Bidders"
+      title-url: ""
+      description: "**%player%**'s bid for **%amount%x %item%** received no bids and has expired."
+
+      thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
+      image-url: ""
+
+      fields:
+        - name: "Item"
+          value: "%item%"
+          inline: true
+        - name: "Amount"
+          value: "%amount%"
+          inline: true
+        - name: "Starting Price"
+          value: "%price%"
+          inline: true
+        - name: "Economy"
+          value: "%economy%"
+          inline: true
+
+      footer:
+        text: "AirAuctions"
+        icon-url: ""
+
+      timestamp: true

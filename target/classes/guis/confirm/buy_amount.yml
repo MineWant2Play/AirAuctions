@@ -1,0 +1,188 @@
+# AirAuctions - confirm/buy_amount.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+# contexts:
+#   Override any combination of fields for a specific source GUI.
+#   Key = the GUI id that triggered the search (e.g. target/active).
+
+settings:
+  # If disabled, it will fallback to confirm/buy instead
+  enabled: true
+  title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Purchase</bold></gradient>"
+  rows: 4
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how the listing is displayed.
+# --------------------------------------------------
+layout:
+  # Slots where targeted listing is rendered.
+  listing-slots: 13
+
+  # How the targeted listing is rendered inside listing-slots.
+  listing:
+    lore:
+      - "%item_lore%"
+      - "=has:airauctions.command.delete <dark_gray>#%id% (Listed @ %date% %time%)"
+      - " "
+      - "<dark_gray>Auction Information"
+      - " <dark_gray>- <gray>Seller: <white>%seller%"
+      - " <dark_gray>- <gray>Full Price: %price% (%economy%)"
+      - " <dark_gray>- <gray>Your Price: <gold>%buy_price%</gold> (%economy%)"
+      - " <dark_gray>- <gray>Amount: <white>x%buy_amount% <dark_gray>/ <white>x%max_amount%"
+      - " <dark_gray>- <gray>Expires: <white>%expires%"
+      - " <dark_gray>- <gray>Category: <white>%category%"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+# --------------------------------------------------
+# ITEMS (base - used when no context overrides items)
+# Define the static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  confirm:
+    slots: 11
+    priority:
+      - conditions:
+          - "%valid_price% == false"
+        material: RED_STAINED_GLASS_PANE
+        display-name: "<red><bold>Invalid Price</bold>"
+        lore:
+          - "<gray>Minimum: %min_price%"
+      - conditions:
+          - "%valid_price% == true"
+        material: LIME_STAINED_GLASS_PANE
+        display-name: "<green><bold>Confirm</bold>"
+        lore:
+          - "<gray>Buy <white>x%buy_amount%</white> for <gold>%buy_price%</gold>."
+        actions:
+          any:
+            - "[buy]"
+            - "=can:buy =is:valid [sound] $success"
+            - "[open] context:true"
+
+  cancel:
+    slots: 15
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>Cancel</bold>"
+    lore:
+      - "<gray>Click to cancel and go back."
+    actions:
+      any:
+        - "[open] context:true"
+        - "[sound] $deny"
+
+  set-amount:
+    slots: 4
+    material: EXPERIENCE_BOTTLE
+    display-name: "<aqua><bold>Set Amount</bold>"
+    lore:
+      - "<gray>Buying: <white>x%buy_amount% <dark_gray>/ <white>x%max_amount%"
+      - "<gray>Price: %buy_price%"
+      - " "
+      - "<aqua>Click <gray>to type a custom amount."
+    actions:
+      any:
+        - "[amount]"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+    priority:
+      - conditions:
+          - "%economy_id% == vault"
+        material: EMERALD
+
+  add-1:
+    slots: 27
+    material: LIME_STAINED_GLASS_PANE
+    display-name: "<green><bold>+1</bold>"
+    lore:
+      - "<gray>Add <white>1 item <gray>to the selection."
+    actions:
+      any:
+        - "[amount] +1"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+
+  add-5:
+    slots: 28
+    material: LIME_STAINED_GLASS_PANE
+    amount: 5
+    display-name: "<green><bold>+5</bold>"
+    lore:
+      - "<gray>Add <white>5 items <gray>to the selection."
+    actions:
+      any:
+        - "[amount] +5"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+
+  add-10:
+    slots: 29
+    material: LIME_STAINED_GLASS_PANE
+    amount: 10
+    display-name: "<green><bold>+10</bold>"
+    lore:
+      - "<gray>Add <white>10 items <gray>to the selection."
+    actions:
+      any:
+        - "[amount] +10"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+
+  remove-1:
+    slots: 33
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>-1</bold>"
+    lore:
+      - "<gray>Remove <white>1 item <gray>from the selection."
+    actions:
+      any:
+        - "[amount] -1"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+
+  remove-5:
+    slots: 34
+    material: RED_STAINED_GLASS_PANE
+    amount: 5
+    display-name: "<red><bold>-5</bold>"
+    lore:
+      - "<gray>Remove <white>5 items <gray>from the selection."
+    actions:
+      any:
+        - "[amount] -5"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+
+  remove-10:
+    slots: 35
+    material: RED_STAINED_GLASS_PANE
+    amount: 10
+    display-name: "<red><bold>-10</bold>"
+    lore:
+      - "<gray>Remove <white>10 items <gray>from the selection."
+    actions:
+      any:
+        - "[amount] -10"
+        - "=is:valid [sound] $click"
+        - "!=is:valid [open] context:true"
+
+# --------------------------------------------------
+# GUI CONTEXTS
+# Override any field based on which GUI triggered the overlay.
+# Keys must exactly match the source GUI id.
+# --------------------------------------------------
+contexts:
+  target/active:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Purchase</bold></gradient> <dark_gray>- <white>%seller%'s Listing"
+
+    # The rest is inherited from the base config above unless overridden here.
+
+  target/active|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Purchase</bold></gradient> <dark_gray>- <white>%seller%'s Listing <dark_gray>- <white>\"%query%\""
+
+  browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Purchase</bold></gradient> <dark_gray>- <white>\"%query%\""

@@ -1,0 +1,234 @@
+# AirAuctions - browsing/categories.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+settings:
+  # When disabled, /ah skips this GUI and opens 'browsing/global' GUI directly.
+  enabled: true
+  title: "<gradient:#5AD1F2:#736EFE><bold>Categories</bold></gradient>"
+  rows: 6
+
+# --------------------------------------------------
+# ITEMS
+# Static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filler:
+    template: filler
+    slots: [0-7, 9, 17, 18, 26, 27, 35, 36, 44-53]
+
+  # --- Header ---
+  close:
+    template: close-button
+    slots: 8
+
+  # --- Categories ---
+  category-all:
+    slots: 13
+    display-name: "<aqua><bold>All Listings</bold>"
+    lore:
+      - "<dark_gray>Browse"
+      - " "
+      - "<gray>View every active listing"
+      - "<gray>across all categories."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:all"
+    item-flags:
+      - HIDE_ATTRIBUTES
+    animation:
+      interval: 20
+      loop: true
+      frames:
+        - material: NETHERITE_SWORD
+        - material: DIAMOND_PICKAXE
+        - material: COOKED_BEEF
+        - material: NETHER_WART
+        - material: PIG_SPAWN_EGG
+        - material: CRAFTING_TABLE
+        - material: REDSTONE_BLOCK
+        - material: GRASS_BLOCK
+        - material: CYAN_WOOL
+        - material: BRICKS
+
+  category-combat:
+    slots: 28
+    material: NETHERITE_SWORD
+    display-name: "<aqua><bold>Combat & Defense</bold>"
+    lore:
+      - "<dark_gray>Weapons & Armor"
+      - " "
+      - "<gray>Swords, bows, armor and"
+      - "<gray>related combat equipment."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:combat"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-tools:
+    slots: 29
+    material: DIAMOND_PICKAXE
+    display-name: "<aqua><bold>Tools & Utility</bold>"
+    lore:
+      - "<dark_gray>Equipment"
+      - " "
+      - "<gray>Pickaxes, axes, shovels and"
+      - "<gray>other utility tools."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:tools"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-foods:
+    slots: 30
+    material: COOKED_BEEF
+    display-name: "<aqua><bold>Food & Consumables</bold>"
+    lore:
+      - "<dark_gray>Provisions"
+      - " "
+      - "<gray>Food, potions and other"
+      - "<gray>consumable items."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:foods"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-ingredients:
+    slots: 31
+    material: NETHER_WART
+    display-name: "<aqua><bold>Alchemy & Crafting</bold>"
+    lore:
+      - "<dark_gray>Materials"
+      - " "
+      - "<gray>Brewing ingredients, dyes and"
+      - "<gray>raw crafting materials."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:ingredients"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-spawn-eggs:
+    slots: 32
+    material: PIG_SPAWN_EGG
+    display-name: "<aqua><bold>Spawners & Eggs</bold>"
+    lore:
+      - "<dark_gray>Entities"
+      - " "
+      - "<gray>Spawn eggs and mob-related"
+      - "<gray>farming supplies."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:spawn_eggs"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-functional:
+    slots: 33
+    material: CRAFTING_TABLE
+    display-name: "<aqua><bold>Functional Blocks</bold>"
+    lore:
+      - "<dark_gray>Workstations"
+      - " "
+      - "<gray>Crafting tables, furnaces and"
+      - "<gray>other utility blocks."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:functional_blocks"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-redstone:
+    slots: 34
+    material: REDSTONE_BLOCK
+    display-name: "<aqua><bold>Redstone</bold>"
+    lore:
+      - "<dark_gray>Mechanics"
+      - " "
+      - "<gray>Redstone components, pistons"
+      - "<gray>and automation blocks."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:redstone_blocks"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-natural:
+    slots: 39
+    material: GRASS_BLOCK
+    display-name: "<aqua><bold>Natural Blocks</bold>"
+    lore:
+      - "<dark_gray>Environment"
+      - " "
+      - "<gray>Dirt, stone, wood and other"
+      - "<gray>naturally occurring blocks."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:natural_blocks"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-colored:
+    slots: 40
+    material: CYAN_WOOL
+    display-name: "<aqua><bold>Colored Blocks</bold>"
+    lore:
+      - "<dark_gray>Decoration"
+      - " "
+      - "<gray>Wool, terracotta, glass and"
+      - "<gray>other dyeable blocks."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:colored_blocks"
+    item-flags:
+      - HIDE_ATTRIBUTES
+
+  category-building:
+    slots: 41
+    material: BRICKS
+    display-name: "<aqua><bold>Building Blocks</bold>"
+    lore:
+      - "<dark_gray>Construction"
+      - " "
+      - "<gray>Bricks, concrete, planks and"
+      - "<gray>general building materials."
+      - " "
+      - "<aqua>Click <gray>to browse"
+    actions:
+      any:
+        - "[sound] $click"
+        - "[open] gui:browsing/global filter:category:building_blocks"
+    item-flags:
+      - HIDE_ATTRIBUTES

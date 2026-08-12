@@ -1,0 +1,181 @@
+# AirAuctions - target/active.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+settings:
+  title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s Listings</bold></gradient> <dark_gray>- Page %page%/%pages%"
+  rows: 6
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how listings are displayed.
+# --------------------------------------------------
+layout:
+  filters:
+    # Filters excluded from this GUI.
+    excluded: [] # category, type, economy
+
+    format:
+      category: # %filter_CATEGORY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      type: # %filter_TYPE_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      economy: # %filter_ECONOMY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+
+  sorts:
+    # Sort options excluded from this GUI.
+    excluded: [] # active
+
+    format:
+      active: # %sort_ACTIVE_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+
+  # Slots where listings are rendered.
+  listing-slots: [10-16, 19-25, 28-34]
+
+  # How each listing is rendered inside listing-slots.
+  listing:
+    template: row-active
+
+  # Slots where available listing slots are rendered.
+  # (based on limit permission + extra slots)
+  #
+  # Note:
+  #   If target is offline, it will fall back to max-active + extra slots.
+  #   Recommended to keep this disabled to avoid inconsistency.
+  available-slots:
+    enabled: false
+    material: LIME_STAINED_GLASS_PANE
+    display-name: "<green><bold>Available Slot"
+    lore:
+      - "<gray>%seller% has a free slot to list a new item."
+
+# --------------------------------------------------
+# ITEMS
+# Define the static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filler:
+    template: filler
+    slots: [1-3, 5-7, 9, 17, 27, 35-44]
+
+  no-listings:
+    template: no-listings
+    slots: 22
+
+  # --- Header ---
+  seller-head:
+    slots: 4
+    material: head-%seller%
+    display-name: "<white><bold>%seller%</bold><gray>'s Listings"
+    lore:
+      - " "
+      - " <dark_gray>- <gray>Listings: <white>%current% <gray>out of <white>%total%"
+      - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+
+  back:
+    slots: 0
+    material: OAK_DOOR
+    display-name: "<white><bold>Back</bold>"
+    lore:
+      - "<gray>Return to the Marketplace."
+    actions:
+      any:
+        - "[open] gui:browsing/global"
+        - "[sound] $click"
+
+  close:
+    template: close-button
+    slots: 8
+
+  # --- Navigation ---
+  previous-page:
+    template: previous-page
+    slots: 18
+
+  next-page:
+    template: next-page
+    slots: 26
+
+  # --- Footer ---
+  expired:
+    slots: 45
+    priority:
+      - conditions:
+          - "%has_permission_airauctions.command.listings.others% == true"
+        material: CLOCK
+        display-name: "<red><bold>Expired Listings</bold>"
+        lore:
+          - "<dark_gray>Management"
+          - " "
+          - "<gray>View and manage <white>%seller%</white>'s expired listings."
+          - " "
+          - "<white>Click <gray>to open"
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] gui:target/expired page:1 target:%seller% restore:<page:current>"
+
+  history:
+    slots: 46
+    priority:
+      - conditions:
+          - "%has_permission_airauctions.command.history.others% == true"
+        material: BOOK
+        display-name: "<gold><bold>History</bold>"
+        lore:
+          - "<dark_gray>Transaction Logs"
+          - " "
+          - "<gray>View <white>%seller%</white>'s transactions."
+          - " "
+          - "<gold>Click <gray>to open"
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] gui:target/history page:1 target:%seller% restore:<page:current>"
+
+  storage:
+    slots: 47
+    priority:
+      - conditions:
+          - "%has_permission_airauctions.command.storage.others% == true"
+        material: CHEST_MINECART
+        display-name: "<gold><bold>Storage</bold>"
+        lore:
+          - "<dark_gray>Unclaimed items"
+          - " "
+          - "<gray>View and manage <white>%seller%</white>'s unclaimed items."
+          - " "
+          - "<gold>Click <gray>to open"
+        actions:
+          any:
+            - "[sound] $click"
+            - "[open] gui:target/storage page:1 target:%seller% restore:<page:current>"
+
+  search:
+    template: search-button
+    slots: 48
+
+  refresh:
+    template: refresh-button
+    slots: 49
+
+  sort-active:
+    template: sort-active
+    slots: 50
+
+  filter-category:
+    template: filter-category
+    slots: 51
+
+  filter-type:
+    template: filter-type
+    slots: 52
+
+  filter-economy:
+    template: filter-economy
+    slots: 53

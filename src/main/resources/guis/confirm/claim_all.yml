@@ -1,0 +1,54 @@
+# AirAuctions - confirm/claim_all.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+# contexts:
+#   Override any combination of fields for a specific source GUI.
+#   Key = the GUI id that triggered the confirmation (e.g. target/active).
+
+settings:
+  title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Claim All</bold></gradient>"
+  rows: 3
+
+# --------------------------------------------------
+# ITEMS (base - used when no context overrides items)
+# Define the static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  confirm:
+    slots: 11
+    material: LIME_STAINED_GLASS_PANE
+    display-name: "<green><bold>Confirm</bold>"
+    lore:
+      - "<gray>Click to confirm and claim all your items."
+    actions:
+      any:
+        - "[claim_all]"
+        - "=can:claim [sound] $success"
+        - "[open] context:true"
+
+  cancel:
+    slots: 15
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>Cancel</bold>"
+    lore:
+      - "<gray>Click to cancel and go back."
+    actions:
+      any:
+        - "[open] context:true"
+        - "[sound] $deny"
+
+# --------------------------------------------------
+# GUI CONTEXTS
+# Override any field based on which GUI triggered the overlay.
+# Keys must exactly match the source GUI id.
+# --------------------------------------------------
+contexts:
+  player/expired:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Claim All</bold></gradient> <dark_gray>- <white>Expired Listings"
+
+    # The rest is inherited from the base config above unless overridden here.
+
+  player/expired|browsing/search:
+    settings:
+      title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Claim All</bold></gradient> <dark_gray>- <white>Expired Listings <dark_gray>- <white>\"%query%\""

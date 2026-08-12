@@ -1,0 +1,431 @@
+# AirAuctions - Language File
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+# --------------------------------------------------
+# REFERENCES
+# Expand these references in any message below using:
+# <ref:value> | <r:value> (shorthand)
+# --------------------------------------------------
+references:
+  prefix: "<gray>[<gradient:#00ffcc:#0066ff>AirAuctions</gradient>]</gray>"
+  url_spigot: "https://www.spigotmc.org/resources/133357/"
+  url_modrinth: "https://modrinth.com/plugin/airauctions"
+  # success: "<sound:entity.player.levelup:1:2>"
+  # error: "<sound:block.note_block.didgeridoo:1:0.5>"
+
+# --------------------------------------------------
+# GENERAL
+# --------------------------------------------------
+general:
+
+  console-name: "@Console"
+
+  commands:
+    usage:
+      - "<ref:prefix> <white>Available commands:"
+      - "  <yellow>/airauctions reload <dark_gray>- <gray>Reload all configuration files"
+      - "  <yellow>/airauctions version <dark_gray>- <gray>Display plugin version"
+
+    reload:
+      - "<ref:prefix> <green>Configuration reloaded successfully (<white>%time%ms</white>)."
+      - "<sound:block.note_block.chime:1:2>"
+
+    version: "<ref:prefix> <gray>Running <white>AirAuctions <gradient:#00ffcc:#0066ff>%version%</gradient></white>."
+
+    outdated:
+      - "<ref:prefix> <gold>A new update is available!"
+      - "  <gray>Current: <white>%current%"
+      - "  <gray>Latest: <gradient:#00ffcc:#0066ff>%latest%"
+      - "  <gray>Download on <yellow><click:open_url:'<ref:url_spigot>'><hover:show_text:'<yellow>Click to go to SpigotMC'>[SpigotMC]</hover></click> <green><click:open_url:'<ref:url_modrinth>'><hover:show_text:'<green>Click to go to Modrinth'>[Modrinth]</hover></click>"
+
+# --------------------------------------------------
+# PLACEHOLDERS
+# Values inserted into messages and GUIs.
+# --------------------------------------------------
+placeholders:
+
+  never: "<red>Never"
+  unlimited: "<gold>Unlimited"
+
+  # Per-unit price suffix appended to stack prices.
+  # '-fractional' is shown when unit price < 1 (allow-decimals: false in expansions.yml).
+  price:
+    per-unit: " <dark_gray>%price_plain% each"
+    per-unit-fractional: " <dark_gray>< %price_plain% each"
+
+  # Fallback text shown when a value is absent or not applicable.
+  empty:
+    bidder: "<red>-"
+    offer: "<red>-"
+    fee: "-"
+    tax: "-"
+
+  # Unit labels used when formatting durations.
+  time:
+    second: " second"
+    seconds: " seconds"
+    minute: " minute"
+    minutes: " minutes"
+    hour: " hour"
+    hours: " hours"
+    day: " day"
+    days: " days"
+
+# --------------------------------------------------
+# ERRORS
+# --------------------------------------------------
+errors:
+
+  reload-failed: "<ref:prefix> <red>Reload failed. Check console for details."
+  database: "<ref:prefix> <red>A database error occurred. Please try again or contact an administrator."
+
+  access:
+    no-permission: "<ref:prefix> <red>You lack the required permission. <dark_gray>(<gray>%permission%<dark_gray>)"
+    player-only: "<ref:prefix> <red>Only players can use this command."
+    player-not-found: "<ref:prefix> <red>Player <white>%player%</white> was not found."
+    player-never-joined: "<ref:prefix> <red>Player <white>%player%</white> has never joined the server."
+    gui-not-found: "<ref:prefix> <red>GUI <white>%gui%</white> could not be found."
+    incorrect-usage: "<ref:prefix> <red>Usage: <white>%usage%"
+    too-many-arguments: "<ref:prefix> <red>Too many arguments. <gray>Usage: <white>%usage%"
+
+  item:
+    holding-air:
+      - "<ref:prefix> <red>You must be holding an item to create a listing."
+      - "<sound:block.note_block.didgeridoo:1:0.5>"
+    unavailable: "<ref:prefix> <red>That listing is no longer available."
+    changed:
+      - "<ref:prefix> <red>The item on pending confirmation no longer exists in your inventory."
+      - "<sound:block.note_block.didgeridoo:1:0.5>"
+    blacklisted: "<ref:prefix> <red>This item is not allowed on the Auction House."
+    not-whitelisted: "<ref:prefix> <red>This item is not permitted for trade."
+    damaged: "<ref:prefix> <red>Damaged items cannot be listed on the Auction House."
+    insufficient: "<ref:prefix> <red>You only have <white>x%holding%</white> of that item."
+
+  economy:
+    not-found: "<ref:prefix> <red>That currency does not exist."
+    invalid-price: "<ref:prefix> <red>Price must be a valid number."
+    invalid-amount: "<ref:prefix> <red>That's an invalid amount."
+    amount-too-low: "<ref:prefix> <red>You must list at least <white>x%min%</white> of that item."
+    amount-required: "<ref:prefix> <red>You must specify an amount."
+    price-too-low: "<ref:prefix> <red>Price must be at least %min%."
+    price-too-high: "<ref:prefix> <red>Price cannot exceed %max%."
+    insufficient-funds-fee:
+      - "<ref:prefix> <red>You cannot afford the %fee_plain% listing fee."
+      - "<sound:block.note_block.didgeridoo:1:0.5>"
+
+  limits:
+    cooldown: "<ref:prefix> <red>Wait <white>%timeout%</white> before creating another listing."
+    blocked-gamemode: "<ref:prefix> <red>You cannot list items in your current game mode."
+    blocked-world: "<ref:prefix> <red>Listings are not allowed in <white>%world%</white>."
+    limit-reached: "<ref:prefix> <red>Listing limit reached. <gray>(Active: %count%<dark_gray>/<gray>%limit%)"
+    expired-limit-reached: "<ref:prefix> <red>Clean up your expired listings before creating new ones. <gray>(%count%<dark_gray>/<gray>%limit%)"
+    search-too-long: "<ref:prefix> <red>Search query is too long. <gray>(%length%<dark_gray>/<gray>%limit% chars)"
+
+# --------------------------------------------------
+# LISTINGS  (shared - applies to both auctions and bids)
+# --------------------------------------------------
+listings:
+
+  # --------------------------------------------------
+  # LISTINGS - CLAIM
+  # --------------------------------------------------
+  claim:
+    errors:
+      nothing-to-claim: "<ref:prefix> <red>You have no expired items to claim."
+      inventory-full: "<ref:prefix> <red>Your inventory is full. Make some space to claim your items."
+
+    success: "<ref:prefix> <green>Claimed <aqua>x%amount% %item%</aqua>."
+    success-all: "<ref:prefix> <green>Expired items claimed. <gray>(%total% items returned)"
+    dropped: "<ref:prefix> <gold>Inventory full - claimed item dropped at your feet."
+    dropped-all: "<ref:prefix> <gold>Inventory full - some items were dropped at your feet."
+
+  # --------------------------------------------------
+  # LISTINGS - CANCEL
+  # --------------------------------------------------
+  cancel:
+    errors:
+      inventory-full: "<ref:prefix> <red>Your inventory is full. Make some space to cancel your listing."
+
+    success: "<ref:prefix> <green>Listing removed. <gray>(Cancelled <aqua>x%amount% %item%</aqua>)"
+
+    # Used instead of 'success' when listings.instant-cancel is true.
+    instant:
+      success: "<ref:prefix> <green>Listing cancelled and returned. <gray>(<aqua>x%amount% %item%</aqua>)"
+      dropped: "<ref:prefix> <gold>Inventory full - cancelled item dropped at your feet."
+
+  # --------------------------------------------------
+  # LISTINGS - DELETE  (admin)
+  # --------------------------------------------------
+  delete:
+    errors:
+      not-found: "<ref:prefix> <red>Listing not found or is no longer available."
+
+    # Confirmation prompt used when the delete GUI is disabled.
+    confirmation:
+      request:
+        - "<ref:prefix> <gray>Deleting listing <gold>#%id%</gold> <gray>(<aqua>x%amount% %item%</aqua> by <white>%seller%</white>)."
+        - "<gray>  Type the command again within <white>%timeout%</white> to confirm."
+      expired:
+        - "<ref:prefix> <red>Delete confirmation for <white>x%amount% %item%</white> timed out."
+        - "<sound:block.note_block.didgeridoo:1:0.5>"
+
+    success: "<ref:prefix> <green>Listing <gold>#%id%</gold> deleted. <gray>(<aqua>x%amount% %item%</aqua> by <white>%seller%</white>)"
+    # Sent to the seller when an admin deletes their listing.
+    notify-seller: "<ref:prefix> <red>Your listing <gray>(<aqua>x%amount% %item%</aqua>)</gray> was deleted by <dark_red>%admin%</dark_red>."
+
+  # --------------------------------------------------
+  # LISTINGS - SLOTS  (admin)
+  # --------------------------------------------------
+  slots:
+    errors:
+      invalid-amount: "<ref:prefix> <red>That's an invalid amount. <gray>Enter a whole number greater than 0."
+
+    give:
+      success-admin: "<ref:prefix> <green>Gave <white>%amount%</white> extra slot(s) to <white>%player%</white>. <gray>(Bonus: <white>%extra%</white> | Total: <white>%total%</white>)"
+      success-player: "<ref:prefix> <white>%admin%</white> <gray>gave you <white>%amount%</white> extra slot(s). <gray>(Bonus: <white>%extra%</white> | Total: <white>%total%</white>)"
+
+    take:
+      success-admin: "<ref:prefix> <green>Took <white>%amount%</white> extra slot(s) from <white>%player%</white>. <gray>(Bonus: <white>%extra%</white> | Total: <white>%total%</white>)"
+      success-player: "<ref:prefix> <white>%admin%</white> <gray>took <white>%amount%</white> extra slot(s). <gray>(Bonus: <white>%extra%</white> | Total: <white>%total%</white>)"
+
+# --------------------------------------------------
+# AUCTIONS
+# --------------------------------------------------
+auctions:
+
+  # --------------------------------------------------
+  # AUCTIONS - SELL
+  # --------------------------------------------------
+  sell:
+    # Confirmation prompt used when the confirmation GUI is disabled.
+    confirmation:
+      request:
+        - "<ref:prefix> <gray>Listing <aqua>x%amount% %item%</aqua> for %price%."
+        - "<gray>  Fee: <red>%fee_plain%  <dark_gray>|  <gray>Expires: <white>%expires%"
+        - "<gray>  Type the command again within <white>%timeout%</white> to confirm."
+      expired:
+        - "<ref:prefix> <red>Listing confirmation for <white>x%amount% %item%</white> timed out."
+        - "<sound:block.note_block.didgeridoo:1:0.5>"
+
+    success:
+      - "<ref:prefix> <green>Listing created! <gray>(<aqua>x%amount% %item%</aqua> for %price%)"
+      - "<gray>  Fee: <red>%fee_plain%  <dark_gray>| <gray>Expires: <white>%expires%"
+      - "<sound:entity.player.levelup:1:2>"
+      - "<actionbar:'<green>Listed <aqua>%item%</aqua> for %price%!'>"
+
+    broadcast: "<ref:prefix> <white>%seller%</white> <gray>listed <aqua>x%amount% %item%</aqua> for %price%."
+
+    # Sent to the seller when their listing is purchased.
+    sold:
+      - "<ref:prefix> <gradient:#00ffcc:#0066ff><bold>SOLD!</bold></gradient> <aqua>x%amount% %item%</aqua> purchased by <white>%buyer%</white>."
+      - "<gray>  Payout: %payout% <dark_gray>| <gray>Taxed: <red>%tax_plain%"
+      - "<sound:entity.experience_orb.pickup:1:1.5>"
+
+    # Sent to the seller when their listing is partially purchased (stackable items).
+    partial-sold:
+      - "<ref:prefix> <gradient:#00ffcc:#0066ff><bold>SOLD!</bold></gradient> <gray>(partial)</gray> <aqua>x%amount% %item%</aqua> purchased by <white>%buyer%</white>."
+      - "<gray>  Payout: %payout% <dark_gray>| <gray>Taxed: <red>%tax_plain%"
+      - "<gray>  Remaining: <white>x%remaining_amount%"
+      - "<sound:entity.experience_orb.pickup:1:1.5>"
+
+  # --------------------------------------------------
+  # AUCTIONS - PURCHASE
+  # --------------------------------------------------
+  purchase:
+    errors:
+      self-purchase: "<ref:prefix> <red>You cannot purchase your own listing."
+      insufficient-funds:
+        - "<ref:prefix> <red>Insufficient funds. You need %amount%."
+        - "<sound:block.note_block.didgeridoo:1:0.5>"
+      withdraw-failed: "<ref:prefix> <red>Payment could not be processed. Please try again."
+      inventory-full: "<ref:prefix> <red>Your inventory is full. Make some space to buy this item."
+      below-min-price: "<ref:prefix> <red>Purchase total must be at least %min%."
+
+    success:
+      - "<ref:prefix> <green>Purchase complete! <gray>(<aqua>x%amount% %item%</aqua> for %price% from <white>%seller%<gray>)"
+      - "<sound:entity.experience_orb.pickup:1:1>"
+      - "<actionbar:'<green>Purchased <aqua>%item%</aqua> for %price%!'>"
+
+    dropped: "<ref:prefix> <gold>Inventory full - bought item dropped at your feet."
+
+# --------------------------------------------------
+# BIDS
+# --------------------------------------------------
+bids:
+
+  # --------------------------------------------------
+  # BIDS - CREATE
+  # --------------------------------------------------
+  create:
+    errors:
+      invalid-duration: "<ref:prefix> <red>Invalid duration. Enter a duration between <white>%min%</white> and <white>%max%</white>."
+      invalid-increment: "<ref:prefix> <red>Invalid increment. Must be a positive number."
+
+    # Confirmation prompt used when the confirmation GUI is disabled.
+    confirmation:
+      request:
+        - "<ref:prefix> <gray>Starting bid of %price% set for <white>x%amount% %item%</white>."
+        - "<gray>  Fee: <red>%fee_plain%  <dark_gray>|  <gray>Duration: <white>%duration%"
+        - "<gray>  Type the command again within <white>%timeout%</white> to confirm."
+      expired:
+        - "<ref:prefix> <red>Bid listing confirmation for <white>x%amount% %item%</white> timed out."
+        - "<sound:block.note_block.didgeridoo:1:0.5>"
+
+    success:
+      - "<ref:prefix> <green>Bid listing created! <gray>(<aqua>x%amount% %item%</aqua> starting at %price%)"
+      - "<gray>  Fee: <red>%fee_plain% <dark_gray>| <gray>Duration: <white>%duration%"
+      - "<sound:entity.player.levelup:1:2>"
+      - "<actionbar:'<green>Listed <aqua>%item%</aqua> starting at %price%!'>"
+
+    broadcast: "<ref:prefix> <white>%seller%</white> <gray>opened a bid for <aqua>x%amount% %item%</aqua> starting at %price%!"
+
+    # Sent to the seller when their bid listing is won and the item has been delivered.
+    sold:
+      - "<ref:prefix> <gradient:#00ffcc:#0066ff><bold>SOLD!</bold></gradient> Bid <aqua>x%amount% %item%</aqua> won by %bidder%."
+      - "<gray>  Payout: %payout% <dark_gray>| <gray>Taxed: <red>%tax_plain%"
+      - "<sound:entity.experience_orb.pickup:1:1.5>"
+
+  # --------------------------------------------------
+  # BIDS - PLACE
+  # --------------------------------------------------
+  place:
+    errors:
+      below-minimum: "<ref:prefix> <red>Your bid must be at least %min_offer%."
+      above-maximum: "<ref:prefix> <red>Your bid cannot exceed %max_offer%."
+      insufficient-funds: "<ref:prefix> <red>You cannot afford to bid %offer%."
+      already-highest: "<ref:prefix> <red>You are already the highest bidder."
+      self-bid: "<ref:prefix> <red>You cannot bid on your own listing."
+      storage-limit: "<ref:prefix> <red>Collect your won items before placing a new bid! <gray>(Active: %count%<dark_gray>/<gray>%limit%)"
+
+    success: "<ref:prefix> <green>Bid placed! %offer% on <white>x%amount% %item%</white> from <white>%seller%</white>."
+
+    # Sent to the player who was outbid.
+    outbid-notify: "<ref:prefix> <red>You were outbid on <aqua>x%amount% %item%</aqua> by <white>%bidder%</white>! New high: %highest_offer%."
+
+    # Sent to the seller when a new bid is placed (requires bids.announce-to-seller: true).
+    seller-notify: "<ref:prefix> <gray>A new bid of %offer% was placed on your listing for <white>x%amount% %item%</white> by <white>%bidder%</white>."
+
+  # --------------------------------------------------
+  # BIDS - END
+  # --------------------------------------------------
+  end:
+    errors:
+      # Sent to online bidders when an admin deletes the listing.
+      deleted: "<ref:prefix> <red>Your bid for <white>x%amount% %item%</white> was deleted by <white>%admin%</white>. <gray>Refunded: %refund%"
+
+    winner:
+      - "<ref:prefix> <green>You won the bid! <gray>(<aqua>x%amount% %item%</aqua> from <white>%seller%</white>)"
+      - "<gray>  Your offer: %offer%"
+      - "<gray>  Total bidders: <white>%total_bidders%"
+      - " "
+      - "<gold>Go to your storage and collect your items before they get automatically deleted."
+      - "<gray>  Purges in: <red>%purges%"
+      - "<sound:entity.player.levelup:1:2>"
+
+    loser:
+      - "<ref:prefix> <red>You lost the bid for <white>x%amount% %item%</white> from <white>%seller%</white>."
+      - "<gray>  Winner: <white>%winner%"
+      - "<gray>  Highest offer: %highest_offer%"
+      - "<gray>  Your offer: %offer%"
+      - " "
+      - "<gray>  Total bidders: <white>%total_bidders%"
+      - "<sound:block.note_block.didgeridoo:1:0.5>"
+
+    dropped: "<ref:prefix> <gold>Your inventory is full - won item dropped at your feet."
+
+  # --------------------------------------------------
+  # BIDS - COLLECT
+  # --------------------------------------------------
+  collect:
+    errors:
+      nothing-to-collect: "<ref:prefix> <red>You have no items to collect."
+      inventory-full: "<ref:prefix> <red>Your inventory is full. Make some space to collect your items."
+
+    success: "<ref:prefix> <green>Collected <aqua>x%amount% %item%</aqua>."
+    success-all: "<ref:prefix> <green>Items collected. <gray>(%total% items collected)"
+
+    dropped: "<ref:prefix> <gold>Inventory full - collected item dropped at your feet."
+    dropped-all: "<ref:prefix> <gold>Inventory full - some items were dropped at your feet."
+
+  # --------------------------------------------------
+  # BIDS - CANCEL
+  # --------------------------------------------------
+  cancel:
+    errors:
+      has-bids: "<ref:prefix> <red>You cannot cancel a listing that already has bids."
+
+# --------------------------------------------------
+# NOTIFICATIONS  (offline/join messages)
+# --------------------------------------------------
+notifications:
+
+  # Sent once at the top when the player has ANY pending offline notifications.
+  # Global tags defined here (e.g. sounds) apply to the whole block, preventing
+  # the same sound from stacking when multiple notification types are present.
+  header:
+    - "<ref:prefix> <gradient:#00ffcc:#0066ff><bold>Welcome back!</bold></gradient>"
+    - "<gray>While you were offline:"
+    - "<sound:entity.player.levelup:1:2>"
+
+  # --------------------------------------------------
+  # NOTIFICATIONS - REFUNDS
+  # --------------------------------------------------
+  refunds:
+    # Shown when exactly one currency has a pending refund.
+    single:
+      - "<gray> - You got refunded %refund%."
+
+    # Shown when two or more currencies have pending refunds.
+    multiple:
+      - "<gray> - You got refunded: %refunds%"
+
+    # How each currency entry is formatted inside %refunds% (multiple variant only).
+    entry: "%amount% <gray>(<white>%economy%</white>)"
+
+    # Separator between entries in the multiple variant.
+    separator: "<gray>, "
+
+  # --------------------------------------------------
+  # NOTIFICATIONS - EARNINGS
+  # --------------------------------------------------
+  earnings:
+    # Shown when exactly one currency has a pending payout.
+    single:
+      - "<gray> - You earned %earned%."
+
+    # Shown when two or more currencies have pending payouts.
+    multiple:
+      - "<gray> - You earned: %earnings%"
+
+    # How each currency entry is formatted inside %earnings% (multiple variant only).
+    entry: "%amount% <gray>(<white>%economy%</white>)"
+
+    # Separator between entries in the multiple variant.
+    separator: "<gray>, "
+
+  # --------------------------------------------------
+  # NOTIFICATIONS - WON BIDS
+  # --------------------------------------------------
+  won-bids:
+    # Shown when exactly one bid is pending claiming.
+    single:
+      - "<gray> - You won the bid <aqua>x%amount% %item%</aqua> from <white>%seller%</white>."
+      - "<gray>    Your offer: %offer%"
+      - "<gray>    Total bidders: <white>%total_bidders%"
+      - " "
+      - "<gold>   Go to your storage and collect your items before they get automatically deleted."
+      - "<gray>   Purges in: <red>%purges%"
+
+    # Shown when two or more bids are pending claiming.
+    multiple:
+      - "<gray> - You won a total of <white>%total%</white> bids:"
+      - "%bids%"
+      - " "
+      - "<gold>   Go to your storage and collect your items before they get automatically deleted."
+      - "<gray>   Purges in (for oldest item): <red>%purges%"
+
+    # How each bid entry is formatted inside %bids% (multiple variant only).
+    entry: "<gray>  * <white>x%amount% %item%</white> - %price% (starting price) from <white>%seller%</white> - Your offer: %offer% (<white>%total_bidders% total bidders</white>)"
+
+    # Separator between entries in the multiple variant.
+    separator: "<newline>"

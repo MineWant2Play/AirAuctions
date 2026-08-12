@@ -1,0 +1,96 @@
+# AirAuctions - player/history.yml
+# Docs: https://airdevelopment.gitbook.io/docs/
+
+settings:
+  title: "<gradient:#5AD1F2:#736EFE><bold>History</bold></gradient> <dark_gray>- Page %page%/%pages%"
+  rows: 6
+
+# --------------------------------------------------
+# LAYOUT
+# Controls how listings are displayed.
+# --------------------------------------------------
+layout:
+  filters:
+    # Filters excluded from this GUI.
+    excluded: [category, type, economy]
+
+    format:
+      category: # %filter_CATEGORY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      type: # %filter_TYPE_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+      economy: # %filter_ECONOMY_list%
+        selected: "<aqua>> <white>%name% <gray>(%count%)"
+        unselected: "<dark_gray>  %name% <gray>(%count%)"
+
+  sorts:
+    # Sort options excluded from this GUI.
+    excluded: [] # history
+
+    format:
+      history: # %sort_HISTORY_list%
+        selected: "<aqua>> <white>%name%"
+        unselected: "<dark_gray>  %name%"
+
+  # Slots where listings are rendered.
+  listing-slots: [10-16, 19-25, 28-34]
+
+  # How each listing is rendered inside listing-slots.
+  listing:
+    purchase:
+      template: row-history-purchase
+    sale:
+      template: row-history-sale
+
+# --------------------------------------------------
+# ITEMS
+# Define the static items rendered in this GUI.
+# --------------------------------------------------
+items:
+  filler:
+    template: filler
+    slots: [1-7, 9, 17, 27, 35-44]
+
+  no-transactions:
+    template: no-listings
+    slots: 22
+
+  # --- Header ---
+  back:
+    slots: 0
+    material: SPRUCE_DOOR
+    display-name: "<white><bold>Back</bold>"
+    lore:
+      - "<gray>Return to Your Listings."
+    actions:
+      any:
+        - "[open] gui:player/active restore:<page:current>"
+        - "[sound] $click"
+
+  close:
+    template: close-button
+    slots: 8
+
+  # --- Navigation ---
+  previous-page:
+    template: previous-page
+    slots: 18
+
+  next-page:
+    template: next-page
+    slots: 26
+
+  # --- Footer ---
+  search:
+    template: search-button
+    slots: 48
+
+  refresh:
+    template: refresh-button
+    slots: 49
+
+  sort-history:
+    template: sort-history
+    slots: 50
