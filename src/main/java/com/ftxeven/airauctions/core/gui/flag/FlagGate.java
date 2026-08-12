@@ -30,6 +30,15 @@ public final class FlagGate {
         return Optional.of(parsed.remainder());
     }
 
+    public boolean anyApplicable(List<String> lines, Function<String, String> resolver) {
+        for (String line : lines) {
+            if (apply(line, resolver).isPresent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ParsedLine parse(String raw) {
         List<Flag> flags = new ArrayList<>();
         int i = 0;

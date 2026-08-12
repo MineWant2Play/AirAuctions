@@ -210,7 +210,6 @@ auctions:
     success:
       - "<ref:prefix> <green>Listing created! <gray>(<aqua>x%amount% %item%</aqua> for %price%)"
       - "<gray>  Fee: <red>%fee_plain%  <dark_gray>| <gray>Expires: <white>%expires%"
-      - "<sound:entity.player.levelup:1:2>"
       - "<actionbar:'<green>Listed <aqua>%item%</aqua> for %price%!'>"
 
     broadcast: "<ref:prefix> <white>%seller%</white> <gray>listed <aqua>x%amount% %item%</aqua> for %price%."

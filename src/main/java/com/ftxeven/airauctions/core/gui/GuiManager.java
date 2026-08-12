@@ -48,6 +48,7 @@ public final class GuiManager {
     private final Messenger messenger;
     private final ActionRegistry actions;
     private final ConditionEvaluator conditions;
+    private final FlagGate flags;
     private final ActionDispatcher dispatcher;
     private final GuiRenderer renderer;
     private final ItemResolver items;
@@ -70,7 +71,7 @@ public final class GuiManager {
         this.players = players;
 
         this.conditions = new ConditionEvaluator(logger::warning);
-        FlagGate flags = new FlagGate();
+        this.flags = new FlagGate();
         this.actions = new ActionRegistry();
         this.dispatcher = new ActionDispatcher(actions, new ActionParser(logger), conditions, flags);
 
@@ -436,13 +437,22 @@ public final class GuiManager {
         }
 
         int slot = event.getSlot();
-        boolean wasDynamicEntry = session.dynamicSlot(slot) != null;
-        resyncBeforeClick(viewer, session, wasDynamicEntry);
+        boolean dynamicEntry = session.dynamicSlot(slot) != null;
+        if (!hasLiveAction(viewer, session, slot, type)) {
+            return; // nothing would run for this click
+        }
+
+        // an action is actually about to run off this click's flag checks
+        if (dynamicEntry) {
+            renderer.render(viewer, session);
+        } else {
+            renderer.prepare(viewer, session);
+        }
 
         GuiSession.DynamicSlot dynamic = session.dynamicSlot(slot);
         ItemConfig item = dynamic == null ? session.itemAt(slot) : null;
         if (dynamic == null && item == null) {
-            if (wasDynamicEntry) {
+            if (dynamicEntry) {
                 staleClickHandler.accept(viewer, session);
             }
             return;
@@ -471,13 +481,24 @@ public final class GuiManager {
         }
     }
 
-    // re-derives whatever live state this click's flag checks depend on before trusting them
-    private void resyncBeforeClick(Player viewer, GuiSession session, boolean dynamicSlotClicked) {
-        if (dynamicSlotClicked) {
-            renderer.render(viewer, session);
-        } else {
-            renderer.prepare(viewer, session);
+    // peeks at the currently-known (not yet resynced) state to check whether this click would
+    // run anything at all
+    private boolean hasLiveAction(Player viewer, GuiSession session, int slot, ItemConfig.ClickType type) {
+        GuiSession.DynamicSlot dynamic = session.dynamicSlot(slot);
+        ItemConfig item = dynamic == null ? session.itemAt(slot) : null;
+        if (dynamic == null && item == null) {
+            return false;
         }
+
+        ItemResolver.ResolvedFields resolved = dynamic != null
+                ? dynamic.resolved()
+                : items.resolveFields(item.template(), viewer, session.placeholders(), session.flagResolver(), session.openTick(), null);
+        if (resolved == null) {
+            return false;
+        }
+
+        List<String> clickActions = resolved.actions().get(type);
+        return clickActions != null && flags.anyApplicable(clickActions, resolved.flagResolver());
     }
 
     // Fires when a click resolves to a dynamic entry that's already gone by the time the
