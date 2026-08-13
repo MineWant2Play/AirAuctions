@@ -17,6 +17,7 @@ import com.ftxeven.airauctions.service.listing.workflow.ReclaimService;
 import com.ftxeven.airauctions.service.player.NotificationService;
 import com.ftxeven.airauctions.service.player.PlayerService;
 import com.ftxeven.airauctions.service.simulation.SimulationService;
+import com.ftxeven.airauctions.util.Scheduler;
 
 public final class ServiceManager {
 
@@ -68,9 +69,15 @@ public final class ServiceManager {
     }
 
     public void reload() {
-        listings.resyncMetadata(metadata);
-        history.resyncMetadata(metadata);
         expiry.restart();
+    }
+
+    public void resyncMetadataAsync(Runnable onComplete) {
+        Scheduler.runAsync(() -> {
+            listings.resyncMetadata(metadata);
+            history.resyncMetadata(metadata);
+            onComplete.run();
+        });
     }
 
     public EconomyService economy() { return economy; }

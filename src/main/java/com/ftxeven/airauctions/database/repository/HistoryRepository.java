@@ -8,6 +8,7 @@ import com.ftxeven.airauctions.model.HistoryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +30,8 @@ public interface HistoryRepository {
     Map<String, Double> sumForPlayer(UUID player, TransactionKind kind, @Nullable Instant since);
 
     Map<String, Double> sumGlobalVolume(@Nullable Instant since);
+
+    int deleteBySeller(Collection<UUID> sellers);
 
     // recomputes category/searchName for every stored row via the resolver
     int resyncMetadata(ListingMetadataResolver resolver);

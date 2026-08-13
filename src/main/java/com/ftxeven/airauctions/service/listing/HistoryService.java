@@ -11,6 +11,7 @@ import com.ftxeven.airauctions.model.HistoryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,5 +67,9 @@ public final class HistoryService {
 
     public int resyncMetadata(ListingMetadataResolver resolver) {
         return database.history().resyncMetadata(resolver);
+    }
+
+    public int deleteBySeller(Collection<UUID> sellers) {
+        return database.history().deleteBySeller(sellers);
     }
 }

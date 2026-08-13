@@ -5,6 +5,7 @@ import com.ftxeven.airauctions.command.SubCommand;
 import com.ftxeven.airauctions.config.ConfigManager;
 import com.ftxeven.airauctions.permission.Permissions;
 import com.ftxeven.airauctions.util.Messenger;
+import com.ftxeven.airauctions.util.Scheduler;
 import org.bukkit.command.CommandSender;
 
 import java.util.Map;
@@ -54,7 +55,9 @@ public final class SubReload implements SubCommand {
             return;
         }
 
-        long elapsed = System.currentTimeMillis() - start;
-        messenger.send(sender, configs.lang().get("general.commands.reload"), Map.of("time", String.valueOf(elapsed)));
+        plugin.services().resyncMetadataAsync(() -> Scheduler.runTargetAware(sender, () -> {
+            long elapsed = System.currentTimeMillis() - start;
+            messenger.send(sender, configs.lang().get("general.commands.reload"), Map.of("time", String.valueOf(elapsed)));
+        }));
     }
 }

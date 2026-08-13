@@ -162,6 +162,15 @@ public final class MongoHistoryRepository implements HistoryRepository {
     }
 
     @Override
+    public int deleteBySeller(Collection<UUID> sellers) {
+        if (sellers.isEmpty()) {
+            return 0;
+        }
+        List<String> ids = sellers.stream().map(UUID::toString).toList();
+        return (int) history.deleteMany(Filters.in("seller", ids)).getDeletedCount();
+    }
+
+    @Override
     public int resyncMetadata(ListingMetadataResolver resolver) {
         return MongoMetadataResync.run(history, resolver);
     }

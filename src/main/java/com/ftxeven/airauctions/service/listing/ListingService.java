@@ -351,6 +351,18 @@ public final class ListingService {
         return updated;
     }
 
+    public int countBySeller(Collection<UUID> sellers) {
+        return database.listings().countBySeller(sellers);
+    }
+
+    public int deleteBySeller(Collection<UUID> sellers) {
+        int removed = database.listings().deleteBySeller(sellers);
+        if (removed > 0) {
+            cache.listings().invalidateAll();
+        }
+        return removed;
+    }
+
     // Results
 
     public record Prepared(Listing listing, Map<String, String> placeholders) {}

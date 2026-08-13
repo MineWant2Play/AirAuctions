@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class SimulationService {
 
@@ -37,9 +36,6 @@ public final class SimulationService {
     private final BidService bids;
     private final PlayerPool playerPool;
     private final ItemPool itemPool;
-
-    private final List<String> generatedIds = new CopyOnWriteArrayList<>();
-    private volatile int lastPoolSize;
 
     public SimulationService(ConfigManager configs, ListingService listings, HistoryService history,
                              EconomyService economy, PlayerService players, AuctionService auctions, BidService bids) {
@@ -67,7 +63,6 @@ public final class SimulationService {
                 ? options.playerPoolSize()
                 : Math.clamp(options.count() / 8, MIN_POOL, MAX_POOL);
         List<UUID> pool = playerPool.ensure(poolSize);
-        lastPoolSize = pool.size();
 
         fundPool(pool, providers);
 
@@ -167,7 +162,6 @@ public final class SimulationService {
         Listing.Info info = new Listing.Info("", seller, item, amount, provider.id(), fee.amount(), tax.amount(), -1,
                 metadata.category(), metadata.searchName(), createdAt, expiresAt, null, ListingStatus.ACTIVE);
         Listing.Auction auction = listings.create(new Listing.Auction(info, price, amount));
-        generatedIds.add(auction.info().id());
 
         if (expiresAt.isAfter(Instant.now()) && random.nextInt(3) == 0) {
             return OptionalInt.of(simulatePurchase(auction, pool.get(random.nextInt(pool.size())), random));
@@ -232,7 +226,6 @@ public final class SimulationService {
                 metadata.category(), metadata.searchName(), createdAt, expiresAt, null, ListingStatus.ACTIVE);
         Listing.Bid running = listings.create(new Listing.Bid(draft, startingPrice, startingPrice, null, 0, 0));
         String id = running.info().id();
-        generatedIds.add(id);
 
         int rounds = random.nextInt(6);
         for (int i = 0; i < rounds; i++) {
@@ -277,32 +270,23 @@ public final class SimulationService {
     // Clearing
 
     public int clear() {
-        return clear(null);
-    }
-
-    public int clear(ProgressListener progress) {
-        List<String> ids = List.copyOf(generatedIds);
-        int removed = 0;
-        int reportEvery = Math.max(1, ids.size() / 100);
-
-        for (int i = 0; i < ids.size(); i++) {
-            Optional<Listing> listing = listings.find(ids.get(i));
-            if (listing.isPresent()) {
-                listings.delete(listing.get());
-                removed++;
-            }
-            if (progress != null && ((i + 1) % reportEvery == 0 || i + 1 == ids.size())) {
-                progress.onProgress(i + 1, ids.size());
-            }
+        List<UUID> synthetic = players.findByNamePrefix(PlayerPool.NAME_PREFIX);
+        if (synthetic.isEmpty()) {
+            return 0;
         }
-        generatedIds.clear();
-        return removed;
+
+        int removedListings = listings.deleteBySeller(synthetic);
+        history.deleteBySeller(synthetic);
+
+        return removedListings;
     }
 
     // Status
 
     public Status status() {
-        return new Status(generatedIds.size(), lastPoolSize, usableProviders().size());
+        List<UUID> synthetic = players.findByNamePrefix(PlayerPool.NAME_PREFIX);
+        int trackedListings = synthetic.isEmpty() ? 0 : listings.countBySeller(synthetic);
+        return new Status(trackedListings, synthetic.size(), usableProviders().size());
     }
 
     // Types
@@ -318,5 +302,5 @@ public final class SimulationService {
 
     public record Result(int auctionsCreated, int bidsCreated, int purchasesSimulated, int playersUsed, long seed) {}
 
-    public record Status(int trackedListings, int lastPoolSize, int usableProviders) {}
+    public record Status(int trackedListings, int syntheticPlayers, int usableProviders) {}
 }

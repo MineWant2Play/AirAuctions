@@ -111,6 +111,28 @@ public final class SqlPlayerRepository implements PlayerRepository {
         return result;
     }
 
+    @Override
+    public List<UUID> findByNamePrefix(String prefix) {
+        String sql = "SELECT uuid FROM " + playersTable + " WHERE name LIKE ? ESCAPE '\\'";
+        List<UUID> uuids = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, escapeLike(prefix) + "%");
+            try (ResultSet result = statement.executeQuery()) {
+                while (result.next()) {
+                    uuids.add(UUID.fromString(result.getString("uuid")));
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not load players by name prefix " + prefix, e);
+        }
+        return uuids;
+    }
+
+    private static String escapeLike(String value) {
+        return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
+    }
+
     private void bindUuids(PreparedStatement statement, Collection<UUID> uuids) throws SQLException {
         int i = 1;
         for (UUID uuid : uuids) {

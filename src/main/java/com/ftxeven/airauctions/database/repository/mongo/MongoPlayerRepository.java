@@ -8,6 +8,7 @@ import com.mongodb.client.model.*;
 import org.bson.Document;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -49,6 +50,16 @@ public final class MongoPlayerRepository implements PlayerRepository {
             result.put(data.uuid(), data);
         }
         return result;
+    }
+
+    @Override
+    public List<UUID> findByNamePrefix(String prefix) {
+        List<UUID> uuids = new ArrayList<>();
+        var filter = Filters.regex("name", "^" + Pattern.quote(prefix));
+        for (Document doc : players.find(filter).projection(Projections.include("_id"))) {
+            uuids.add(UUID.fromString(doc.getString("_id")));
+        }
+        return uuids;
     }
 
     @Override

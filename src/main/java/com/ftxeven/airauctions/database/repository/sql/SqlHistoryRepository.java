@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class SqlHistoryRepository implements HistoryRepository {
 
@@ -202,6 +203,26 @@ public final class SqlHistoryRepository implements HistoryRepository {
             throw new IllegalStateException("Could not sum history transactions", e);
         }
         return totals;
+    }
+
+    @Override
+    public int deleteBySeller(Collection<UUID> sellers) {
+        if (sellers.isEmpty()) {
+            return 0;
+        }
+        List<String> ids = sellers.stream().map(UUID::toString).toList();
+        String placeholders = ids.stream().map(u -> "?").collect(Collectors.joining(", "));
+
+        String sql = "DELETE FROM " + table + " WHERE seller IN (" + placeholders + ")";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            for (int i = 0; i < ids.size(); i++) {
+                statement.setString(i + 1, ids.get(i));
+            }
+            return statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not bulk-delete history by seller", e);
+        }
     }
 
     @Override

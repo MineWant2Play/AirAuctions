@@ -98,6 +98,15 @@ public final class MongoListingRepository implements ListingRepository {
     }
 
     @Override
+    public int countBySeller(Collection<UUID> sellers) {
+        if (sellers.isEmpty()) {
+            return 0;
+        }
+        List<String> ids = sellers.stream().map(UUID::toString).toList();
+        return (int) listings.countDocuments(Filters.in("seller", ids));
+    }
+
+    @Override
     public Listing create(Listing listing) {
         String id = listingIdGenerator.next();
         Instant createdAt = Instant.now();
@@ -217,6 +226,15 @@ public final class MongoListingRepository implements ListingRepository {
     @Override
     public void delete(String id) {
         listings.deleteOne(eq("_id", id));
+    }
+
+    @Override
+    public int deleteBySeller(Collection<UUID> sellers) {
+        if (sellers.isEmpty()) {
+            return 0;
+        }
+        List<String> ids = sellers.stream().map(UUID::toString).toList();
+        return (int) listings.deleteMany(Filters.in("seller", ids)).getDeletedCount();
     }
 
     @Override

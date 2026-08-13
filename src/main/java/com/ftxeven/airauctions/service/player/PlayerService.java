@@ -10,10 +10,7 @@ import com.ftxeven.airauctions.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public final class PlayerService {
 
@@ -44,6 +41,10 @@ public final class PlayerService {
     // falls back to the raw uuid so %seller%/%buyer%/%bidder% never renders blank
     public String name(UUID uuid) {
         return find(uuid).map(PlayerData::name).orElse(uuid.toString());
+    }
+
+    public List<UUID> findByNamePrefix(String prefix) {
+        return database.players().findByNamePrefix(prefix);
     }
 
     // Join handling

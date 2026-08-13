@@ -9,6 +9,7 @@ import com.ftxeven.airauctions.model.ListingScope;
 import com.ftxeven.airauctions.model.ListingStatus;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -31,6 +32,8 @@ public interface ListingRepository {
     // equivalent to findAll(ListingQuery.owned(owner, scope)).size(), without materializing the list
     int count(ListingQuery query);
 
+    int countBySeller(Collection<UUID> sellers);
+
     Listing create(Listing listing);
 
     OptionalInt reduceAuctionAmount(String id, int purchasedAmount);
@@ -47,6 +50,8 @@ public interface ListingRepository {
     boolean updateStatus(String id, ListingStatus status, Instant endedAt);
 
     void delete(String id);
+
+    int deleteBySeller(Collection<UUID> sellers);
 
     // ACTIVE listings whose expiresAt is already past
     List<Listing.Info> findDueToExpire(Instant now);

@@ -94,7 +94,7 @@ public final class SubSimulate implements SubCommand {
                 lastReport[0] = now;
                 int percent = (int) (completed * 100L / total);
 
-                Scheduler.runTargetAware(sender, () -> messenger.send(sender, configs.lang().get("general.simulate.started-progress"), Map.of(
+                Scheduler.runTargetAware(sender, () -> messenger.send(sender, configs.lang().get("general.simulate.progress"), Map.of(
                         "percent", String.valueOf(percent),
                         "count", String.valueOf(completed),
                         "total", String.valueOf(total))));
@@ -110,22 +110,8 @@ public final class SubSimulate implements SubCommand {
     }
 
     private void clear(CommandSender sender) {
-        long[] lastReport = {0L};
-
         runAsyncGuarded(sender, "clear", () -> {
-            int removed = services.simulation().clear((completed, total) -> {
-                long now = System.currentTimeMillis();
-                if (completed != total && now - lastReport[0] < PROGRESS_INTERVAL_MS) {
-                    return;
-                }
-                lastReport[0] = now;
-                int percent = total == 0 ? 100 : (int) (completed * 100L / total);
-
-                Scheduler.runTargetAware(sender, () -> messenger.send(sender, configs.lang().get("general.simulate.clear-progress"), Map.of(
-                        "percent", String.valueOf(percent),
-                        "count", String.valueOf(completed),
-                        "total", String.valueOf(total))));
-            });
+            int removed = services.simulation().clear();
 
             Scheduler.runTargetAware(sender, () ->
                     messenger.send(sender, configs.lang().get("general.simulate.cleared"), Map.of("count", String.valueOf(removed))));
@@ -137,7 +123,7 @@ public final class SubSimulate implements SubCommand {
             SimulationService.Status status = services.simulation().status();
             Scheduler.runTargetAware(sender, () -> messenger.send(sender, configs.lang().get("general.simulate.status"), Map.of(
                     "listings", String.valueOf(status.trackedListings()),
-                    "players", String.valueOf(status.lastPoolSize()),
+                    "players", String.valueOf(status.syntheticPlayers()),
                     "providers", String.valueOf(status.usableProviders()))));
         });
     }

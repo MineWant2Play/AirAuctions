@@ -140,6 +140,15 @@ public final class SqlListingRepository implements ListingRepository {
     }
 
     @Override
+    public int countBySeller(Collection<UUID> sellers) {
+        if (sellers.isEmpty()) {
+            return 0;
+        }
+        SqlFilter filter = new SqlFilter().in("seller", sellers.stream().map(UUID::toString).toList());
+        return (int) SqlAggregates.countRows(dataSource, listingsTable, filter);
+    }
+
+    @Override
     public Listing create(Listing listing) {
         String id = listingIdGenerator.next();
         Instant createdAt = Instant.now();
@@ -370,6 +379,44 @@ public final class SqlListingRepository implements ListingRepository {
     }
 
     @Override
+    public int deleteBySeller(Collection<UUID> sellers) {
+        if (sellers.isEmpty()) {
+            return 0;
+        }
+        List<String> ids = sellers.stream().map(UUID::toString).toList();
+        String placeholders = ids.stream().map(u -> "?").collect(Collectors.joining(", "));
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                try (PreparedStatement deleteEntries = connection.prepareStatement(
+                        "DELETE FROM " + bidEntriesTable + " WHERE listing_id IN ("
+                                + "SELECT id FROM " + listingsTable + " WHERE seller IN (" + placeholders + "))")) {
+                    bindStrings(deleteEntries, ids);
+                    deleteEntries.executeUpdate();
+                }
+
+                int removed;
+                try (PreparedStatement deleteListings = connection.prepareStatement(
+                        "DELETE FROM " + listingsTable + " WHERE seller IN (" + placeholders + ")")) {
+                    bindStrings(deleteListings, ids);
+                    removed = deleteListings.executeUpdate();
+                }
+
+                connection.commit();
+                return removed;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not bulk-delete listings by seller", e);
+        }
+    }
+
+    @Override
     public List<Listing.Info> findDueToExpire(Instant now) {
         String sql = "SELECT * FROM " + listingsTable + " WHERE status = 'ACTIVE' AND expires_at <= ?";
         List<Listing.Info> due = new ArrayList<>();
@@ -528,6 +575,12 @@ public final class SqlListingRepository implements ListingRepository {
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Could not count bid entries for listing " + id, e);
+        }
+    }
+
+    private void bindStrings(PreparedStatement statement, List<String> values) throws SQLException {
+        for (int i = 0; i < values.size(); i++) {
+            statement.setString(i + 1, values.get(i));
         }
     }
 
