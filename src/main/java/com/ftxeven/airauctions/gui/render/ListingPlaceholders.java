@@ -98,7 +98,7 @@ public final class ListingPlaceholders {
 
     // Buy amount
 
-    public Map<String, String> forBuyAmount(Listing.Auction auction, EconomyProvider provider, int buyAmount) {
+    public Map<String, String> forBuyAmount(Player viewer, Listing.Auction auction, EconomyProvider provider, int buyAmount) {
         Map<String, String> map = new HashMap<>(forListing(auction));
 
         AuctionService.Quote quote = services.auctions().quote(auction, buyAmount, provider);
@@ -108,6 +108,7 @@ public final class ListingPlaceholders {
         map.put("buy_amount", String.valueOf(buyAmount));
         map.put("max_amount", String.valueOf(auction.remainingAmount()));
         map.put("valid_price", String.valueOf(!partial || quote.price() >= minPartial));
+        map.put("can_afford_price", String.valueOf(provider.has(viewer, quote.price())));
         services.economy().formatInto(map, "buy_price", provider.id(), quote.price());
         services.economy().formatInto(map, "min_price", provider.id(), minPartial);
 

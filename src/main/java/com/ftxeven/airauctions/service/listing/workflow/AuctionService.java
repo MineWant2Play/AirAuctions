@@ -102,23 +102,16 @@ public final class AuctionService {
     // Eligibility
 
     public Eligibility eligibleToPurchase(Player buyer, Listing.Auction auction, int amount) {
-        Listing.Info info = auction.info();
-
-        if (info.status() != ListingStatus.ACTIVE) {
-            return Eligibility.denied("errors.item.unavailable");
+        Eligibility gate = preflight(buyer, auction);
+        if (gate instanceof Eligibility.Denied) {
+            return gate;
         }
         if (amount <= 0 || amount > auction.remainingAmount()) {
             return Eligibility.denied("errors.economy.invalid-amount");
         }
-        if (!configs.main().auctions().allowSelfPurchase() && info.seller().equals(buyer.getUniqueId())) {
-            return Eligibility.denied("auctions.purchase.errors.self-purchase");
-        }
 
-        Optional<EconomyProvider> providerLookup = economy.get(info.economy());
-        if (providerLookup.isEmpty()) {
-            return Eligibility.denied("errors.item.unavailable");
-        }
-        EconomyProvider provider = providerLookup.get();
+        Listing.Info info = auction.info();
+        EconomyProvider provider = economy.get(info.economy()).orElseThrow();
 
         Quote quote = quote(auction, amount, provider);
         boolean partial = amount < auction.remainingAmount();
@@ -150,21 +143,15 @@ public final class AuctionService {
             return eligibleToPurchase(buyer, auction);
         }
 
+        Eligibility gate = preflight(buyer, auction);
+        if (gate instanceof Eligibility.Denied) {
+            return gate;
+        }
+
         Listing.Info info = auction.info();
-        if (info.status() != ListingStatus.ACTIVE) {
-            return Eligibility.denied("errors.item.unavailable");
-        }
-        if (!configs.main().auctions().allowSelfPurchase() && info.seller().equals(buyer.getUniqueId())) {
-            return Eligibility.denied("auctions.purchase.errors.self-purchase");
-        }
+        EconomyProvider provider = economy.get(info.economy()).orElseThrow();
 
-        Optional<EconomyProvider> providerLookup = economy.get(info.economy());
-        if (providerLookup.isEmpty()) {
-            return Eligibility.denied("errors.item.unavailable");
-        }
-        EconomyProvider provider = providerLookup.get();
-
-        double required = Math.min(economy.minPartialPrice(), remainingValue(auction));
+        double required = minimumPurchasePrice(auction, provider);
         if (!provider.has(buyer, required)) {
             Map<String, String> placeholders = new HashMap<>();
             economy.formatInto(placeholders, "amount", info.economy(), required);
@@ -176,6 +163,26 @@ public final class AuctionService {
         }
 
         return Eligibility.eligible();
+    }
+
+    private Eligibility preflight(Player buyer, Listing.Auction auction) {
+        Listing.Info info = auction.info();
+        if (info.status() != ListingStatus.ACTIVE) {
+            return Eligibility.denied("errors.item.unavailable");
+        }
+        if (!configs.main().auctions().allowSelfPurchase() && info.seller().equals(buyer.getUniqueId())) {
+            return Eligibility.denied("auctions.purchase.errors.self-purchase");
+        }
+        if (economy.get(info.economy()).isEmpty()) {
+            return Eligibility.denied("errors.item.unavailable");
+        }
+        return Eligibility.eligible();
+    }
+
+    private double minimumPurchasePrice(Listing.Auction auction, EconomyProvider provider) {
+        double remaining = remainingValue(auction);
+        double onePrice = quote(auction, 1, provider).price();
+        return Math.min(remaining, Math.max(onePrice, economy.minPartialPrice()));
     }
 
     public boolean usesAmountSelection(Listing.Auction auction) {

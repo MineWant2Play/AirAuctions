@@ -50,7 +50,14 @@ items:
         lore:
           - "<gray>Minimum: %min_price%"
       - conditions:
+          - "%can_afford_price% == false"
+        material: RED_STAINED_GLASS_PANE
+        display-name: "<red><bold>Not Enough Funds</bold>"
+        lore:
+          - "<gray>You cannot afford <red>%buy_price_plain%</red>."
+      - conditions:
           - "%valid_price% == true"
+          - "%can_afford_price% == true"
         material: LIME_STAINED_GLASS_PANE
         display-name: "<green><bold>Confirm</bold>"
         lore:

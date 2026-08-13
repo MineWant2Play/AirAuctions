@@ -54,7 +54,7 @@ public final class BuyAmountGui extends BaseGui {
 
         int clamped = clampedBuyAmount(session, auction);
         session.attribute(BuyAction.ATTR_BUY_AMOUNT, clamped);
-        session.placeholders().putAll(guis.placeholders().forBuyAmount(auction, provider, clamped));
+        session.placeholders().putAll(guis.placeholders().forBuyAmount(viewer, auction, provider, clamped));
     }
 
     @Override
@@ -76,7 +76,7 @@ public final class BuyAmountGui extends BaseGui {
         displayItem.setAmount(buyAmount);
 
         RenderEntry entry = new RenderEntry(template, displayItem,
-                guis.placeholders().forBuyAmount(auction, provider, buyAmount),
+                guis.placeholders().forBuyAmount(viewer, auction, provider, buyAmount),
                 guis.flags().forBuyAmount(viewer, auction, () -> buyAmount(session, auction)));
         drawEntries(viewer, session, List.of(entry), layout(session).listingSlots());
     }
