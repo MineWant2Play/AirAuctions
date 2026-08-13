@@ -155,7 +155,7 @@ discord:
 
       title: "Listing Deleted by Admin"
       title-url: ""
-      description: "**%player%**'s listing of **%amount%x %item%** was removed by **%admin%**."
+      description: "**%player%**'s listing of **x%amount% %item%** was removed by **%admin%**."
 
       thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
       image-url: ""
@@ -199,7 +199,7 @@ discord:
 
       title: "New Auction Listed"
       title-url: ""
-      description: "**%player%** listed **%amount%x %item%** for **%price%**."
+      description: "**%player%** listed **x%amount% %item%** for **%price%**."
 
       thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
       image-url: ""
@@ -243,7 +243,7 @@ discord:
 
       title: "Auction Sold"
       title-url: ""
-      description: "**%buyer%** purchased **%amount%x %item%** from **%seller%** for **%price%**."
+      description: "**%buyer%** purchased **x%amount% %item%** from **%seller%** for **%price%**."
 
       thumbnail-url: "https://mc-heads.net/avatar/%buyer%/64"
       image-url: ""
@@ -290,7 +290,7 @@ discord:
 
       title: "Auction Partially Sold"
       title-url: ""
-      description: "**%buyer%** purchased **%amount%x %item%** from **%seller%** for **%price%**. **%remaining_amount%x** still available."
+      description: "**%buyer%** purchased **x%amount% %item%** from **%seller%** for **%price%**. **x%remaining_amount%** still available."
 
       thumbnail-url: "https://mc-heads.net/avatar/%buyer%/64"
       image-url: ""
@@ -340,7 +340,7 @@ discord:
 
       title: "Auction Expired"
       title-url: ""
-      description: "**%player%**'s listing of **%amount%x %item%** expired with no buyers."
+      description: "**%player%**'s listing of **x%amount% %item%** expired with no buyers."
 
       thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
       image-url: ""
@@ -381,7 +381,7 @@ discord:
 
       title: "New Bid Opened"
       title-url: ""
-      description: "**%player%** opened a bid for **%amount%x %item%** starting at **%price%**."
+      description: "**%player%** opened a bid for **x%amount% %item%** starting at **%price%**."
 
       thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
       image-url: ""
@@ -425,7 +425,7 @@ discord:
 
       title: "Bid Placed"
       title-url: ""
-      description: "**%bidder%** placed a bid of **%bid%** on **%amount%x %item%** from **%seller%**."
+      description: "**%bidder%** placed a bid of **%bid%** on **x%amount% %item%** from **%seller%**."
 
       thumbnail-url: "https://mc-heads.net/avatar/%bidder%/64"
       image-url: ""
@@ -469,7 +469,7 @@ discord:
 
       title: "Bid Ended - Winner Found"
       title-url: ""
-      description: "**%winner%** won **%amount%x %item%** from **%seller%** with a bid of **%bid%**."
+      description: "**%winner%** won **x%amount% %item%** from **%seller%** with a bid of **%bid%**."
 
       thumbnail-url: "https://mc-heads.net/avatar/%winner%/64"
       image-url: ""
@@ -519,7 +519,7 @@ discord:
 
       title: "Bid Expired - No Bidders"
       title-url: ""
-      description: "**%player%**'s bid for **%amount%x %item%** received no bids and has expired."
+      description: "**%player%**'s bid for **x%amount% %item%** received no bids and has expired."
 
       thumbnail-url: "https://mc-heads.net/avatar/%player%/64"
       image-url: ""

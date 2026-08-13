@@ -4,6 +4,7 @@ import com.ftxeven.airauctions.command.CommandDispatcher;
 import com.ftxeven.airauctions.command.SubCommand;
 import com.ftxeven.airauctions.config.ConfigManager;
 import com.ftxeven.airauctions.permission.Permissions;
+import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.service.simulation.SimulationService;
 import com.ftxeven.airauctions.util.Messenger;
 import com.ftxeven.airauctions.util.Scheduler;
@@ -24,13 +25,13 @@ public final class SubSimulate implements SubCommand {
 
     private final Messenger messenger;
     private final ConfigManager configs;
-    private final SimulationService simulation;
+    private final ServiceManager services;
     private final Logger logger;
 
-    public SubSimulate(Messenger messenger, ConfigManager configs, SimulationService simulation, Logger logger) {
+    public SubSimulate(Messenger messenger, ConfigManager configs, ServiceManager services, Logger logger) {
         this.messenger = messenger;
         this.configs = configs;
-        this.simulation = simulation;
+        this.services = services;
         this.logger = logger;
     }
 
@@ -85,7 +86,7 @@ public final class SubSimulate implements SubCommand {
         long[] lastReport = {0L};
 
         runAsyncGuarded(sender, "generate", () -> {
-            SimulationService.Result result = simulation.generate(options, (completed, total) -> {
+            SimulationService.Result result = services.simulation().generate(options, (completed, total) -> {
                 long now = System.currentTimeMillis();
                 if (completed != total && now - lastReport[0] < PROGRESS_INTERVAL_MS) {
                     return;
@@ -112,7 +113,7 @@ public final class SubSimulate implements SubCommand {
         long[] lastReport = {0L};
 
         runAsyncGuarded(sender, "clear", () -> {
-            int removed = simulation.clear((completed, total) -> {
+            int removed = services.simulation().clear((completed, total) -> {
                 long now = System.currentTimeMillis();
                 if (completed != total && now - lastReport[0] < PROGRESS_INTERVAL_MS) {
                     return;
@@ -133,7 +134,7 @@ public final class SubSimulate implements SubCommand {
 
     private void status(CommandSender sender) {
         runAsyncGuarded(sender, "status", () -> {
-            SimulationService.Status status = simulation.status();
+            SimulationService.Status status = services.simulation().status();
             Scheduler.runTargetAware(sender, () -> messenger.send(sender, configs.lang().get("general.simulate.status"), Map.of(
                     "listings", String.valueOf(status.trackedListings()),
                     "players", String.valueOf(status.lastPoolSize()),
