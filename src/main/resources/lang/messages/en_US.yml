@@ -55,7 +55,7 @@ general:
     result:
       - "<ref:prefix> <green>Simulation complete!"
       - "<gray>  Auctions: <white>%auctions%</white> <dark_gray>| <gray>Bids: <white>%bids%</white> <dark_gray>| <gray>Purchases: <white>%purchases%"
-      - "<gray>  Players used: <white>%players%</white> <dark_gray>| <gray>Seed: <white>%seed%"
+      - "<gray>  Players used: <white>%players%</white> <dark_gray>| <gray>Seed: <hover:show_text:'<gray>Copy to clipboard'><click:suggest_command:'%seed%'><white>%seed%</click></hover>"
       - "<sound:entity.experience_orb.pickup:1:1.5>"
 
     clear-progress: "<actionbar:'<gray>Clearing listings... <white>%percent%%</white> <dark_gray>(<white>%count%</white>/<white>%total%</white>)'>"

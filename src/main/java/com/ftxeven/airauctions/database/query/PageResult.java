@@ -8,12 +8,4 @@ public record PageResult<T>(List<T> items, int page, int totalPages, long totalR
     public static <T> PageResult<T> empty(int page) {
         return new PageResult<>(List.of(), Math.max(1, page), 1, 0);
     }
-
-    public boolean hasPreviousPage() {
-        return page > 1;
-    }
-
-    public boolean hasNextPage() {
-        return page < totalPages;
-    }
 }

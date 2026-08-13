@@ -36,16 +36,10 @@ public final class InputRegistry {
     private static final String DIALOG_FILE = "dialog.yml";
     private static final String SIGN_FILE = "sign.yml";
 
-    private static final String SIGN_FALLBACK_WARNING =
-            "<ref:prefix> <red>Sign input isn't supported by your client, switching to chat instead.";
-    private static final String DIALOG_FALLBACK_WARNING =
-            "<ref:prefix> <red>Dialog input isn't supported by your client, switching to chat instead.";
-
     private final JavaPlugin plugin;
     private final Logger logger;
     private final Path folder;
     private final InputConfigReader reader;
-    private final Messenger messenger;
 
     private final ChatInputHandler chatHandler;
     private final DialogInputHandler dialogHandler;
@@ -61,7 +55,6 @@ public final class InputRegistry {
         this.logger = plugin.getLogger();
         this.folder = plugin.getDataFolder().toPath().resolve("guis").resolve(INPUT_FOLDER);
         this.reader = new InputConfigReader(logger);
-        this.messenger = messenger;
 
         this.chatHandler = new ChatInputHandler(this, messenger);
         handlers.put(InputType.CHAT, chatHandler);
@@ -117,13 +110,11 @@ public final class InputRegistry {
             context.logger().warning("Sign input requested by item '" + context.itemKey() + "' in GUI '"
                     + context.guiId() + "' but " + viewer.getName()
                     + "'s client doesn't support editable signs (1.20+), falling back to chat input");
-            messenger.send(viewer, List.of(SIGN_FALLBACK_WARNING), context.placeholders());
             type = InputType.CHAT;
         } else if (type == InputType.DIALOG && !dialogHandler.isSupported(viewer)) {
             context.logger().warning("Dialog input requested by item '" + context.itemKey() + "' in GUI '"
                     + context.guiId() + "' but " + viewer.getName()
                     + "'s client doesn't support dialogs (1.21.6+), falling back to chat input");
-            messenger.send(viewer, List.of(DIALOG_FALLBACK_WARNING), context.placeholders());
             type = InputType.CHAT;
         }
 
