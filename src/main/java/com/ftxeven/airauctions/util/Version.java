@@ -23,38 +23,35 @@ public final class Version {
     }
 
     public static void check() {
-        Scheduler.runAsync(() -> {
-            try {
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(VERSION_URL))
-                        .timeout(Duration.ofSeconds(10))
-                        .build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(VERSION_URL))
+                .timeout(Duration.ofSeconds(10))
+                .build();
 
-                HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-                latestVersion = JsonParser.parseString(response.body()).getAsJsonObject().get("name").getAsString();
+        CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(Version::apply)
+                .exceptionally(e -> {
+                    PLUGIN.getLogger().warning("Couldn't check for updates: " + e.getMessage());
+                    return null;
+                });
+    }
 
-                String current = PLUGIN.getPluginMeta().getVersion();
-                outdated = !current.equals(latestVersion);
+    private static void apply(HttpResponse<String> response) {
+        latestVersion = JsonParser.parseString(response.body()).getAsJsonObject().get("name").getAsString();
 
-                if (outdated) {
-                    PLUGIN.getLogger().warning("Outdated! Running " + current + ", latest is " + latestVersion);
-                } else {
-                    PLUGIN.getLogger().info("Running the latest version (" + current + ")");
-                }
-            } catch (Exception e) {
-                // spiget being flaky shouldn't flip outdated to true, just skip this check
-                PLUGIN.getLogger().warning("Couldn't check for updates: " + e.getMessage());
-            }
-        });
+        String current = PLUGIN.getPluginMeta().getVersion();
+        outdated = !current.equals(latestVersion);
+
+        if (outdated) {
+            PLUGIN.getLogger().warning("Outdated! Running " + current + ", latest is " + latestVersion);
+        } else {
+            PLUGIN.getLogger().info("Running the latest version (" + current + ")");
+        }
     }
 
     public static String current() { return PLUGIN.getPluginMeta().getVersion(); }
 
-    public static boolean isOutdated() {
-        return outdated;
-    }
+    public static boolean isOutdated() { return outdated; }
 
-    public static String getLatest() {
-        return latestVersion;
-    }
+    public static String getLatest() { return latestVersion; }
 }

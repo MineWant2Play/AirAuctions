@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerCache {
 
@@ -21,28 +20,21 @@ public final class PlayerCache {
 
     private final PlayerRepository repository;
     private final CacheSync sync;
-    private final Map<UUID, Entry> entries = new ConcurrentHashMap<>();
-    private final long ttlNanos;
+    private final TtlCache<UUID, PlayerData> cache;
 
     public PlayerCache(PlayerRepository repository, CacheSync sync, Duration ttl) {
         this.repository = repository;
         this.sync = sync;
-        this.ttlNanos = ttl.toNanos();
+        this.cache = new TtlCache<>(ttl);
         sync.subscribe(CHANNEL, key -> dropLocal(UUID.fromString(key)));
     }
 
     public Optional<PlayerData> find(UUID uuid) {
-        Entry cached = entries.get(uuid);
-        if (cached != null) {
-            if (!cached.isExpired()) {
-                return Optional.of(cached.data());
-            }
-            entries.remove(uuid, cached);
-        }
-
-        Optional<PlayerData> loaded = repository.find(uuid);
-        loaded.ifPresent(this::warm);
-        return loaded;
+        return cache.get(uuid).or(() -> {
+            Optional<PlayerData> loaded = repository.find(uuid);
+            loaded.ifPresent(this::warm);
+            return loaded;
+        });
     }
 
     public Map<UUID, PlayerData> findAll(Collection<UUID> uuids) {
@@ -50,12 +42,7 @@ public final class PlayerCache {
         List<UUID> missing = new ArrayList<>();
 
         for (UUID uuid : uuids) {
-            Entry cached = entries.get(uuid);
-            if (cached != null && !cached.isExpired()) {
-                result.put(uuid, cached.data());
-            } else {
-                missing.add(uuid);
-            }
+            cache.get(uuid).ifPresentOrElse(data -> result.put(uuid, data), () -> missing.add(uuid));
         }
 
         if (!missing.isEmpty()) {
@@ -69,7 +56,7 @@ public final class PlayerCache {
 
     public Optional<PlayerData> findByName(String name) {
         String nameLower = name.toLowerCase(Locale.ROOT);
-        for (PlayerData data : liveValues()) {
+        for (PlayerData data : cache.liveValues()) {
             if (data.name().toLowerCase(Locale.ROOT).equals(nameLower)) {
                 return Optional.of(data);
             }
@@ -81,7 +68,7 @@ public final class PlayerCache {
     }
 
     public void warm(PlayerData data) {
-        entries.put(data.uuid(), new Entry(data, System.nanoTime() + ttlNanos));
+        cache.put(data.uuid(), data);
     }
 
     public void invalidate(UUID uuid) {
@@ -90,28 +77,10 @@ public final class PlayerCache {
     }
 
     public void invalidateAll() {
-        entries.clear();
+        cache.clear();
     }
 
     private void dropLocal(UUID uuid) {
-        entries.remove(uuid);
-    }
-
-    private List<PlayerData> liveValues() {
-        List<PlayerData> live = new ArrayList<>(entries.size());
-        for (Map.Entry<UUID, Entry> entry : entries.entrySet()) {
-            if (entry.getValue().isExpired()) {
-                entries.remove(entry.getKey(), entry.getValue());
-            } else {
-                live.add(entry.getValue().data());
-            }
-        }
-        return live;
-    }
-
-    private record Entry(PlayerData data, long expiresAtNanos) {
-        boolean isExpired() {
-            return System.nanoTime() >= expiresAtNanos;
-        }
+        cache.remove(uuid);
     }
 }

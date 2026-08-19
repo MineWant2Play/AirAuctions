@@ -15,6 +15,7 @@ import com.ftxeven.airauctions.model.ListingType;
 import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.util.Messenger;
+import com.ftxeven.airauctions.util.PlaceholderMap;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
@@ -58,7 +59,7 @@ public final class DraftGui extends BaseGui {
 
         Map<String, String> placeholders = session.placeholders();
         placeholders.putAll(guis.placeholders().forDraft(viewer, draft, provider));
-        writePriceValidity(viewer, placeholders, draft, provider);
+        placeholders.putAll(priceValidityPlaceholders(viewer, draft, provider));
         writeCycler(session, "filter_ECONOMY", "economy", layout(session).filters(), economyOptions, economyId, null, LayoutConfig.Cycler.Format.FILTER_DEFAULT);
 
         session.flagResolver(guis.flags().forDraft(viewer, draft.toFlagDraft(provider)));
@@ -104,17 +105,20 @@ public final class DraftGui extends BaseGui {
 
     // Price validity
 
-    private void writePriceValidity(Player viewer, Map<String, String> placeholders, ListingDraft draft, EconomyProvider provider) {
+    private Map<String, String> priceValidityPlaceholders(Player viewer, ListingDraft draft, EconomyProvider provider) {
         EconomyService economy = services.economy();
 
-        placeholders.put("valid_min_price", String.valueOf(economy.meetsMinPrice(draft.price())));
-        placeholders.put("valid_max_price", String.valueOf(economy.meetsMaxPrice(draft.price())));
-        economy.formatInto(placeholders, "min_price", provider.id(), economy.minPrice());
-        economy.formatInto(placeholders, "max_price", provider.id(), economy.maxPrice());
+        PlaceholderMap map = PlaceholderMap.create()
+                .put("valid_min_price", String.valueOf(economy.meetsMinPrice(draft.price())))
+                .put("valid_max_price", String.valueOf(economy.meetsMaxPrice(draft.price())))
+                .money(economy, "min_price", provider.id(), economy.minPrice())
+                .money(economy, "max_price", provider.id(), economy.maxPrice());
 
         EconomyService.ChargeResult fee = economy.fee(viewer, provider, draft.price());
-        economy.formatInto(placeholders, "fee", provider.id(), fee);
-        placeholders.put("can_afford_fee", String.valueOf(economy.eligibleForFee(viewer, provider, fee).ok()));
+        map.money(economy, "fee", provider.id(), fee);
+        map.put("can_afford_fee", String.valueOf(economy.eligibleForFee(viewer, provider, fee).ok()));
+
+        return map.build();
     }
 
     private static String inputContextFor(ListingType type) {

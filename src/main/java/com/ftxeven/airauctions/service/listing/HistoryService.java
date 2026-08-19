@@ -2,6 +2,8 @@ package com.ftxeven.airauctions.service.listing;
 
 import com.ftxeven.airauctions.config.ConfigManager;
 import com.ftxeven.airauctions.database.DatabaseManager;
+import com.ftxeven.airauctions.database.cache.CacheManager;
+import com.ftxeven.airauctions.database.cache.HistoryCache;
 import com.ftxeven.airauctions.database.query.FacetCounts;
 import com.ftxeven.airauctions.database.query.HistoryQuery;
 import com.ftxeven.airauctions.database.query.PageResult;
@@ -19,19 +21,21 @@ import java.util.UUID;
 public final class HistoryService {
 
     private final DatabaseManager database;
+    private final HistoryCache cache;
     private final ConfigManager configs;
 
-    public HistoryService(DatabaseManager database, ConfigManager configs) {
+    public HistoryService(DatabaseManager database, CacheManager cache, ConfigManager configs) {
         this.database = database;
+        this.cache = cache.history();
         this.configs = configs;
     }
 
     public PageResult<HistoryEntry> query(HistoryQuery query) {
-        return database.history().query(query);
+        return cache.queryPage(query, () -> database.history().query(query));
     }
 
     public FacetCounts facets(HistoryQuery query) {
-        return database.history().facets(query);
+        return cache.queryFacets(query, () -> database.history().facets(query));
     }
 
     public Optional<HistoryEntry> find(String listingId, Instant completedAt) {
@@ -40,6 +44,7 @@ public final class HistoryService {
 
     public void record(HistoryEntry entry) {
         database.history().append(entry);
+        cache.invalidateAll();
 
         int maxHistory = configs.main().listings().maxHistory();
         if (maxHistory <= 0) {
@@ -66,10 +71,18 @@ public final class HistoryService {
     }
 
     public int resyncMetadata(ListingMetadataResolver resolver) {
-        return database.history().resyncMetadata(resolver);
+        int updated = database.history().resyncMetadata(resolver);
+        if (updated > 0) {
+            cache.invalidateAll();
+        }
+        return updated;
     }
 
     public int deleteBySeller(Collection<UUID> sellers) {
-        return database.history().deleteBySeller(sellers);
+        int removed = database.history().deleteBySeller(sellers);
+        if (removed > 0) {
+            cache.invalidateAll();
+        }
+        return removed;
     }
 }

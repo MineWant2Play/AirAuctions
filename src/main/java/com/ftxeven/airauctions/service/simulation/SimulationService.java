@@ -5,6 +5,7 @@ import com.ftxeven.airauctions.economy.EconomyProvider;
 import com.ftxeven.airauctions.model.HistoryEntry;
 import com.ftxeven.airauctions.model.Listing;
 import com.ftxeven.airauctions.model.ListingStatus;
+import com.ftxeven.airauctions.model.ListingType;
 import com.ftxeven.airauctions.permission.NullPermissible;
 import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.service.listing.HistoryService;
@@ -144,24 +145,35 @@ public final class SimulationService {
         return now.minusSeconds(age);
     }
 
-    private OptionalInt createAuction(UUID seller, ItemStack item, int amount, EconomyProvider provider,
-                                      boolean fresh, List<UUID> pool, Random random) {
+    private Optional<ChargedInfo> prepareListing(UUID seller, ItemStack item, int amount, EconomyProvider provider,
+                                                 Instant createdAt, Instant expiresAt, ListingType type, Random random) {
         double price = randomPrice(random, provider);
 
         EconomyService.ChargeResult fee = economy.fee(NullPermissible.INSTANCE, provider, price);
         if (!withdraw(seller, provider, fee.amount())) {
-            return OptionalInt.empty();
+            return Optional.empty();
         }
         EconomyService.ChargeResult tax = economy.tax(NullPermissible.INSTANCE, provider, price);
+        double taxRate = type == ListingType.BID ? tax.rate() : -1;
 
+        var metadata = listings.resolveMetadata(item);
+        Listing.Info info = new Listing.Info("", seller, item, amount, provider.id(), fee.amount(), tax.amount(), taxRate,
+                metadata.category(), metadata.searchName(), createdAt, expiresAt, null, ListingStatus.ACTIVE);
+        return Optional.of(new ChargedInfo(info, price));
+    }
+
+    private OptionalInt createAuction(UUID seller, ItemStack item, int amount, EconomyProvider provider,
+                                      boolean fresh, List<UUID> pool, Random random) {
         double lifetime = configs.main().auctions().lifetime();
         Instant createdAt = randomCreatedAt(fresh, lifetime, random);
         Instant expiresAt = lifetime < 0 ? Listing.NEVER_EXPIRES : createdAt.plusSeconds((long) lifetime);
 
-        var metadata = listings.resolveMetadata(item);
-        Listing.Info info = new Listing.Info("", seller, item, amount, provider.id(), fee.amount(), tax.amount(), -1,
-                metadata.category(), metadata.searchName(), createdAt, expiresAt, null, ListingStatus.ACTIVE);
-        Listing.Auction auction = listings.create(new Listing.Auction(info, price, amount));
+        Optional<ChargedInfo> charged = prepareListing(seller, item, amount, provider, createdAt, expiresAt, ListingType.AUCTION, random);
+        if (charged.isEmpty()) {
+            return OptionalInt.empty();
+        }
+
+        Listing.Auction auction = listings.create(new Listing.Auction(charged.get().info(), charged.get().price(), amount));
 
         if (expiresAt.isAfter(Instant.now()) && random.nextInt(3) == 0) {
             return OptionalInt.of(simulatePurchase(auction, pool.get(random.nextInt(pool.size())), random));
@@ -207,24 +219,19 @@ public final class SimulationService {
 
     private boolean createBid(UUID seller, ItemStack item, int amount, EconomyProvider provider,
                               boolean fresh, List<UUID> pool, Random random) {
-        double startingPrice = randomPrice(random, provider);
-
-        EconomyService.ChargeResult fee = economy.fee(NullPermissible.INSTANCE, provider, startingPrice);
-        if (!withdraw(seller, provider, fee.amount())) {
-            return false;
-        }
-        EconomyService.ChargeResult tax = economy.tax(NullPermissible.INSTANCE, provider, startingPrice);
-
         int min = configs.main().bids().minDuration();
         int max = configs.main().bids().maxDuration();
         int durationSeconds = min + random.nextInt(Math.max(1, max - min));
         Instant createdAt = randomCreatedAt(fresh, durationSeconds, random);
         Instant expiresAt = createdAt.plusSeconds(durationSeconds);
 
-        var metadata = listings.resolveMetadata(item);
-        Listing.Info draft = new Listing.Info("", seller, item, amount, provider.id(), fee.amount(), tax.amount(), tax.rate(),
-                metadata.category(), metadata.searchName(), createdAt, expiresAt, null, ListingStatus.ACTIVE);
-        Listing.Bid running = listings.create(new Listing.Bid(draft, startingPrice, startingPrice, null, 0, 0));
+        Optional<ChargedInfo> charged = prepareListing(seller, item, amount, provider, createdAt, expiresAt, ListingType.BID, random);
+        if (charged.isEmpty()) {
+            return false;
+        }
+
+        double startingPrice = charged.get().price();
+        Listing.Bid running = listings.create(new Listing.Bid(charged.get().info(), startingPrice, startingPrice, null, 0, 0));
         String id = running.info().id();
 
         int rounds = random.nextInt(6);
@@ -297,6 +304,8 @@ public final class SimulationService {
     public interface ProgressListener {
         void onProgress(int completed, int total);
     }
+
+    private record ChargedInfo(Listing.Info info, double price) {}
 
     public record GenerateOptions(int count, Mix mix, long seed, int playerPoolSize) {}
 

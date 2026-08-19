@@ -13,6 +13,7 @@ import com.ftxeven.airauctions.permission.Permissions;
 import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
+import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -166,13 +167,13 @@ public final class SubDelete implements SubCommand {
             case Listing.Bid bid -> bid.currentPrice();
         };
 
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("id", info.id());
-        placeholders.put("seller", services.players().name(info.seller()));
-        placeholders.put("amount", String.valueOf(info.amount()));
-        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
-        services.economy().formatInto(placeholders, "price", info.economy(), price);
-        return placeholders;
+        return PlaceholderMap.create()
+                .put("id", info.id())
+                .put("seller", services.players().name(info.seller()))
+                .put("amount", info.amount())
+                .put("item", ItemDisplay.name(info.item(), configs.lang()))
+                .money(services.economy(), "price", info.economy(), price)
+                .build();
     }
 
     private String formatTimeout(int timeoutSeconds) {

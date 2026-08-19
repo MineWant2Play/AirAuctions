@@ -1,6 +1,7 @@
 package com.ftxeven.airauctions.model;
 
 import java.util.List;
+import java.util.Locale;
 
 public record MatchRules(
         List<String> materials,
@@ -17,12 +18,16 @@ public record MatchRules(
 
     public MatchRules {
         materials = List.copyOf(materials);
-        names = List.copyOf(names);
-        lores = List.copyOf(lores);
+        names = lowercased(names);
+        lores = lowercased(lores);
         enchantments = List.copyOf(enchantments);
         nbtKeys = List.copyOf(nbtKeys);
         customModelData = List.copyOf(customModelData);
         itemModels = List.copyOf(itemModels);
         pluginItems = List.copyOf(pluginItems);
+    }
+
+    private static List<String> lowercased(List<String> values) {
+        return values.stream().map(value -> value.toLowerCase(Locale.ROOT)).toList();
     }
 }

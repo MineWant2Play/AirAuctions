@@ -20,6 +20,7 @@ import com.ftxeven.airauctions.service.listing.ListingService;
 import com.ftxeven.airauctions.service.listing.ValidationResult;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
+import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -356,9 +357,9 @@ public abstract class DraftSubcommand<E> implements SubCommand {
     }
 
     private Map<String, String> feePlaceholders(EconomyProvider provider, EconomyService.ChargeResult fee) {
-        Map<String, String> placeholders = new HashMap<>();
-        services.economy().formatInto(placeholders, "fee", provider.id(), fee);
-        return placeholders;
+        return PlaceholderMap.create()
+                .money(services.economy(), "fee", provider.id(), fee)
+                .build();
     }
 
     // Messaging
@@ -387,12 +388,12 @@ public abstract class DraftSubcommand<E> implements SubCommand {
 
     private Map<String, String> baseMessagePlaceholders(Player player, PendingListing<E> context) {
         EconomyService economy = services.economy();
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("amount", String.valueOf(context.amount()));
-        placeholders.put("item", ItemDisplay.name(context.snapshot(), configs.lang()));
-        economy.formatInto(placeholders, "price", context.provider().id(), context.price());
-        economy.formatInto(placeholders, "fee", context.provider().id(), economy.fee(player, context.provider(), context.price()));
-        return placeholders;
+        return PlaceholderMap.create()
+                .put("amount", context.amount())
+                .put("item", ItemDisplay.name(context.snapshot(), configs.lang()))
+                .money(economy, "price", context.provider().id(), context.price())
+                .money(economy, "fee", context.provider().id(), economy.fee(player, context.provider(), context.price()))
+                .build();
     }
 
     private String formatTimeout(int timeoutSeconds) {

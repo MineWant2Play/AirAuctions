@@ -10,6 +10,10 @@ import com.ftxeven.airauctions.core.command.RootCommand;
 import com.ftxeven.airauctions.core.command.Shortcuts;
 import com.ftxeven.airauctions.core.command.tabcomplete.TabCompleteEngine;
 import com.ftxeven.airauctions.core.gui.GuiManager;
+import com.ftxeven.airauctions.gui.impl.ActiveGui;
+import com.ftxeven.airauctions.gui.impl.ExpiredGui;
+import com.ftxeven.airauctions.gui.impl.HistoryGui;
+import com.ftxeven.airauctions.gui.impl.StorageGui;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,10 +41,10 @@ public final class PlayerCommand implements CommandExecutor, TabCompleter, Liste
                 .register(new SubBid(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete, durationUnits))
                 .register(new SubDelete(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
                 .register(new SubOpen(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
-                .register(new SubListings(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
-                .register(new SubExpired(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
-                .register(new SubStorage(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
-                .register(new SubHistory(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
+                .register(new ViewSubcommand(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete, "listings", ActiveGui.SELF_ID, ActiveGui.TARGET_ID))
+                .register(new ViewSubcommand(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete, "expired", ExpiredGui.SELF_ID, ExpiredGui.TARGET_ID))
+                .register(new ViewSubcommand(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete, "storage", StorageGui.SELF_ID, StorageGui.TARGET_ID))
+                .register(new ViewSubcommand(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete, "history", HistoryGui.SELF_ID, HistoryGui.TARGET_ID))
                 .register(new SubSearch(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete))
                 .register(new SubPlayer(plugin.configs(), plugin.messenger(), plugin.services(), plugin.guis(), tabComplete));
         this.dispatcher = new CommandDispatcher(plugin.messenger(), plugin.configs());

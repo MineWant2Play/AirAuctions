@@ -778,6 +778,10 @@ natural_blocks:
       - farmland
       - hay_block
       - muddy_mangrove_roots
+      - sulfur
+      - potent_sulfur
+      - sulfur_spike
+      - cinnabar
       # Gourds
       - pumpkin
       - melon
@@ -1541,15 +1545,7 @@ building_blocks:
       - diamond_block
       - iron_block
       - coal_block
-
-# -------------------------------
-# SULFUR & CINNABAR (26.2)
-# -------------------------------
-sulfur_cinnabar:
-  display-name: "Sulfur & Cinnabar"
-  match-rules:
-    materials:
-      - sulfur
+      # Sulfur family
       - sulfur_bricks
       - polished_sulfur
       - chiseled_sulfur
@@ -1562,9 +1558,6 @@ sulfur_cinnabar:
       - polished_sulfur_stairs
       - polished_sulfur_slab
       - polished_sulfur_wall
-      - potent_sulfur
-      - sulfur_spike
-      - cinnabar
       - cinnabar_bricks
       - polished_cinnabar
       - chiseled_cinnabar

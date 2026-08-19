@@ -5,8 +5,6 @@ import com.ftxeven.airauctions.config.StorageConfig;
 import com.ftxeven.airauctions.database.DatabaseManager;
 import com.ftxeven.airauctions.database.cache.sync.CacheSync;
 import com.ftxeven.airauctions.database.cache.sync.RedisCacheSync;
-import com.ftxeven.airauctions.database.repository.ListingRepository;
-import com.ftxeven.airauctions.database.repository.PlayerRepository;
 import com.ftxeven.airauctions.util.Scheduler;
 import org.bukkit.plugin.java.JavaPlugin;
 import redis.clients.jedis.DefaultJedisClientConfig;
@@ -26,6 +24,7 @@ public final class CacheManager {
 
     private final ListingCache listings;
     private final PlayerCache players;
+    private final HistoryCache history;
     private final CacheSync sync;
 
     public CacheManager(JavaPlugin plugin, ConfigManager configs, DatabaseManager database) {
@@ -38,6 +37,7 @@ public final class CacheManager {
 
         listings = new ListingCache(database.listings(), sync, Duration.ofMinutes(5));
         players = new PlayerCache(database.players(), sync, Duration.ofMinutes(5));
+        history = new HistoryCache();
 
         if (redis.enabled() && redis.resyncInterval() > 0) {
             long periodTicks = redis.resyncInterval() * 20L;
@@ -53,6 +53,10 @@ public final class CacheManager {
         return players;
     }
 
+    public HistoryCache history() {
+        return history;
+    }
+
     public void close() {
         sync.close();
     }
@@ -60,6 +64,7 @@ public final class CacheManager {
     private void resync() {
         listings.invalidateAll();
         players.invalidateAll();
+        history.invalidateAll();
     }
 
     private JedisPool buildJedisPool(StorageConfig.Redis redis) {

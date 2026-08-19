@@ -143,8 +143,8 @@ public final class ItemMatcher {
 
     // Text helpers
 
-    private boolean containsAny(String haystack, List<String> needles) {
+    private boolean containsAny(String haystack, List<String> lowercasedNeedles) {
         String lower = haystack.toLowerCase(Locale.ROOT);
-        return needles.stream().anyMatch(needle -> lower.contains(needle.toLowerCase(Locale.ROOT)));
+        return lowercasedNeedles.stream().anyMatch(lower::contains);
     }
 }

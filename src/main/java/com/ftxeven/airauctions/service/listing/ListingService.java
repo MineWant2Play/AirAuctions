@@ -65,11 +65,13 @@ public final class ListingService {
     }
 
     public PageResult<Listing> query(ListingQuery query) {
-        return database.listings().query(bounded(query));
+        ListingQuery asOf = bounded(query);
+        return cache.listings().queryPage(query, () -> database.listings().query(asOf));
     }
 
     public FacetCounts facets(ListingQuery query) {
-        return database.listings().facets(bounded(query));
+        ListingQuery asOf = bounded(query);
+        return cache.listings().queryFacets(query, () -> database.listings().facets(asOf));
     }
 
     public int count(UUID owner, ListingScope scope) {
@@ -116,6 +118,7 @@ public final class ListingService {
     public <T extends Listing> T create(T listing) {
         T created = (T) database.listings().create(listing);
         cache.listings().warm(created);
+        cache.listings().invalidateQueries();
         return created;
     }
 
@@ -124,13 +127,13 @@ public final class ListingService {
     }
 
     public Map<String, String> creationPlaceholders(Player seller, ItemStack item, int amount, String economyId, double price, EconomyService.ChargeResult fee) {
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("seller", seller.getName());
-        placeholders.put("amount", String.valueOf(amount));
-        placeholders.put("item", ItemDisplay.name(item, configs.lang()));
-        economy.formatInto(placeholders, "price", economyId, price);
-        economy.formatInto(placeholders, "fee", economyId, fee);
-        return placeholders;
+        return PlaceholderMap.create()
+                .put("seller", seller.getName())
+                .put("amount", amount)
+                .put("item", ItemDisplay.name(item, configs.lang()))
+                .money(economy, "price", economyId, price)
+                .money(economy, "fee", economyId, fee)
+                .build();
     }
 
     // Stock
@@ -223,10 +226,10 @@ public final class ListingService {
     }
 
     private Map<String, String> cancelPlaceholders(Listing.Info info, int amount) {
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("amount", String.valueOf(amount));
-        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
-        return placeholders;
+        return PlaceholderMap.create()
+                .put("amount", amount)
+                .put("item", ItemDisplay.name(info.item(), configs.lang()))
+                .build();
     }
 
     // Deletion
@@ -250,19 +253,21 @@ public final class ListingService {
         if (!deletionFeedbackAllowed(admin, info.seller())) {
             return;
         }
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("amount", String.valueOf(info.amount()));
-        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
-        placeholders.put("admin", adminDisplayName(admin));
+        Map<String, String> placeholders = PlaceholderMap.create()
+                .put("amount", info.amount())
+                .put("item", ItemDisplay.name(info.item(), configs.lang()))
+                .put("admin", adminDisplayName(admin))
+                .build();
         messenger.send(info.seller(), configs.lang().get("listings.delete.notify-seller"), placeholders);
     }
 
     public void notifyAdminOfDeletion(Listing.Info info, CommandSender admin) {
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("id", info.id());
-        placeholders.put("amount", String.valueOf(info.amount()));
-        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
-        placeholders.put("seller", players.name(info.seller()));
+        Map<String, String> placeholders = PlaceholderMap.create()
+                .put("id", info.id())
+                .put("amount", info.amount())
+                .put("item", ItemDisplay.name(info.item(), configs.lang()))
+                .put("seller", players.name(info.seller()))
+                .build();
         messenger.send(admin, configs.lang().get("listings.delete.success"), placeholders);
     }
 
