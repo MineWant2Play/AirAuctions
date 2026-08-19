@@ -13,10 +13,10 @@ all:
 # 'match-rules' supports the same strategies as restrictions.blacklist in config.yml.
 
 # -------------------------------
-# COMBAT
+# GEAR
 # -------------------------------
-combat:
-  display-name: "Combat"
+gear:
+  display-name: "Gear"
   match-rules:
     materials:
       # Wooden
@@ -115,14 +115,9 @@ combat:
       - green_harness
       - red_harness
       - black_harness
-
-# -------------------------------
-# TOOLS & UTILITIES
-# -------------------------------
-tools:
-  display-name: "Tools"
-  match-rules:
-    materials:
+      # -------------------------------
+      # TOOLS & UTILITIES
+      # -------------------------------
       # Basic tools
       - wooden_pickaxe
       - wooden_axe
@@ -253,7 +248,7 @@ tools:
       - music_disc_ward
 
 # -------------------------------
-# FOOD & DRINKS
+# FOODS
 # -------------------------------
 foods:
   display-name: "Foods"
@@ -312,277 +307,15 @@ foods:
       - ominous_bottle
 
 # -------------------------------
-# INGREDIENTS
+# BLOCKS
 # -------------------------------
-ingredients:
-  display-name: "Ingredients"
+blocks:
+  display-name: "Blocks"
   match-rules:
     materials:
-      # Basic materials
-      - string
-      - paper
-      - leather
-      - bone
-      - bone_meal
-      - flint
-      - charcoal
-      - stick
-      - rabbit_hide
-      # Special drops / keys
-      - experience_bottle
-      - breeze_rod
-      - heavy_core
-      - trial_key
-      - ominous_trial_key
-      # Ores & ingots
-      - coal
-      - copper_ingot
-      - iron_ingot
-      - gold_ingot
-      - netherite_ingot
-      - netherite_scrap
-      - raw_copper
-      - raw_iron
-      - raw_gold
-      - resin_brick
-      - copper_nugget
-      - iron_nugget
-      - gold_nugget
-      # Gems & rare items
-      - diamond
-      - emerald
-      - lapis_lazuli
-      - amethyst_shard
-      - prismarine_shard
-      - prismarine_crystals
-      - echo_shard
-      - heart_of_the_sea
-      - nether_star
-      - disc_fragment_5
-      - honeycomb
-      # Dusts & powders
-      - redstone
-      - glowstone_dust
-      - gunpowder
-      - blaze_powder
-      # Mob drops
-      - blaze_rod
-      - magma_cream
-      - slime_ball
-      - spider_eye
-      - fermented_spider_eye
-      - ghast_tear
-      - ender_pearl
-      - ender_eye
-      - ink_sac
-      - glow_ink_sac
-      - shulker_shell
-      - phantom_membrane
-      - nautilus_shell
-      - dragon_breath
-      - armadillo_scute
-      - egg
-      - blue_egg
-      - brown_egg
-      - turtle_egg
-      - sniffer_egg
-      # Crops & plants
-      - wheat
-      - wheat_seeds
-      - melon_seeds
-      - pumpkin_seeds
-      - beetroot_seeds
-      - cocoa_beans
-      - nether_wart
-      - cactus_flower
-      - pitcher_pod
-      - torchflower_seeds
-      # Building materials
-      - clay_ball
-      - brick
-      - nether_brick
-      - resin_clump
-      - amethyst_cluster
-      - large_amethyst_bud
-      - medium_amethyst_bud
-      - small_amethyst_bud
-      - amethyst_block
-      - budding_amethyst
-      - quartz
-      # Armor trim templates
-      - bolt_armor_trim_smithing_template
-      - coast_armor_trim_smithing_template
-      - dune_armor_trim_smithing_template
-      - eye_armor_trim_smithing_template
-      - flow_armor_trim_smithing_template
-      - host_armor_trim_smithing_template
-      - raiser_armor_trim_smithing_template
-      - rib_armor_trim_smithing_template
-      - sentry_armor_trim_smithing_template
-      - shaper_armor_trim_smithing_template
-      - silence_armor_trim_smithing_template
-      - snout_armor_trim_smithing_template
-      - spire_armor_trim_smithing_template
-      - tide_armor_trim_smithing_template
-      - vex_armor_trim_smithing_template
-      - ward_armor_trim_smithing_template
-      - wayfinder_armor_trim_smithing_template
-      - wild_armor_trim_smithing_template
-      - netherite_upgrade_smithing_template
-      # Dyes
-      - white_dye
-      - orange_dye
-      - magenta_dye
-      - light_blue_dye
-      - yellow_dye
-      - lime_dye
-      - pink_dye
-      - gray_dye
-      - light_gray_dye
-      - cyan_dye
-      - purple_dye
-      - blue_dye
-      - brown_dye
-      - green_dye
-      - red_dye
-      - black_dye
-      # Books & tags
-      - book
-      - enchanted_book
-      - name_tag
-      # Banner patterns
-      - creeper_banner_pattern
-      - skull_banner_pattern
-      - flower_banner_pattern
-      - mojang_banner_pattern
-      - globe_banner_pattern
-      - piglin_banner_pattern
-      - flow_banner_pattern
-      - guster_banner_pattern
-      - field_masoned_banner_pattern
-      - bordure_indented_banner_pattern
-      # Pottery sherds
-      - angler_pottery_sherd
-      - archer_pottery_sherd
-      - arms_up_pottery_sherd
-      - blade_pottery_sherd
-      - brewer_pottery_sherd
-      - burn_pottery_sherd
-      - danger_pottery_sherd
-      - explorer_pottery_sherd
-      - flow_pottery_sherd
-      - friend_pottery_sherd
-      - guster_pottery_sherd
-      - heart_pottery_sherd
-      - heartbreak_pottery_sherd
-      - howl_pottery_sherd
-      - miner_pottery_sherd
-      - mourner_pottery_sherd
-      - plenty_pottery_sherd
-      - prize_pottery_sherd
-      - scrape_pottery_sherd
-      - sheaf_pottery_sherd
-      - shelter_pottery_sherd
-      - skull_pottery_sherd
-      - snort_pottery_sherd
-
-# -------------------------------
-# SPAWN EGGS
-# -------------------------------
-spawn_eggs:
-  display-name: "Spawn Eggs"
-  match-rules:
-    materials:
-      # Passive / Neutral mobs
-      - allay_spawn_egg
-      - armadillo_spawn_egg
-      - axolotl_spawn_egg
-      - bat_spawn_egg
-      - bee_spawn_egg
-      - camel_spawn_egg
-      - camel_husk_spawn_egg
-      - cat_spawn_egg
-      - chicken_spawn_egg
-      - donkey_spawn_egg
-      - fox_spawn_egg
-      - frog_spawn_egg
-      - goat_spawn_egg
-      - horse_spawn_egg
-      - llama_spawn_egg
-      - mooshroom_spawn_egg
-      - mule_spawn_egg
-      - ocelot_spawn_egg
-      - panda_spawn_egg
-      - parrot_spawn_egg
-      - pig_spawn_egg
-      - polar_bear_spawn_egg
-      - rabbit_spawn_egg
-      - salmon_spawn_egg
-      - sheep_spawn_egg
-      - snow_golem_spawn_egg
-      - squid_spawn_egg
-      - strider_spawn_egg
-      - tropical_fish_spawn_egg
-      - turtle_spawn_egg
-      - wolf_spawn_egg
-      - trader_llama_spawn_egg
-      - sniffer_spawn_egg
-      - nautilus_spawn_egg
-      - copper_golem_spawn_egg
-      - happy_ghast_spawn_egg
-      - parched_spawn_egg
-      - wandering_trader_spawn_egg
-      - tadpole_spawn_egg
-      # Hostile mobs
-      - blaze_spawn_egg
-      - bogged_spawn_egg
-      - breeze_spawn_egg
-      - cave_spider_spawn_egg
-      - creaking_spawn_egg
-      - creeper_spawn_egg
-      - drowned_spawn_egg
-      - enderman_spawn_egg
-      - endermite_spawn_egg
-      - evoker_spawn_egg
-      - ghast_spawn_egg
-      - guardian_spawn_egg
-      - hoglin_spawn_egg
-      - husk_spawn_egg
-      - magma_cube_spawn_egg
-      - phantom_spawn_egg
-      - piglin_spawn_egg
-      - piglin_brute_spawn_egg
-      - pillager_spawn_egg
-      - pufferfish_spawn_egg
-      - ravager_spawn_egg
-      - shulker_spawn_egg
-      - silverfish_spawn_egg
-      - skeleton_spawn_egg
-      - skeleton_horse_spawn_egg
-      - slime_spawn_egg
-      - spider_spawn_egg
-      - stray_spawn_egg
-      - vex_spawn_egg
-      - villager_spawn_egg
-      - vindicator_spawn_egg
-      - witch_spawn_egg
-      - wither_skeleton_spawn_egg
-      - zoglin_spawn_egg
-      - zombie_spawn_egg
-      - zombie_horse_spawn_egg
-      - zombie_villager_spawn_egg
-      - zombified_piglin_spawn_egg
-      # Boss / Special mobs
-      - iron_golem_spawn_egg
-      - warden_spawn_egg
-
-# -------------------------------
-# FUNCTIONAL BLOCKS
-# -------------------------------
-functional_blocks:
-  display-name: "Functional Blocks"
-  match-rules:
-    materials:
+      # -------------------------------
+      # FUNCTIONAL BLOCKS
+      # -------------------------------
       # Crafting & Utility
       - crafting_table
       - crafter
@@ -693,14 +426,9 @@ functional_blocks:
       - bamboo_hanging_sign
       - crimson_hanging_sign
       - warped_hanging_sign
-
-# -------------------------------
-# REDSTONE BLOCKS
-# -------------------------------
-redstone_blocks:
-  display-name: "Redstone Blocks"
-  match-rules:
-    materials:
+      # -------------------------------
+      # REDSTONE BLOCKS
+      # -------------------------------
       # Core redstone
       - redstone
       - redstone_block
@@ -709,7 +437,7 @@ redstone_blocks:
       - slime_block
       - honey_block
       - tnt
-      # Power & input
+      - # Power & input
       - lever
       - oak_button
       - stone_button
@@ -719,7 +447,7 @@ redstone_blocks:
       - tripwire_hook
       - daylight_detector
       - target
-      # Shelves (redstone‑readable database)
+      - # Shelves (redstone‑readable database)
       - oak_shelf
       - spruce_shelf
       - birch_shelf
@@ -733,11 +461,11 @@ redstone_blocks:
       - crimson_shelf
       - warped_shelf
       - chiseled_bookshelf
-      # Signal components
+      - # Signal components
       - repeater
       - comparator
       - observer
-      # Movement & mechanics
+      - # Movement & mechanics
       - rail
       - powered_rail
       - detector_rail
@@ -748,18 +476,13 @@ redstone_blocks:
       - dropper
       - hopper
       - trapped_chest
-      # Sound & interaction
+      - # Sound & interaction
       - note_block
       - jukebox
       - bell
-
-# -------------------------------
-# NATURAL BLOCKS
-# -------------------------------
-natural_blocks:
-  display-name: "Natural Blocks"
-  match-rules:
-    materials:
+      # -------------------------------
+      # NATURAL BLOCKS
+      # -------------------------------
       # Soil & Ground
       - dirt
       - dirt_path
@@ -782,10 +505,10 @@ natural_blocks:
       - potent_sulfur
       - sulfur_spike
       - cinnabar
-      # Gourds
+      - # Gourds
       - pumpkin
       - melon
-      # Stone & Rock
+      - # Stone & Rock
       - stone
       - cobblestone
       - mossy_cobblestone
@@ -806,7 +529,7 @@ natural_blocks:
       - pale_moss_block
       - pale_moss_carpet
       - pale_hanging_moss
-      # Ores (natural form)
+      - # Ores (natural form)
       - coal_ore
       - deepslate_coal_ore
       - iron_ore
@@ -826,7 +549,7 @@ natural_blocks:
       - nether_quartz_ore
       - nether_gold_ore
       - ancient_debris
-      # Logs & Wood
+      - # Logs & Wood
       - oak_log
       - spruce_log
       - birch_log
@@ -841,7 +564,7 @@ natural_blocks:
       - bamboo_block
       - creaking_heart
       - mangrove_roots
-      # Leaves & Foliage
+      - # Leaves & Foliage
       - oak_leaves
       - spruce_leaves
       - birch_leaves
@@ -853,7 +576,7 @@ natural_blocks:
       - pale_oak_leaves
       - azalea_leaves
       - flowering_azalea_leaves
-      # Plants & Nature
+      - # Plants & Nature
       - cactus
       - sugar_cane
       - kelp
@@ -899,7 +622,7 @@ natural_blocks:
       - peony
       - pitcher_plant
       - bamboo
-      # Saplings
+      - # Saplings
       - oak_sapling
       - spruce_sapling
       - birch_sapling
@@ -909,7 +632,7 @@ natural_blocks:
       - cherry_sapling
       - mangrove_propagule
       - bamboo
-      # Coral & Sea Life
+      - # Coral & Sea Life
       - tube_coral_block
       - brain_coral_block
       - bubble_coral_block
@@ -945,13 +668,13 @@ natural_blocks:
       - wet_sponge
       - frogspawn
       - dried_kelp_block
-      # Sculk Family
+      - # Sculk Family
       - sculk
       - sculk_vein
       - sculk_catalyst
       - sculk_shrieker
       - sculk_sensor
-      # Nether & End
+      - # Nether & End
       - glowstone
       - shroomlight
       - nether_wart_block
@@ -969,20 +692,15 @@ natural_blocks:
       - magma_block
       - weeping_vines
       - dried_ghast
-      # Ice & Snow
+      - # Ice & Snow
       - ice
       - packed_ice
       - blue_ice
       - snow_block
       - powder_snow
-
-# -------------------------------
-# COLORED BLOCKS
-# -------------------------------
-colored_blocks:
-  display-name: "Colored Blocks"
-  match-rules:
-    materials:
+      # -------------------------------
+      # COLORED BLOCKS
+      # -------------------------------
       # Wool
       - white_wool
       - orange_wool
@@ -1174,13 +892,9 @@ colored_blocks:
       - red_candle
       - black_candle
 
-# -------------------------------
-# BUILDING BLOCKS
-# -------------------------------
-building_blocks:
-  display-name: "Building Blocks"
-  match-rules:
-    materials:
+      # -------------------------------
+      # BUILDING BLOCKS
+      # -------------------------------
       # Planks
       - oak_wood
       - oak_planks
@@ -1570,3 +1284,263 @@ building_blocks:
       - polished_cinnabar_stairs
       - polished_cinnabar_slab
       - polished_cinnabar_wall
+
+# -------------------------------
+# MISC
+# -------------------------------
+misc:
+  display-name: "Misc"
+  match-rules:
+    materials:
+      # -------------------------------
+      # INGREDIENTS
+      # -------------------------------
+      # Basic materials
+      - string
+      - paper
+      - leather
+      - bone
+      - bone_meal
+      - flint
+      - charcoal
+      - stick
+      - rabbit_hide
+      # Special drops / keys
+      - experience_bottle
+      - breeze_rod
+      - heavy_core
+      - trial_key
+      - ominous_trial_key
+      # Ores & ingots
+      - coal
+      - copper_ingot
+      - iron_ingot
+      - gold_ingot
+      - netherite_ingot
+      - netherite_scrap
+      - raw_copper
+      - raw_iron
+      - raw_gold
+      - resin_brick
+      - copper_nugget
+      - iron_nugget
+      - gold_nugget
+      # Gems & rare items
+      - diamond
+      - emerald
+      - lapis_lazuli
+      - amethyst_shard
+      - prismarine_shard
+      - prismarine_crystals
+      - echo_shard
+      - heart_of_the_sea
+      - nether_star
+      - disc_fragment_5
+      - honeycomb
+      # Dusts & powders
+      - redstone
+      - glowstone_dust
+      - gunpowder
+      - blaze_powder
+      # Mob drops
+      - blaze_rod
+      - magma_cream
+      - slime_ball
+      - spider_eye
+      - fermented_spider_eye
+      - ghast_tear
+      - ender_pearl
+      - ender_eye
+      - ink_sac
+      - glow_ink_sac
+      - shulker_shell
+      - phantom_membrane
+      - nautilus_shell
+      - dragon_breath
+      - armadillo_scute
+      - egg
+      - blue_egg
+      - brown_egg
+      - turtle_egg
+      - sniffer_egg
+      # Crops & plants
+      - wheat
+      - wheat_seeds
+      - melon_seeds
+      - pumpkin_seeds
+      - beetroot_seeds
+      - cocoa_beans
+      - nether_wart
+      - cactus_flower
+      - pitcher_pod
+      - torchflower_seeds
+      # Building materials
+      - clay_ball
+      - brick
+      - nether_brick
+      - resin_clump
+      - amethyst_cluster
+      - large_amethyst_bud
+      - medium_amethyst_bud
+      - small_amethyst_bud
+      - amethyst_block
+      - budding_amethyst
+      - quartz
+      # Armor trim templates
+      - bolt_armor_trim_smithing_template
+      - coast_armor_trim_smithing_template
+      - dune_armor_trim_smithing_template
+      - eye_armor_trim_smithing_template
+      - flow_armor_trim_smithing_template
+      - host_armor_trim_smithing_template
+      - raiser_armor_trim_smithing_template
+      - rib_armor_trim_smithing_template
+      - sentry_armor_trim_smithing_template
+      - shaper_armor_trim_smithing_template
+      - silence_armor_trim_smithing_template
+      - snout_armor_trim_smithing_template
+      - spire_armor_trim_smithing_template
+      - tide_armor_trim_smithing_template
+      - vex_armor_trim_smithing_template
+      - ward_armor_trim_smithing_template
+      - wayfinder_armor_trim_smithing_template
+      - wild_armor_trim_smithing_template
+      - netherite_upgrade_smithing_template
+      # Dyes
+      - white_dye
+      - orange_dye
+      - magenta_dye
+      - light_blue_dye
+      - yellow_dye
+      - lime_dye
+      - pink_dye
+      - gray_dye
+      - light_gray_dye
+      - cyan_dye
+      - purple_dye
+      - blue_dye
+      - brown_dye
+      - green_dye
+      - red_dye
+      - black_dye
+      # Books & tags
+      - book
+      - enchanted_book
+      - name_tag
+      # Banner patterns
+      - creeper_banner_pattern
+      - skull_banner_pattern
+      - flower_banner_pattern
+      - mojang_banner_pattern
+      - globe_banner_pattern
+      - piglin_banner_pattern
+      - flow_banner_pattern
+      - guster_banner_pattern
+      - field_masoned_banner_pattern
+      - bordure_indented_banner_pattern
+      # Pottery sherds
+      - angler_pottery_sherd
+      - archer_pottery_sherd
+      - arms_up_pottery_sherd
+      - blade_pottery_sherd
+      - brewer_pottery_sherd
+      - burn_pottery_sherd
+      - danger_pottery_sherd
+      - explorer_pottery_sherd
+      - flow_pottery_sherd
+      - friend_pottery_sherd
+      - guster_pottery_sherd
+      - heart_pottery_sherd
+      - heartbreak_pottery_sherd
+      - howl_pottery_sherd
+      - miner_pottery_sherd
+      - mourner_pottery_sherd
+      - plenty_pottery_sherd
+      - prize_pottery_sherd
+      - scrape_pottery_sherd
+      - sheaf_pottery_sherd
+      - shelter_pottery_sherd
+      - skull_pottery_sherd
+      - snort_pottery_sherd
+      # Passive / Neutral mobs
+      - allay_spawn_egg
+      - armadillo_spawn_egg
+      - axolotl_spawn_egg
+      - bat_spawn_egg
+      - bee_spawn_egg
+      - camel_spawn_egg
+      - camel_husk_spawn_egg
+      - cat_spawn_egg
+      - chicken_spawn_egg
+      - donkey_spawn_egg
+      - fox_spawn_egg
+      - frog_spawn_egg
+      - goat_spawn_egg
+      - horse_spawn_egg
+      - llama_spawn_egg
+      - mooshroom_spawn_egg
+      - mule_spawn_egg
+      - ocelot_spawn_egg
+      - panda_spawn_egg
+      - parrot_spawn_egg
+      - pig_spawn_egg
+      - polar_bear_spawn_egg
+      - rabbit_spawn_egg
+      - salmon_spawn_egg
+      - sheep_spawn_egg
+      - snow_golem_spawn_egg
+      - squid_spawn_egg
+      - strider_spawn_egg
+      - tropical_fish_spawn_egg
+      - turtle_spawn_egg
+      - wolf_spawn_egg
+      - trader_llama_spawn_egg
+      - sniffer_spawn_egg
+      - nautilus_spawn_egg
+      - copper_golem_spawn_egg
+      - happy_ghast_spawn_egg
+      - parched_spawn_egg
+      - wandering_trader_spawn_egg
+      - tadpole_spawn_egg
+      # Hostile mobs
+      - blaze_spawn_egg
+      - bogged_spawn_egg
+      - breeze_spawn_egg
+      - cave_spider_spawn_egg
+      - creaking_spawn_egg
+      - creeper_spawn_egg
+      - drowned_spawn_egg
+      - enderman_spawn_egg
+      - endermite_spawn_egg
+      - evoker_spawn_egg
+      - ghast_spawn_egg
+      - guardian_spawn_egg
+      - hoglin_spawn_egg
+      - husk_spawn_egg
+      - magma_cube_spawn_egg
+      - phantom_spawn_egg
+      - piglin_spawn_egg
+      - piglin_brute_spawn_egg
+      - pillager_spawn_egg
+      - pufferfish_spawn_egg
+      - ravager_spawn_egg
+      - shulker_spawn_egg
+      - silverfish_spawn_egg
+      - skeleton_spawn_egg
+      - skeleton_horse_spawn_egg
+      - slime_spawn_egg
+      - spider_spawn_egg
+      - stray_spawn_egg
+      - vex_spawn_egg
+      - villager_spawn_egg
+      - vindicator_spawn_egg
+      - witch_spawn_egg
+      - wither_skeleton_spawn_egg
+      - zoglin_spawn_egg
+      - zombie_spawn_egg
+      - zombie_horse_spawn_egg
+      - zombie_villager_spawn_egg
+      - zombified_piglin_spawn_egg
+      # Boss / Special mobs
+      - iron_golem_spawn_egg
+      - warden_spawn_egg

@@ -5,7 +5,7 @@ settings:
   # If disabled, it will fallback to chat confirmation
   enabled: true
   title: "<gradient:#5AD1F2:#736EFE><bold>Confirm Auction Listing</bold></gradient>"
-  rows: 4
+  rows: 5
 
 # --------------------------------------------------
 # LAYOUT
@@ -19,7 +19,7 @@ layout:
         unselected: "<dark_gray>  %name%"
 
   #  Slots where the target listing is displayed.
-  listing-slots: 13
+  listing-slots: 22
 
   #  How the listing is rendered inside listing-slots.
   listing:
@@ -39,9 +39,13 @@ layout:
 # Define the static items rendered in this GUI.
 # --------------------------------------------------
 items:
+  filler:
+    template: filler
+    slots: [0-3, 5-7, 36, 40, 44]
+
   filter-economy:
-    slots: 4
-    material: NAME_TAG
+    slots: 8
+    material: REPEATER
     display-name: "<aqua><bold>Selector</bold>"
     lore:
       - "<dark_gray>Economies"
@@ -62,7 +66,7 @@ items:
     cooldown: 0.2
 
   confirm:
-    slots: 11
+    slots: 20
     priority:
       - conditions:
           - "%valid_min_price% == false"
@@ -99,7 +103,7 @@ items:
             - "[close]"
 
   cancel:
-    slots: 15
+    slots: 24
     material: RED_STAINED_GLASS_PANE
     display-name: "<red><bold>Cancel</bold>"
     lore:
@@ -109,9 +113,9 @@ items:
         - "[close]"
         - "[sound] $deny"
 
-  # --- Footer ---
+    # --- Footer ---
   add-1:
-    slots: 27
+    slots: 37
     material: LIME_STAINED_GLASS_PANE
     display-name: "<green><bold>+1</bold>"
     lore:
@@ -122,7 +126,7 @@ items:
         - "[sound] $click"
 
   add-10:
-    slots: 28
+    slots: 38
     material: LIME_STAINED_GLASS_PANE
     amount: 2
     display-name: "<green><bold>+10</bold>"
@@ -134,7 +138,7 @@ items:
         - "[sound] $click"
 
   add-100:
-    slots: 29
+    slots: 39
     material: LIME_STAINED_GLASS_PANE
     amount: 3
     display-name: "<green><bold>+100</bold>"
@@ -146,7 +150,7 @@ items:
         - "[sound] $click"
 
   set-price:
-    slots: 31
+    slots: 4
     material: EXPERIENCE_BOTTLE
     display-name: "<aqua><bold>Set Price"
     lore:
@@ -161,7 +165,7 @@ items:
         material: EMERALD
 
   remove-1:
-    slots: 33
+    slots: 41
     material: RED_STAINED_GLASS_PANE
     display-name: "<red><bold>-1</bold>"
     lore:
@@ -172,7 +176,7 @@ items:
         - "[sound] $click"
 
   remove-10:
-    slots: 34
+    slots: 42
     material: RED_STAINED_GLASS_PANE
     amount: 2
     display-name: "<red><bold>-10</bold>"
@@ -184,7 +188,7 @@ items:
         - "[sound] $click"
 
   remove-100:
-    slots: 35
+    slots: 43
     material: RED_STAINED_GLASS_PANE
     display-name: "<red><bold>-100</bold>"
     lore:

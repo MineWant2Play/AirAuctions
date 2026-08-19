@@ -3,7 +3,7 @@
 
 settings:
   title: "<gradient:#5AD1F2:#736EFE><bold>Marketplace</bold></gradient> <dark_gray>- Page %page%/%pages%"
-  rows: 6
+  rows: 5
 
 # --------------------------------------------------
 # LAYOUT
@@ -35,7 +35,7 @@ layout:
         unselected: "<dark_gray>  %name%"
 
   # Slots where listings are rendered.
-  listing-slots: [10-16, 19-25, 28-34]
+  listing-slots: [9-35]
 
   # How each listing is rendered inside listing-slots.
   listing:
@@ -48,78 +48,58 @@ layout:
 items:
   filler:
     template: filler
-    slots: [0-3, 5-7, 9, 17, 27, 35-44]
+    slots: [1-2, 6-7, 37-38, 42-43]
 
   no-listings:
     template: no-listings
     slots: 22
 
   # --- Header ---
-  marketplace:
-    slots: 4
-    material: NETHER_STAR
-    display-name: "<aqua><bold>Marketplace</bold>"
+  back:
+    slots: 0
+    material: OAK_DOOR
+    display-name: "<white><bold>Back</bold>"
     lore:
-      - "<dark_gray>Global Marketplace"
-      - " "
-      - " <dark_gray>- <gray>Listings: <white>%current% <gray>out of <white>%total%"
-      - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
-      - " "
-      - "<aqua>Click <gray>to see categories"
+      - "<gray>Return to Categories."
     actions:
       any:
-        - "[sound] $click"
         - "[open] gui:browsing/categories"
-
-  close:
-    template: close-button
-    slots: 8
-
-  # --- Navigation ---
-  previous-page:
-    template: previous-page
-    slots: 18
-
-  next-page:
-    template: next-page
-    slots: 26
-
-  # --- Footer ---
-  your-listings:
-    slots: 45
-    material: CHEST
-    display-name: "<white><bold>Your Listings</bold>"
-    lore:
-      - "<dark_gray>Management"
-      - " "
-      - "<gray>View and manage your active listings."
-      - " "
-      - "<white>Click <gray>to open"
-    actions:
-      any:
         - "[sound] $click"
-        - "[open] gui:player/active page:1 restore:<page:current>"
 
-  search:
-    template: search-button
-    slots: 48
-
-  refresh:
-    template: refresh-button
-    slots: 49
-
-  sort-active:
-    template: sort-active
-    slots: 50
+  switch-listings:
+    template: switch-listings
+    slots: 8
 
   filter-category:
     template: filter-category
-    slots: 51
+    slots: 3
 
   filter-type:
     template: filter-type
-    slots: 52
+    slots: 4
 
   filter-economy:
     template: filter-economy
-    slots: 53
+    slots: 5
+
+  # --- Footer ---
+  next-page:
+    template: next-page
+    slots: 44
+
+  previous-page:
+    template: previous-page
+    slots: 36
+
+  info:
+    template: info-button
+    slots: 40
+    material: BOOK
+
+  search:
+    template: search-button
+    slots: 39
+
+  sort:
+    template: sort-active
+    slots: 41

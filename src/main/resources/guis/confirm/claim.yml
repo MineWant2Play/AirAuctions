@@ -26,6 +26,10 @@ layout:
 # Define the static items rendered in this GUI.
 # --------------------------------------------------
 items:
+  filler:
+    template: filler
+    slots: [0-8, 18-26]
+
   confirm:
     slots: 11
     material: LIME_STAINED_GLASS_PANE

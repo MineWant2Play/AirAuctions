@@ -3,7 +3,7 @@
 
 settings:
   title: "<gradient:#5AD1F2:#736EFE><bold>%seller%'s Storage</bold></gradient> <dark_gray>- Page %page%/%pages%"
-  rows: 6
+  rows: 5
 
 # --------------------------------------------------
 # LAYOUT
@@ -35,7 +35,7 @@ layout:
         unselected: "<dark_gray>  %name%"
 
   # Slots where listings are rendered.
-  listing-slots: [10-16, 19-25, 28-34]
+  listing-slots: [9-35]
 
   # How each listing is rendered inside listing-slots.
   listing:
@@ -48,55 +48,42 @@ layout:
 items:
   filler:
     template: filler
-    slots: [1-3, 5-7, 9, 17, 27, 35-44]
+    slots: [1-8, 37-38, 42-43]
 
   no-listings:
     template: no-listings
     slots: 22
 
   # --- Header ---
-  seller-head:
-    slots: 4
-    material: head-%seller%
-    display-name: "<white><bold>%seller%</bold><gray>'s Storage"
-    lore:
-      - " "
-      - " <dark_gray>- <gray>Items: <white>%current% <gray>out of <white>%total%"
-      - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
-
   back:
     slots: 0
-    material: OAK_DOOR
+    material: DARK_OAK_DOOR
     display-name: "<white><bold>Back</bold>"
     lore:
-      - "<gray>Return to %seller%'s Listings."
+      - "<gray>Return to Marketplace."
     actions:
       any:
-        - "[open] gui:target/active target:%seller% restore:<page:current>"
+        - "[open] gui:browsing/global"
         - "[sound] $click"
 
-  close:
-    template: close-button
-    slots: 8
-
-  # --- Navigation ---
-  previous-page:
-    template: previous-page
-    slots: 18
-
+  # --- Footer ---
   next-page:
     template: next-page
-    slots: 26
+    slots: 44
 
-  # --- Footer ---
+  previous-page:
+    template: previous-page
+    slots: 36
+
+  info:
+    template: info-button
+    slots: 40
+    material: head-%seller%
+
   search:
     template: search-button
-    slots: 48
+    slots: 39
 
-  refresh:
-    template: refresh-button
-    slots: 49
-
-  sort-unclaimed:
+  sort:
     template: sort-unclaimed
-    slots: 50
+    slots: 41

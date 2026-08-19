@@ -9,7 +9,7 @@ settings:
   # If disabled, it will fallback to INPUT instead of opening this GUI.
   enabled: true
   title: "<gradient:#5AD1F2:#736EFE><bold>Place Bid</bold></gradient>"
-  rows: 4
+  rows: 5
 
 # --------------------------------------------------
 # LAYOUT
@@ -17,7 +17,7 @@ settings:
 # --------------------------------------------------
 layout:
   # Slots where targeted listing is rendered.
-  listing-slots: 13
+  listing-slots: 22
 
   # How the targeted listing is rendered inside listing-slots.
   listing:
@@ -45,8 +45,12 @@ layout:
 # Define the static items rendered in this GUI.
 # --------------------------------------------------
 items:
+  filler:
+    template: filler
+    slots: [0-3, 5-8, 36, 40, 44]
+
   confirm:
-    slots: 11
+    slots: 20
     priority:
       - conditions:
           - "%valid_min_offer% == false"
@@ -83,7 +87,7 @@ items:
             - "[open] context:true"
 
   cancel:
-    slots: 15
+    slots: 24
     material: RED_STAINED_GLASS_PANE
     display-name: "<red><bold>Cancel</bold>"
     lore:
@@ -95,7 +99,7 @@ items:
 
   # --- Footer ---
   add-1:
-    slots: 27
+    slots: 37
     material: LIME_STAINED_GLASS_PANE
     display-name: "<green><bold>+1</bold>"
     lore:
@@ -107,7 +111,7 @@ items:
         - "!=is:valid [open] context:true"
 
   add-10:
-    slots: 28
+    slots: 38
     material: LIME_STAINED_GLASS_PANE
     amount: 2
     display-name: "<green><bold>+10</bold>"
@@ -120,7 +124,7 @@ items:
         - "!=is:valid [open] context:true"
 
   add-100:
-    slots: 29
+    slots: 39
     material: LIME_STAINED_GLASS_PANE
     amount: 3
     display-name: "<green><bold>+100</bold>"
@@ -133,7 +137,7 @@ items:
         - "!=is:valid [open] context:true"
 
   set-offer:
-    slots: 31
+    slots: 4
     material: EXPERIENCE_BOTTLE
     display-name: "<aqua><bold>Set Offer"
     lore:
@@ -149,7 +153,7 @@ items:
         material: EMERALD
 
   remove-1:
-    slots: 33
+    slots: 41
     material: RED_STAINED_GLASS_PANE
     display-name: "<red><bold>-1</bold>"
     lore:
@@ -161,7 +165,7 @@ items:
         - "!=is:valid [open] context:true"
 
   remove-10:
-    slots: 34
+    slots: 42
     material: RED_STAINED_GLASS_PANE
     amount: 2
     display-name: "<red><bold>-10</bold>"
@@ -174,7 +178,7 @@ items:
         - "!=is:valid [open] context:true"
 
   remove-100:
-    slots: 35
+    slots: 43
     material: RED_STAINED_GLASS_PANE
     display-name: "<red><bold>-100</bold>"
     lore:

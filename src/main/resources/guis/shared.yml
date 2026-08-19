@@ -80,21 +80,41 @@ templates:
         lore:
           - "<gray>No listings in this category yet."
 
-  close-button:
-    material: BARRIER
-    display-name: "<red><bold>Close</bold>"
+  switch-listings:
+    material: CHEST_MINECART
+    display-name: "<white><bold>Your Listings</bold>"
     lore:
-      - "<gray>Return to game."
+      - "<dark_gray>Management"
+      - " "
+      - "<gray>View and manage your listings."
+      - " "
+      - "<white>Left-Click <gray>to view active listings"
+      - "<white>Right-Click <gray>to view expired listings"
+      - "<white>Shift-Left <gray>to view storage listings"
+      - "<white>Shift-Right <gray>to view history transactions"
     actions:
-      any:
+      left:
         - "[sound] $click"
-        - "[close]"
+        - "[open] gui:player/active page:1 restore:<page:current>"
+      right:
+        - "[sound] $click"
+        - "[open] gui:player/expired page:1 restore:<page:current>"
+      left-shift:
+        - "[sound] $click"
+        - "[open] gui:player/storage page:1 restore:<page:current>"
+      right-shift:
+        - "[sound] $click"
+        - "[open] gui:player/history page:1 restore:<page:current>"
 
-  refresh-button:
-    material: SUNFLOWER
-    display-name: "<yellow><bold>Refresh</bold>"
+  info-button:
+    display-name: "<aqua><bold>Listings</bold>"
     lore:
-      - "<gray>Update the current listings."
+      - "<dark_gray>Information"
+      - " "
+      - " <dark_gray>- <gray>Listings: <white>%current% <gray>out of <white>%total%"
+      - " <dark_gray>- <gray>Page: <white>%page%<dark_gray>/<white>%pages%"
+      - " "
+      - "<aqua>Click <gray>to refresh"
     actions:
       any:
         - "[sound] $click"
@@ -103,7 +123,7 @@ templates:
     cooldown-message: "<ref:prefix> <red>Wait <white>%timeout%</white> before refreshing this GUI again!"
 
   search-button:
-    material: OAK_SIGN
+    material: SPYGLASS
     display-name: "<white><bold>Search</bold>"
     lore:
       - "<dark_gray>Query"
@@ -216,7 +236,7 @@ templates:
 
   # --- Filters ---
   filter-category:
-    material: NETHER_STAR
+    material: SPRUCE_HANGING_SIGN
     display-name: "<aqua><bold>Category</bold>"
     lore:
       - "<dark_gray>Filter by Category"
@@ -236,7 +256,7 @@ templates:
     cooldown: 0.2
 
   filter-type:
-    material: NAME_TAG
+    material: JUNGLE_HANGING_SIGN
     display-name: "<aqua><bold>Listing Type</bold>"
     lore:
       - "<dark_gray>Filter by Listing Type"
@@ -256,7 +276,7 @@ templates:
     cooldown: 0.2
 
   filter-economy:
-    material: EMERALD
+    material: ACACIA_HANGING_SIGN
     display-name: "<aqua><bold>Economy</bold>"
     lore:
       - "<dark_gray>Filter by Economy"
