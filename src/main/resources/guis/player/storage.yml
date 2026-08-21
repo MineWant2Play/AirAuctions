@@ -69,6 +69,15 @@ items:
   switch-listings:
     template: switch-listings
     slots: 8
+    lore:
+      - "<dark_gray>Management"
+      - " "
+      - "<gray>View and manage your listings."
+      - " "
+      - "  <gray>Left-Click <dark_gray>- Active Listings"
+      - "  <gray>Right-Click <dark_gray>- Expired Listings"
+      - "<white>> Shift-Left <gray>- Storage"
+      - "  <gray>Shift-Right <dark_gray>- Transactions"
 
   # --- Footer ---
   next-page:

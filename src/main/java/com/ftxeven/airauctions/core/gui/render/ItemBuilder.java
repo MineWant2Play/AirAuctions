@@ -3,7 +3,6 @@ package com.ftxeven.airauctions.core.gui.render;
 import com.ftxeven.airauctions.core.gui.config.ItemConfig;
 import com.ftxeven.airauctions.core.gui.flag.FlagGate;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.MiniText;
 import com.ftxeven.airauctions.util.Placeholders;
 import org.bukkit.Color;
 import org.bukkit.Material;

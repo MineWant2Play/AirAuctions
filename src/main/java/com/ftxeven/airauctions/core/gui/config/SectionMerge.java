@@ -10,7 +10,16 @@ public final class SectionMerge {
     private SectionMerge() {
     }
 
+    public enum KeyOrder {
+        PRESERVE,
+        OVERRIDE_LAST
+    }
+
     public static @Nullable ConfigurationSection merge(@Nullable ConfigurationSection base, @Nullable ConfigurationSection override) {
+        return merge(base, override, KeyOrder.PRESERVE);
+    }
+
+    public static @Nullable ConfigurationSection merge(@Nullable ConfigurationSection base, @Nullable ConfigurationSection override, KeyOrder order) {
         if (override == null) {
             return base;
         }
@@ -19,8 +28,19 @@ public final class SectionMerge {
         }
 
         YamlConfiguration merged = new YamlConfiguration();
-        copyInto(merged, base);
-        overlayInto(merged, override);
+        if (order == KeyOrder.OVERRIDE_LAST) {
+            for (String key : base.getKeys(false)) {
+                if (!override.isSet(key)) {
+                    copyEntry(merged, base, key);
+                }
+            }
+            for (String key : override.getKeys(false)) {
+                mergeEntry(merged, base, override, key);
+            }
+        } else {
+            copyInto(merged, base);
+            overlayInto(merged, override);
+        }
         return merged;
     }
 
@@ -28,6 +48,27 @@ public final class SectionMerge {
     public static void replace(ConfigurationSection target, String key, ConfigurationSection source) {
         target.set(key, null);
         copyInto(target.createSection(key), source);
+    }
+
+    private static void copyEntry(ConfigurationSection target, ConfigurationSection source, String key) {
+        ConfigurationSection nested = source.getConfigurationSection(key);
+        if (nested != null) {
+            copyInto(target.createSection(key), nested);
+        } else {
+            target.set(key, source.get(key));
+        }
+    }
+
+    private static void mergeEntry(ConfigurationSection target, ConfigurationSection base, ConfigurationSection override, String key) {
+        ConfigurationSection baseNested = base.getConfigurationSection(key);
+        ConfigurationSection overrideNested = override.getConfigurationSection(key);
+        if (baseNested != null && overrideNested != null) {
+            copyInto(target.createSection(key), merge(baseNested, overrideNested, KeyOrder.PRESERVE));
+        } else if (overrideNested != null) {
+            copyInto(target.createSection(key), overrideNested);
+        } else {
+            target.set(key, override.get(key));
+        }
     }
 
     private static void copyInto(ConfigurationSection target, ConfigurationSection source) {

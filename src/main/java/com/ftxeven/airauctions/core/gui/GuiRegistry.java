@@ -252,7 +252,7 @@ public final class GuiRegistry {
             GuiSettings settings = readSettings(mergedSettings, shared.defaults(), aliasExpander,
                     "GUI '" + id + "', contexts.'" + pathKey + "' settings");
 
-            ConfigurationSection mergedItems = SectionMerge.merge(baseItems, entry.getConfigurationSection("items"));
+            ConfigurationSection mergedItems = SectionMerge.merge(baseItems, entry.getConfigurationSection("items"), SectionMerge.KeyOrder.OVERRIDE_LAST);
             Map<String, ItemConfig> items = readItems(mergedItems, id, shared, aliasExpander, settings.rows());
 
             ConfigurationSection layoutOverride = entry.getConfigurationSection("layout");

@@ -59,9 +59,12 @@ items:
     template: filler
     slots: [1-2, 6-7, 37-38, 42-43]
 
-  no-listings:
-    template: no-listings
-    slots: 22
+  unavailable-slots:
+    slots: [9-35]
+    material: RED_STAINED_GLASS_PANE
+    display-name: "<red><bold>Unavailable slot"
+    lore:
+      - "<gray>You cannot list a new item."
 
   # --- Header ---
   back:
@@ -78,6 +81,15 @@ items:
   switch-listings:
     template: switch-listings
     slots: 8
+    lore:
+      - "<dark_gray>Management"
+      - " "
+      - "<gray>View and manage your listings."
+      - " "
+      - "<white>> Left-Click <gray>- Active Listings"
+      - "  <gray>Right-Click <dark_gray>- Expired Listings"
+      - "  <gray>Shift-Left <dark_gray>- Storage"
+      - "  <gray>Shift-Right <dark_gray>- Transactions"
 
   filter-category:
     template: filter-category

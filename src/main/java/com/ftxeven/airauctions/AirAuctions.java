@@ -89,7 +89,6 @@ public final class AirAuctions extends JavaPlugin {
         }
 
         metrics = new Metrics(this, 33241);
-        metrics.addCustomChart(new SimplePie("server_platform", () -> Scheduler.isFolia() ? "Folia" : "Paper"));
 
         Version.check();
     }

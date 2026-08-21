@@ -222,6 +222,7 @@ public final class GuiManager {
         }
         options.attributes().forEach(session::attribute);
         session.placeholders().put("previous_gui", previousGuiPlaceholder(session));
+        session.placeholders().put("gui", session.definition().id());
 
         renderer.prepare(viewer, session);
         sessions.put(viewer.getUniqueId(), session);
