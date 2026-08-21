@@ -19,11 +19,7 @@ import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.service.listing.HistoryService;
 import com.ftxeven.airauctions.service.listing.ListingService;
 import com.ftxeven.airauctions.service.player.PlayerService;
-import com.ftxeven.airauctions.util.ItemDelivery;
-import com.ftxeven.airauctions.util.ItemDisplay;
-import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
-import com.ftxeven.airauctions.util.TimeFormatter;
+import com.ftxeven.airauctions.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -288,16 +284,25 @@ public final class BidService {
                         info.fee(), tax, info.category(), info.searchName(), info.createdAt(), endedAt.get()),
                 bid.startingPrice(), bid.currentPrice(), bid.totalBidders()));
 
-        Optional<ItemDelivery.Result> delivery = tryInstantDeliver(bid);
-        announceWon(info, bid, winner, payout, tax, endedAt.get(), delivery);
+        settleDelivery(info, bid, winner, payout, tax, endedAt.get());
     }
 
-    private Optional<ItemDelivery.Result> tryInstantDeliver(Listing.Bid bid) {
-        if (!configs.main().bids().instantCollect() || !configs.main().listings().dropOnFullInventory()) {
+    private void settleDelivery(Listing.Info info, Listing.Bid bid, UUID winner, double payout, double tax, Instant endedAt) {
+        Player player = Bukkit.getPlayer(winner);
+        if (player == null) {
+            announceWon(info, bid, winner, payout, tax, endedAt, Optional.empty());
+            return;
+        }
+        Scheduler.runEntity(player,
+                () -> announceWon(info, bid, winner, payout, tax, endedAt, tryInstantDeliver(player, bid)),
+                () -> announceWon(info, bid, winner, payout, tax, endedAt, Optional.empty()));
+    }
+
+    private Optional<ItemDelivery.Result> tryInstantDeliver(Player player, Listing.Bid bid) {
+        if (!configs.main().bids().instantCollect()) {
             return Optional.empty();
         }
-        Player player = Bukkit.getPlayer(bid.currentBidder());
-        return player != null ? Optional.of(listings.deliver(player, bid)) : Optional.empty();
+        return Optional.of(listings.deliver(player, bid));
     }
 
     // Messaging
