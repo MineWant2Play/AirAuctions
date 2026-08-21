@@ -5,9 +5,9 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ItemHook {
 
-    String prefix();
+    String name();
 
-    @Nullable String rawId(ItemStack item);
+    @Nullable String identify(ItemStack item);
 
     @Nullable ItemStack buildItem(String id);
 }

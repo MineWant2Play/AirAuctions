@@ -27,21 +27,6 @@
         </repository>
 
         <repository>
-            <id>nexo</id>
-            <url>https://repo.nexomc.com/releases/</url>
-        </repository>
-
-        <repository>
-            <id>itemsadder</id>
-            <url>https://maven.devs.beer/</url>
-        </repository>
-
-        <repository>
-            <id>craftengine</id>
-            <url>https://repo.momirealms.net/releases/</url>
-        </repository>
-
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -90,43 +75,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.nexomc</groupId>
-            <artifactId>nexo</artifactId>
-            <version>1.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.lone</groupId>
-            <artifactId>api-itemsadder</artifactId>
-            <version>4.0.10</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.momirealms</groupId>
-            <artifactId>craft-engine-core</artifactId>
-            <version>0.0.67</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.byteflux</groupId>
-                    <artifactId>libby-bukkit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.momirealms</groupId>
-            <artifactId>craft-engine-bukkit</artifactId>
-            <version>0.0.67</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.byteflux</groupId>
-                    <artifactId>libby-bukkit</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.github.projectunified</groupId>
+            <artifactId>uni-item-all</artifactId>
+            <version>2.7.1</version>
         </dependency>
 
         <dependency>
@@ -247,6 +198,10 @@
                                 <relocation>
                                     <pattern>org.apache.commons.pool2</pattern>
                                     <shadedPattern>com.ftxeven.airauctions.libs.pool2</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.github.projectunified.uniitem</pattern>
+                                    <shadedPattern>com.ftxeven.airauctions.libs.uniitem</shadedPattern>
                                 </relocation>
                             </relocations>
                             <transformers>

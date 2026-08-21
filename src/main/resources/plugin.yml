@@ -12,6 +12,26 @@ softdepend:
   - Nexo
   - ItemsAdder
   - CraftEngine
+  - CustomFishing
+  - eco
+  - EcoArmor
+  - EcoCrates
+  - EcoItems
+  - EcoMobs
+  - EcoPets
+  - EcoScrolls
+  - ExecutableItems
+  - HeadDatabase
+  - ItemBridge
+  - ItemEdit
+  - MMOItems
+  - MythicMobs
+  - Nova
+  - Oraxen
+  - Reforges
+  - Slimefun
+  - StatTrackers
+  - Talismans
   - PlayerPoints
   - ExcellentEconomy
 
