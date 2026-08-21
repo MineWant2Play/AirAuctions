@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -90,7 +91,11 @@ public final class DynamicCommandRegistry {
 
     private void removeCommands(Set<Command> commands) {
         Map<String, Command> knownCommands = commandMap.getKnownCommands();
-        knownCommands.entrySet().removeIf(entry -> commands.contains(entry.getValue()));
+        for (Map.Entry<String, Command> entry : new ArrayList<>(knownCommands.entrySet())) {
+            if (commands.contains(entry.getValue())) {
+                knownCommands.remove(entry.getKey(), entry.getValue());
+            }
+        }
         for (Command command : commands) {
             command.unregister(commandMap);
         }
