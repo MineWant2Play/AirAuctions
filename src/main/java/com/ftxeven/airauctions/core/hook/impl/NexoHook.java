@@ -1,6 +1,6 @@
-package com.ftxeven.airauctions.hook.impl;
+package com.ftxeven.airauctions.core.hook.impl;
 
-import com.ftxeven.airauctions.hook.ItemHook;
+import com.ftxeven.airauctions.core.hook.ItemHook;
 import com.nexomc.nexo.api.NexoItems;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;

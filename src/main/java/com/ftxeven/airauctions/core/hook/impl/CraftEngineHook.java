@@ -1,6 +1,6 @@
-package com.ftxeven.airauctions.hook.impl;
+package com.ftxeven.airauctions.core.hook.impl;
 
-import com.ftxeven.airauctions.hook.ItemHook;
+import com.ftxeven.airauctions.core.hook.ItemHook;
 import net.momirealms.craftengine.core.plugin.CraftEngine;
 import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.inventory.ItemStack;

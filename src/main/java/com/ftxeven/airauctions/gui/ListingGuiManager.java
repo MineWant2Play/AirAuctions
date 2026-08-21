@@ -12,7 +12,7 @@ import com.ftxeven.airauctions.gui.impl.*;
 import com.ftxeven.airauctions.gui.render.ListingFlags;
 import com.ftxeven.airauctions.gui.render.ListingPlaceholders;
 import com.ftxeven.airauctions.gui.render.PlayerHeadResolver;
-import com.ftxeven.airauctions.hook.HookRegistry;
+import com.ftxeven.airauctions.core.hook.HookRegistry;
 import com.ftxeven.airauctions.model.Listing;
 import com.ftxeven.airauctions.model.PlayerData;
 import com.ftxeven.airauctions.service.Eligibility;

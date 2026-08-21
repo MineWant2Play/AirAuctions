@@ -1,9 +1,9 @@
-package com.ftxeven.airauctions.hook;
+package com.ftxeven.airauctions.core.hook;
 
 import com.ftxeven.airauctions.core.gui.render.MaterialResolver;
-import com.ftxeven.airauctions.hook.impl.CraftEngineHook;
-import com.ftxeven.airauctions.hook.impl.ItemsAdderHook;
-import com.ftxeven.airauctions.hook.impl.NexoHook;
+import com.ftxeven.airauctions.core.hook.impl.CraftEngineHook;
+import com.ftxeven.airauctions.core.hook.impl.ItemsAdderHook;
+import com.ftxeven.airauctions.core.hook.impl.NexoHook;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;

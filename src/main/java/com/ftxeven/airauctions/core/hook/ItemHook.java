@@ -1,4 +1,4 @@
-package com.ftxeven.airauctions.hook;
+package com.ftxeven.airauctions.core.hook;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
