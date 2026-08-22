@@ -2,12 +2,12 @@ package com.ftxeven.airauctions.command.player;
 
 import com.ftxeven.airauctions.config.ConfigManager;
 import com.ftxeven.airauctions.config.MainConfig;
-import com.ftxeven.airauctions.core.command.CommandDispatch;
-import com.ftxeven.airauctions.core.command.DynamicCommand;
+import com.ftxeven.airauctions.common.command.CommandDispatch;
+import com.ftxeven.airauctions.common.command.DynamicCommand;
 import com.ftxeven.airauctions.command.SubCommand;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabCompleteEngine;
-import com.ftxeven.airauctions.core.gui.GuiManager;
-import com.ftxeven.airauctions.core.gui.OpenOptions;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabCompleteEngine;
+import com.ftxeven.airauctions.common.gui.GuiManager;
+import com.ftxeven.airauctions.common.gui.OpenOptions;
 import com.ftxeven.airauctions.economy.EconomyProvider;
 import com.ftxeven.airauctions.gui.impl.DraftGui;
 import com.ftxeven.airauctions.gui.impl.ListingDraft;
@@ -20,7 +20,6 @@ import com.ftxeven.airauctions.service.listing.ListingService;
 import com.ftxeven.airauctions.service.listing.ValidationResult;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -357,9 +356,9 @@ public abstract class DraftSubcommand<E> implements SubCommand {
     }
 
     private Map<String, String> feePlaceholders(EconomyProvider provider, EconomyService.ChargeResult fee) {
-        return PlaceholderMap.create()
-                .money(services.economy(), "fee", provider.id(), fee)
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        services.economy().formatInto(placeholders, "fee", provider.id(), fee);
+        return placeholders;
     }
 
     // Messaging
@@ -388,12 +387,12 @@ public abstract class DraftSubcommand<E> implements SubCommand {
 
     private Map<String, String> baseMessagePlaceholders(Player player, PendingListing<E> context) {
         EconomyService economy = services.economy();
-        return PlaceholderMap.create()
-                .put("amount", context.amount())
-                .put("item", ItemDisplay.name(context.snapshot(), configs.lang()))
-                .money(economy, "price", context.provider().id(), context.price())
-                .money(economy, "fee", context.provider().id(), economy.fee(player, context.provider(), context.price()))
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("amount", String.valueOf(context.amount()));
+        placeholders.put("item", ItemDisplay.name(context.snapshot(), configs.lang()));
+        economy.formatInto(placeholders, "price", context.provider().id(), context.price());
+        economy.formatInto(placeholders, "fee", context.provider().id(), economy.fee(player, context.provider(), context.price()));
+        return placeholders;
     }
 
     private String formatTimeout(int timeoutSeconds) {

@@ -1,13 +1,13 @@
 package com.ftxeven.airauctions.config;
 
-import com.ftxeven.airauctions.core.command.DurationUnits.DurationUnit;
-import com.ftxeven.airauctions.core.command.DynamicCommand;
-import com.ftxeven.airauctions.core.command.RootCommand;
-import com.ftxeven.airauctions.core.command.Shortcuts.Shortcut;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition.CopyPosition;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition.EntriesPosition;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition.TabEntry;
+import com.ftxeven.airauctions.common.command.DurationUnits.DurationUnit;
+import com.ftxeven.airauctions.common.command.DynamicCommand;
+import com.ftxeven.airauctions.common.command.RootCommand;
+import com.ftxeven.airauctions.common.command.Shortcuts.Shortcut;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition.CopyPosition;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition.EntriesPosition;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition.TabEntry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 

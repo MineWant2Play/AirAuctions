@@ -1,11 +1,11 @@
 package com.ftxeven.airauctions.command.player;
 
 import com.ftxeven.airauctions.config.ConfigManager;
-import com.ftxeven.airauctions.core.command.DynamicCommand;
+import com.ftxeven.airauctions.common.command.DynamicCommand;
 import com.ftxeven.airauctions.command.SubCommand;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabCompleteEngine;
-import com.ftxeven.airauctions.core.gui.GuiManager;
-import com.ftxeven.airauctions.core.gui.OpenOptions;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabCompleteEngine;
+import com.ftxeven.airauctions.common.gui.GuiManager;
+import com.ftxeven.airauctions.common.gui.OpenOptions;
 import com.ftxeven.airauctions.gui.impl.ConfirmGui;
 import com.ftxeven.airauctions.model.Listing;
 import com.ftxeven.airauctions.model.ListingScope;
@@ -13,7 +13,6 @@ import com.ftxeven.airauctions.permission.Permissions;
 import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -167,13 +166,13 @@ public final class SubDelete implements SubCommand {
             case Listing.Bid bid -> bid.currentPrice();
         };
 
-        return PlaceholderMap.create()
-                .put("id", info.id())
-                .put("seller", services.players().name(info.seller()))
-                .put("amount", info.amount())
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .money(services.economy(), "price", info.economy(), price)
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("id", info.id());
+        placeholders.put("seller", services.players().name(info.seller()));
+        placeholders.put("amount", String.valueOf(info.amount()));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        services.economy().formatInto(placeholders, "price", info.economy(), price);
+        return placeholders;
     }
 
     private String formatTimeout(int timeoutSeconds) {

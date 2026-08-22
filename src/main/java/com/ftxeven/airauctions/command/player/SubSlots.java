@@ -1,10 +1,10 @@
 package com.ftxeven.airauctions.command.player;
 
 import com.ftxeven.airauctions.config.ConfigManager;
-import com.ftxeven.airauctions.core.command.CommandDispatch;
-import com.ftxeven.airauctions.core.command.DynamicCommand;
+import com.ftxeven.airauctions.common.command.CommandDispatch;
+import com.ftxeven.airauctions.common.command.DynamicCommand;
 import com.ftxeven.airauctions.command.SubCommand;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabCompleteEngine;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabCompleteEngine;
 import com.ftxeven.airauctions.model.PlayerData;
 import com.ftxeven.airauctions.permission.PermissionTiers;
 import com.ftxeven.airauctions.permission.Permissions;
