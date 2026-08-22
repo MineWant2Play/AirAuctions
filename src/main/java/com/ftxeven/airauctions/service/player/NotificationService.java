@@ -10,7 +10,6 @@ import com.ftxeven.airauctions.service.listing.ListingService;
 import com.ftxeven.airauctions.service.listing.workflow.BidService;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.Placeholders;
 import com.ftxeven.airauctions.util.Scheduler;
 import org.bukkit.entity.Player;
@@ -121,14 +120,14 @@ public final class NotificationService {
     // shared by both the single-bid message above and each %bids% entry below
     private Map<String, String> wonBidPlaceholders(Listing.Bid bid) {
         Listing.Info info = bid.info();
-        return PlaceholderMap.create()
-                .put("amount", info.amount())
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .put("seller", players.name(info.seller()))
-                .put("total_bidders", bid.totalBidders())
-                .money(economy, "price", info.economy(), bid.startingPrice())
-                .money(economy, "offer", info.economy(), bid.currentPrice())
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("amount", String.valueOf(info.amount()));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        placeholders.put("seller", players.name(info.seller()));
+        placeholders.put("total_bidders", String.valueOf(bid.totalBidders()));
+        economy.formatInto(placeholders, "price", info.economy(), bid.startingPrice());
+        economy.formatInto(placeholders, "offer", info.economy(), bid.currentPrice());
+        return placeholders;
     }
 
     private String joinedWonBids(List<Listing.Bid> due) {
@@ -164,10 +163,12 @@ public final class NotificationService {
         String separator = configs.lang().get(langPrefix + ".separator").getFirst();
 
         return pending.entrySet().stream()
-                .map(entry -> Placeholders.apply(null, template, PlaceholderMap.create()
-                        .money(economy, "amount", entry.getKey(), entry.getValue())
-                        .put("economy", economy.displayName(entry.getKey()))
-                        .build()))
+                .map(entry -> {
+                    Map<String, String> placeholders = new HashMap<>();
+                    economy.formatInto(placeholders, "amount", entry.getKey(), entry.getValue());
+                    placeholders.put("economy", economy.displayName(entry.getKey()));
+                    return Placeholders.apply(null, template, placeholders);
+                })
                 .collect(Collectors.joining(separator));
     }
 

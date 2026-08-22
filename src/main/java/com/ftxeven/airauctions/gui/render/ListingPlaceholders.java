@@ -10,7 +10,6 @@ import com.ftxeven.airauctions.service.listing.workflow.AuctionService;
 import com.ftxeven.airauctions.service.listing.workflow.BidService;
 import com.ftxeven.airauctions.util.MiniText;
 import com.ftxeven.airauctions.util.Placeholders;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -42,9 +41,9 @@ public final class ListingPlaceholders {
 
     private Map<String, String> forAuction(Listing.Auction auction) {
         Listing.Info info = auction.info();
-        PlaceholderMap map = PlaceholderMap.create();
+        Map<String, String> map = new HashMap<>();
         putCommon(map, info.id(), info.seller(), auction.remainingAmount(), info.category(), info.economy(), info.createdAt(), info.item());
-        map.money(services.economy(), "price", info.economy(), services.auctions().remainingValue(auction));
+        services.economy().formatInto(map, "price", info.economy(), services.auctions().remainingValue(auction));
         map.put("per_price", perPrice(info.economy(), auction.price(), info.amount()));
 
         if (info.status() == ListingStatus.ACTIVE) {
@@ -52,14 +51,14 @@ public final class ListingPlaceholders {
         } else {
             map.put("purges", purgesText(info));
         }
-        return map.build();
+        return map;
     }
 
     private Map<String, String> forBid(Listing.Bid bid) {
         Listing.Info info = bid.info();
-        PlaceholderMap map = PlaceholderMap.create();
+        Map<String, String> map = new HashMap<>();
         putCommon(map, info.id(), info.seller(), info.amount(), info.category(), info.economy(), info.createdAt(), info.item());
-        map.money(services.economy(), "price", info.economy(), bid.startingPrice());
+        services.economy().formatInto(map, "price", info.economy(), bid.startingPrice());
 
         switch (info.status()) {
             case ACTIVE -> {
@@ -76,11 +75,11 @@ public final class ListingPlaceholders {
                 putOffer(map, bid);
             }
         }
-        return map.build();
+        return map;
     }
 
-    private void putOffer(PlaceholderMap map, Listing.Bid bid) {
-        map.put("total_bidders", bid.totalBidders());
+    private void putOffer(Map<String, String> map, Listing.Bid bid) {
+        map.put("total_bidders", String.valueOf(bid.totalBidders()));
 
         UUID bidder = bid.currentBidder();
         map.put("highest_bidder", bidder != null
@@ -88,7 +87,7 @@ public final class ListingPlaceholders {
                 : configs.lang().get("placeholders.empty.bidder").getFirst());
 
         OptionalDouble offer = bidder != null ? OptionalDouble.of(bid.currentPrice()) : OptionalDouble.empty();
-        map.money(services.economy(), "highest_offer", bid.info().economy(), offer, "placeholders.empty.offer");
+        services.economy().formatInto(map, "highest_offer", bid.info().economy(), offer, "placeholders.empty.offer");
     }
 
     /** the viewer's own current offer on this listing, for browsing/view_bid.yml's offer button */
@@ -100,61 +99,61 @@ public final class ListingPlaceholders {
     // Buy amount
 
     public Map<String, String> forBuyAmount(Player viewer, Listing.Auction auction, EconomyProvider provider, int buyAmount) {
-        PlaceholderMap map = PlaceholderMap.from(forListing(auction));
+        Map<String, String> map = new HashMap<>(forListing(auction));
 
         AuctionService.Quote quote = services.auctions().quote(auction, buyAmount, provider);
         double minPartial = services.economy().minPartialPrice();
         boolean partial = buyAmount < auction.remainingAmount();
 
-        map.put("buy_amount", buyAmount);
-        map.put("max_amount", auction.remainingAmount());
+        map.put("buy_amount", String.valueOf(buyAmount));
+        map.put("max_amount", String.valueOf(auction.remainingAmount()));
         map.put("valid_price", String.valueOf(!partial || quote.price() >= minPartial));
         map.put("can_afford_price", String.valueOf(provider.has(viewer, quote.price())));
-        map.money(services.economy(), "buy_price", provider.id(), quote.price());
-        map.money(services.economy(), "min_price", provider.id(), minPartial);
+        services.economy().formatInto(map, "buy_price", provider.id(), quote.price());
+        services.economy().formatInto(map, "min_price", provider.id(), minPartial);
 
-        return map.build();
+        return map;
     }
 
     // Place bid
 
     public Map<String, String> forPlaceBid(Player viewer, Listing.Bid bid, EconomyProvider provider, double offer) {
-        PlaceholderMap map = PlaceholderMap.from(forListing(bid));
+        Map<String, String> map = new HashMap<>(forListing(bid));
 
         BidService.NextOffer bounds = services.bids().nextOfferBounds(bid);
         map.put("valid_min_offer", String.valueOf(offer >= bounds.min()));
         map.put("valid_max_offer", String.valueOf(bounds.max() < 0 || offer <= bounds.max()));
         map.put("can_afford_offer", String.valueOf(provider.has(viewer, offer)));
 
-        map.money(services.economy(), "offer", provider.id(), offer);
-        map.money(services.economy(), "your_offer", provider.id(), offer);
-        map.money(services.economy(), "min_offer", provider.id(), bounds.min());
+        services.economy().formatInto(map, "offer", provider.id(), offer);
+        services.economy().formatInto(map, "your_offer", provider.id(), offer);
+        services.economy().formatInto(map, "min_offer", provider.id(), bounds.min());
         OptionalDouble maxOffer = bounds.max() < 0 ? OptionalDouble.empty() : OptionalDouble.of(bounds.max());
-        map.money(services.economy(), "max_offer", provider.id(), maxOffer, "placeholders.unlimited");
+        services.economy().formatInto(map, "max_offer", provider.id(), maxOffer, "placeholders.unlimited");
 
-        return map.build();
+        return map;
     }
 
     // Draft preview
 
     public Map<String, String> forDraft(Player seller, ListingDraft draft, EconomyProvider provider) {
-        PlaceholderMap map = PlaceholderMap.create();
+        Map<String, String> map = new HashMap<>();
         var metadata = services.listings().resolveMetadata(draft.itemSnapshot());
 
-        map.put("amount", draft.amount());
+        map.put("amount", String.valueOf(draft.amount()));
         map.put("category", categoryDisplayName(metadata.category()));
         map.put("category_id", metadata.category());
         map.put("item_lore", itemLore(draft.itemSnapshot()));
 
-        map.money(services.economy(), "price", provider.id(), draft.price());
-        map.economy(services.economy(), provider);
+        services.economy().formatInto(map, "price", provider.id(), draft.price());
+        services.economy().formatEconomy(map, provider);
 
         if (draft.type() == ListingType.AUCTION) {
             map.put("expires", services.auctions().previewExpires(seller));
         } else {
             map.put("duration", TimeFormatter.duration(Duration.ofSeconds(draft.bidDurationSeconds()), configs.main().formatting(), configs.lang()));
         }
-        return map.build();
+        return map;
     }
 
     // History
@@ -168,31 +167,31 @@ public final class ListingPlaceholders {
 
     private Map<String, String> forHistoryAuction(HistoryEntry.Auction auction) {
         HistoryEntry.Info info = auction.info();
-        PlaceholderMap map = PlaceholderMap.create();
+        Map<String, String> map = new HashMap<>();
         putCommon(map, info.id(), info.seller(), info.amount(), info.category(), info.economy(), info.createdAt(), info.item());
         putTransaction(map, info);
         map.put("buyer", services.players().name(info.buyer()));
-        map.money(services.economy(), "price", info.economy(), auction.price());
-        return map.build();
+        services.economy().formatInto(map, "price", info.economy(), auction.price());
+        return map;
     }
 
     private Map<String, String> forHistoryBid(HistoryEntry.Bid bid) {
         HistoryEntry.Info info = bid.info();
-        PlaceholderMap map = PlaceholderMap.create();
+        Map<String, String> map = new HashMap<>();
         putCommon(map, info.id(), info.seller(), info.amount(), info.category(), info.economy(), info.createdAt(), info.item());
         putTransaction(map, info);
 
         String winner = services.players().name(info.buyer());
         map.put("buyer", winner);
         map.put("highest_bidder", winner);
-        map.put("total_bidders", bid.totalBidders());
+        map.put("total_bidders", String.valueOf(bid.totalBidders()));
         map.put("duration", TimeFormatter.duration(Duration.between(info.createdAt(), info.completedAt()), configs.main().formatting(), configs.lang()));
-        map.money(services.economy(), "price", info.economy(), bid.startingPrice());
-        map.money(services.economy(), "highest_offer", info.economy(), bid.finalPrice());
-        return map.build();
+        services.economy().formatInto(map, "price", info.economy(), bid.startingPrice());
+        services.economy().formatInto(map, "highest_offer", info.economy(), bid.finalPrice());
+        return map;
     }
 
-    private void putTransaction(PlaceholderMap map, HistoryEntry.Info info) {
+    private void putTransaction(Map<String, String> map, HistoryEntry.Info info) {
         map.put("transaction_date", TimeFormatter.date(info.completedAt(), configs.main().formatting()));
         map.put("transaction_time", TimeFormatter.time(info.completedAt(), configs.main().formatting()));
         map.put("completed_at", String.valueOf(info.completedAt().toEpochMilli()));
@@ -201,24 +200,22 @@ public final class ListingPlaceholders {
     // Bid entries (browsing/view_bid)
 
     public Map<String, String> forBidEntry(String economyId, BidEntry entry, int position) {
-        PlaceholderMap map = PlaceholderMap.create();
+        Map<String, String> map = new HashMap<>();
         map.put("bidder", services.players().name(entry.bidder()));
-        map.put("position", position);
-        map.put("total_offers", entry.totalOffers());
-        map.money(services.economy(), "offer", economyId, entry.offer());
-        return map.build();
+        map.put("position", String.valueOf(position));
+        map.put("total_offers", String.valueOf(entry.totalOffers()));
+        services.economy().formatInto(map, "offer", economyId, entry.offer());
+        return map;
     }
 
-    // Shared
-
-    private void putCommon(PlaceholderMap map, String id, UUID seller, int amount, String category,
+    private void putCommon(Map<String, String> map, String id, UUID seller, int amount, String category,
                            String economyId, Instant createdAt, ItemStack item) {
         map.put("id", id);
         map.put("seller", services.players().name(seller));
-        map.put("amount", amount);
+        map.put("amount", String.valueOf(amount));
         map.put("category", categoryDisplayName(category));
         map.put("category_id", category);
-        map.economy(services.economy(), economyId);
+        services.economy().formatEconomy(map, economyId);
         map.put("date", TimeFormatter.date(createdAt, configs.main().formatting()));
         map.put("time", TimeFormatter.time(createdAt, configs.main().formatting()));
         map.put("item_lore", itemLore(item));

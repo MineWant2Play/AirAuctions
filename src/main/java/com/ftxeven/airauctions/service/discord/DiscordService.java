@@ -8,7 +8,6 @@ import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.service.player.PlayerService;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.command.CommandSender;
 
@@ -44,7 +43,7 @@ public final class DiscordService {
 
         Map<String, String> placeholders = new HashMap<>(creationPlaceholders);
         placeholders.put("player", creationPlaceholders.get("seller"));
-        placeholders.putAll(commonPlaceholders(info).build());
+        placeholders.putAll(commonPlaceholders(info));
         placeholders.put("expires", TimeFormatter.discordTimestamp(info.expiresAt(), timeFormat, creationPlaceholders.get("expires")));
         fire(event, placeholders);
     }
@@ -65,10 +64,9 @@ public final class DiscordService {
 
     public void auctionExpired(Listing.Auction auction) {
         Listing.Info info = auction.info();
-        Map<String, String> placeholders = commonPlaceholders(info)
-                .put("player", players.name(info.seller()))
-                .money(economy, "price", info.economy(), auction.price())
-                .build();
+        Map<String, String> placeholders = commonPlaceholders(info);
+        placeholders.put("player", players.name(info.seller()));
+        economy.formatInto(placeholders, "price", info.economy(), auction.price());
         fire(events().auctionExpired(), placeholders);
     }
 
@@ -86,7 +84,7 @@ public final class DiscordService {
 
         Map<String, String> placeholders = new HashMap<>(creationPlaceholders);
         placeholders.put("player", creationPlaceholders.get("seller"));
-        placeholders.putAll(commonPlaceholders(info).build());
+        placeholders.putAll(commonPlaceholders(info));
         placeholders.put("duration", TimeFormatter.discordTimestamp(info.expiresAt(), timeFormat, creationPlaceholders.get("duration")));
         fire(event, placeholders);
     }
@@ -116,10 +114,9 @@ public final class DiscordService {
 
     public void bidExpired(Listing.Bid bid) {
         Listing.Info info = bid.info();
-        Map<String, String> placeholders = commonPlaceholders(info)
-                .put("player", players.name(info.seller()))
-                .money(economy, "price", info.economy(), bid.startingPrice())
-                .build();
+        Map<String, String> placeholders = commonPlaceholders(info);
+        placeholders.put("player", players.name(info.seller()));
+        economy.formatInto(placeholders, "price", info.economy(), bid.startingPrice());
         fire(events().bidExpired(), placeholders);
     }
 
@@ -130,20 +127,20 @@ public final class DiscordService {
     // Shared
 
     private void deleted(Listing.Info info, double price, CommandSender admin) {
-        Map<String, String> placeholders = commonPlaceholders(info)
-                .put("player", players.name(info.seller()))
-                .put("admin", CommandDispatch.senderName(admin, configs.lang().get("general.console-name").getFirst()))
-                .money(economy, "price", info.economy(), price)
-                .build();
+        Map<String, String> placeholders = commonPlaceholders(info);
+        placeholders.put("player", players.name(info.seller()));
+        placeholders.put("admin", CommandDispatch.senderName(admin, configs.lang().get("general.console-name").getFirst()));
+        economy.formatInto(placeholders, "price", info.economy(), price);
         fire(events().listingDeleted(), placeholders);
     }
 
-    private PlaceholderMap commonPlaceholders(Listing.Info info) {
-        return PlaceholderMap.create()
-                .put("id", info.id())
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .put("amount", info.amount())
-                .put("economy", economy.displayName(info.economy()));
+    private Map<String, String> commonPlaceholders(Listing.Info info) {
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("id", info.id());
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        placeholders.put("amount", String.valueOf(info.amount()));
+        placeholders.put("economy", economy.displayName(info.economy()));
+        return placeholders;
     }
 
     // Dispatch

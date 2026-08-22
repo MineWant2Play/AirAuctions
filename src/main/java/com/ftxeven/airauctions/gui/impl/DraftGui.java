@@ -15,9 +15,9 @@ import com.ftxeven.airauctions.model.ListingType;
 import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,17 +108,17 @@ public final class DraftGui extends BaseGui {
     private Map<String, String> priceValidityPlaceholders(Player viewer, ListingDraft draft, EconomyProvider provider) {
         EconomyService economy = services.economy();
 
-        PlaceholderMap map = PlaceholderMap.create()
-                .put("valid_min_price", String.valueOf(economy.meetsMinPrice(draft.price())))
-                .put("valid_max_price", String.valueOf(economy.meetsMaxPrice(draft.price())))
-                .money(economy, "min_price", provider.id(), economy.minPrice())
-                .money(economy, "max_price", provider.id(), economy.maxPrice());
+        Map<String, String> map = new HashMap<>();
+        map.put("valid_min_price", String.valueOf(economy.meetsMinPrice(draft.price())));
+        map.put("valid_max_price", String.valueOf(economy.meetsMaxPrice(draft.price())));
+        economy.formatInto(map, "min_price", provider.id(), economy.minPrice());
+        economy.formatInto(map, "max_price", provider.id(), economy.maxPrice());
 
         EconomyService.ChargeResult fee = economy.fee(viewer, provider, draft.price());
-        map.money(economy, "fee", provider.id(), fee);
+        economy.formatInto(map, "fee", provider.id(), fee);
         map.put("can_afford_fee", String.valueOf(economy.eligibleForFee(viewer, provider, fee).ok()));
 
-        return map.build();
+        return map;
     }
 
     private static String inputContextFor(ListingType type) {
