@@ -23,7 +23,7 @@ public final class ScreenOpener {
         GuiContext backLink = new GuiContext(currentScreen, current.originChain(), current.navBack());
 
         OpenOptions options = OpenOptions.forScreen(FlagGate.NO_FLAGS, forwardScreen,
-                ScreenState.DEFAULT, backLink, current.forwardChain(), attributes);
+                ScreenState.liveStateOf(current), backLink, current.forwardChain(), attributes);
         context.manager().open(context.viewer(), guiId, new LinkedHashMap<>(current.placeholders()), options);
     }
 }

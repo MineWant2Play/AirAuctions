@@ -16,7 +16,7 @@ public abstract class CyclerAction implements ActionRegistry.Handler {
 
     @Override
     public final void execute(ActionContext context, String args) {
-        Map<String, String> parsed = ActionArgs.parse(args);
+        Map<String, String> parsed = ActionTokens.parse(args);
         String dimension = parsed.get("by");
         String to = parsed.get("to");
         if (dimension == null || to == null) {

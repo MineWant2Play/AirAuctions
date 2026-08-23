@@ -38,6 +38,7 @@ public record OpenOptions(
                                         @Nullable GuiContext navBack, List<String> ancestorChain, Map<String, Object> extra) {
         Map<String, Object> attrs = new LinkedHashMap<>();
         attrs.put(GuiSession.ATTR_PAGE, state.page());
+        attrs.put(GuiSession.ATTR_TOTAL_PAGES, state.totalPages());
         attrs.putAll(state.attributes());
         if (screen.target() != null) {
             attrs.put(GuiSession.ATTR_TARGET, screen.target());

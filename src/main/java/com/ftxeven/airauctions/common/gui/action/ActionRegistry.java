@@ -79,12 +79,8 @@ public final class ActionRegistry {
         return confirmGates.get(key);
     }
 
-    private static String quote(String text) {
-        return text.replace("'", "''");
-    }
-
     private static String simpleTag(String tagName, String message) {
-        return "<" + tagName + ":'" + quote(message) + "'>";
+        return "<" + tagName + ":'" + ActionTokens.escape(message) + "'>";
     }
 
     private static String timedTag(String tagName, String args, int expectedParams) {
@@ -93,9 +89,9 @@ public final class ActionRegistry {
         String paramBlock = "";
 
         if (trimmed.startsWith("'")) {
-            int closingQuote = findClosingQuote(trimmed);
+            int closingQuote = ActionTokens.closingQuoteIndex(trimmed, 0);
             if (closingQuote >= 0) {
-                message = unescapeQuotes(trimmed.substring(1, closingQuote));
+                message = ActionTokens.unescape(trimmed.substring(1, closingQuote));
                 paramBlock = trimmed.substring(closingQuote + 1);
             }
         }
@@ -109,29 +105,10 @@ public final class ActionRegistry {
             params.add("");
         }
 
-        StringBuilder tag = new StringBuilder("<").append(tagName).append(":'").append(quote(message)).append('\'');
+        StringBuilder tag = new StringBuilder("<").append(tagName).append(":'").append(ActionTokens.escape(message)).append('\'');
         for (String param : params) {
             tag.append(':').append(param);
         }
         return tag.append('>').toString();
-    }
-
-    private static int findClosingQuote(String text) {
-        int i = 1;
-        while (i < text.length()) {
-            if (text.charAt(i) == '\'') {
-                if (i + 1 < text.length() && text.charAt(i + 1) == '\'') {
-                    i += 2;
-                    continue;
-                }
-                return i;
-            }
-            i++;
-        }
-        return -1;
-    }
-
-    private static String unescapeQuotes(String text) {
-        return text.replace("''", "'");
     }
 }

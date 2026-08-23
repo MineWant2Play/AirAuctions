@@ -18,7 +18,8 @@ public final class ScreenContextStore {
 
         Map<String, String> attributes = new LinkedHashMap<>(liveState.attributes());
         attributes.putAll(lockedState.attributes());
-        return new ScreenState(lockedState.page() != null ? lockedState.page() : liveState.page(), attributes);
+        int page = lockedState.page() != null ? lockedState.page() : liveState.page();
+        return new ScreenState(page, liveState.totalPages(), attributes);
     }
 
     public LockedContext locked(UUID player, ScreenKey screen) {

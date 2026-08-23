@@ -25,6 +25,10 @@ public final class ForwardNavigation {
     // Parsing
 
     public static Parsed parse(String raw, ActionContext context) {
+        return parse(raw, context, null);
+    }
+
+    public static Parsed parse(String raw, ActionContext context, @Nullable String valueKey) {
         String args = raw == null ? "" : raw;
         Parsed.Builder builder = new Parsed.Builder();
 
@@ -42,15 +46,15 @@ public final class ForwardNavigation {
 
         String trimmed = args.trim();
         if (!trimmed.isEmpty()) {
-            for (String token : trimmed.split("\\s+")) {
-                applyToken(builder, token, context);
+            for (String token : ActionTokens.split(trimmed)) {
+                applyToken(builder, token, valueKey, context);
             }
         }
 
         return builder.build();
     }
 
-    private static void applyToken(Parsed.Builder builder, String token, ActionContext context) {
+    private static void applyToken(Parsed.Builder builder, String token, @Nullable String valueKey, ActionContext context) {
         int sep = token.indexOf(':');
         if (sep <= 0) {
             context.logger().warning("Malformed navigation param '" + token + "'");
@@ -58,6 +62,11 @@ public final class ForwardNavigation {
         }
         String key = token.substring(0, sep).toLowerCase(Locale.ROOT);
         String rest = token.substring(sep + 1);
+
+        if (valueKey != null && key.equals(valueKey)) {
+            builder.value = ActionTokens.unquote(rest);
+            return;
+        }
 
         switch (key) {
             case "gui" -> builder.guiId = rest;
@@ -120,7 +129,7 @@ public final class ForwardNavigation {
         });
         attributes.putAll(locked.attributes());
 
-        return new ScreenState(page, attributes);
+        return new ScreenState(page, sourceLive.totalPages(), attributes);
     }
 
     // 'restore:<...>' pins ONLY the named fields into 'current's own locked context
@@ -150,14 +159,16 @@ public final class ForwardNavigation {
     }
 
     private static int resolvePage(@Nullable String override, @Nullable Integer lockedPage, int sourceLivePage, ActionContext context) {
+        if (override != null && !override.equalsIgnoreCase("current")) {
+            Integer resolved = resolveForwardPageStep(sourceLivePage, override.trim(), context);
+            if (resolved != null) {
+                return resolved;
+            }
+        }
         if (lockedPage != null) {
             return lockedPage;
         }
-        if (override == null || override.equalsIgnoreCase("current")) {
-            return sourceLivePage;
-        }
-        Integer resolved = resolveForwardPageStep(sourceLivePage, override.trim(), context);
-        return resolved != null ? resolved : sourceLivePage;
+        return sourceLivePage;
     }
 
     private static @Nullable Integer resolveForwardPageStep(int basePage, String step, ActionContext context) {
@@ -210,6 +221,7 @@ public final class ForwardNavigation {
             @Nullable String page,
             @Nullable String target,
             boolean context,
+            @Nullable String value,
             Map<String, String> dimensions,
             boolean restoreSpecified,
             @Nullable String restorePage,
@@ -224,13 +236,14 @@ public final class ForwardNavigation {
             String page;
             String target;
             boolean context;
+            String value;
             final Map<String, String> dimensions = new LinkedHashMap<>();
             boolean restoreSpecified;
             String restorePage;
             final Map<String, String> restoreDimensions = new LinkedHashMap<>();
 
             Parsed build() {
-                return new Parsed(guiId, page, target, context, dimensions, restoreSpecified, restorePage, restoreDimensions);
+                return new Parsed(guiId, page, target, context, value, dimensions, restoreSpecified, restorePage, restoreDimensions);
             }
         }
     }
