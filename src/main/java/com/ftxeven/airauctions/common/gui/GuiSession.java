@@ -210,9 +210,13 @@ public final class GuiSession {
         return cooldowns.checkAndStart(itemKey, cooldown, nowMillis);
     }
 
-    void inheritRuntimeState(GuiSession previous) {
-        this.attributes.putAll(previous.attributes);
+    void inheritCooldowns(GuiSession previous) {
         this.cooldowns.mergeFrom(previous.cooldowns);
         this.lastAnyClickAt = previous.lastAnyClickAt;
+    }
+
+    void inheritRuntimeState(GuiSession previous) {
+        this.attributes.putAll(previous.attributes);
+        inheritCooldowns(previous);
     }
 }

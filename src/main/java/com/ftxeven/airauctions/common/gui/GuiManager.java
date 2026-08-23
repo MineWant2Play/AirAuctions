@@ -227,6 +227,8 @@ public final class GuiManager {
         GuiSession session = new GuiSession(viewer.getUniqueId(), effective, placeholders, options.flagResolver(), openTick, originChain);
         if (reopen) {
             session.inheritRuntimeState(previous);
+        } else if (previous != null) {
+            session.inheritCooldowns(previous);
         }
         options.attributes().forEach(session::attribute);
         session.placeholders().put("previous_gui", previousGuiPlaceholder(session));
