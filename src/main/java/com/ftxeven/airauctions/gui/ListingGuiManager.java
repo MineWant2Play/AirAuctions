@@ -19,9 +19,11 @@ import com.ftxeven.airauctions.service.Eligibility;
 import com.ftxeven.airauctions.service.ServiceManager;
 import com.ftxeven.airauctions.service.listing.workflow.ReclaimService;
 import com.ftxeven.airauctions.util.Messenger;
+import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -52,6 +54,10 @@ public final class ListingGuiManager {
                 .hooks(hooks)
                 .heads(new PlayerHeadResolver(services.players()))
                 .players(name -> services.players().findByName(name).map(PlayerData::uuid).orElse(null))
+                .cooldownFormatter(seconds -> TimeFormatter.duration(
+                        Duration.ofSeconds(Math.max(1L, (long) Math.ceil(seconds))),
+                        configs.main().formatting(),
+                        configs.lang()))
                 .reservedPaths(RESERVED_PATHS)
                 .layoutReplaceKeys(LAYOUT_REPLACE_KEYS)
                 .build();

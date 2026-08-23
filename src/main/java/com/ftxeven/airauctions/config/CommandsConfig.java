@@ -83,7 +83,7 @@ public final class CommandsConfig extends BaseConfig {
             return null;
         }
 
-        return new Shortcut(runs, getStringList(sec, "aliases"));
+        return new Shortcut(runs, optionalStringList(sec, "aliases"));
     }
 
     private Map<String, DurationUnit> readDurationUnits(ConfigurationSection sec) {
@@ -107,7 +107,7 @@ public final class CommandsConfig extends BaseConfig {
         sec = orEmpty(sec);
         return new RootCommand(
                 getString(sec, "name", "auctionhouse"),
-                getStringList(sec, "aliases"),
+                optionalStringList(sec, "aliases"),
                 getString(sec, "usage", "/%label% [subcommand] [...]")
         );
     }
@@ -128,7 +128,7 @@ public final class CommandsConfig extends BaseConfig {
         return new DynamicCommand(
                 getBoolean(sec, "enabled", true),
                 getString(sec, "name", key),
-                getStringList(sec, "aliases"),
+                optionalStringList(sec, "aliases"),
                 getString(sec, "usage", ""),
                 sec.getString("usage-others", ""),
                 readLabelMap(sec.getConfigurationSection("actions")),

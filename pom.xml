@@ -106,7 +106,7 @@
         <dependency>
             <groupId>net.momirealms</groupId>
             <artifactId>craft-engine-core</artifactId>
-            <version>0.0.67</version>
+            <version>26.7</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -119,7 +119,7 @@
         <dependency>
             <groupId>net.momirealms</groupId>
             <artifactId>craft-engine-bukkit</artifactId>
-            <version>0.0.67</version>
+            <version>26.7</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

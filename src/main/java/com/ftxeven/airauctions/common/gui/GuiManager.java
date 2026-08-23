@@ -54,6 +54,7 @@ public final class GuiManager {
     private final ItemResolver items;
     private final AnimationManager animations;
     private final PlayerNameResolver players;
+    private final CooldownFormatter cooldownFormatter;
 
     private final Map<UUID, GuiSession> sessions = new ConcurrentHashMap<>();
     private final ScreenContextStore context = new ScreenContextStore();
@@ -62,13 +63,14 @@ public final class GuiManager {
 
     private GuiManager(JavaPlugin plugin, GuiRegistry registry, InputRegistry input, Messenger messenger,
                        MaterialResolver.HookResolver hooks, MaterialResolver.HeadResolver heads, PlayerNameResolver players,
-                       AnimationManager animations) {
+                       AnimationManager animations, CooldownFormatter cooldownFormatter) {
         this.logger = plugin.getLogger();
         this.registry = registry;
         this.input = input;
         this.messenger = messenger;
         this.animations = animations;
         this.players = players;
+        this.cooldownFormatter = cooldownFormatter;
 
         this.conditions = new ConditionEvaluator(logger::warning);
         this.flags = new FlagGate();
@@ -93,6 +95,7 @@ public final class GuiManager {
         private MaterialResolver.HookResolver hooks = MaterialResolver.HookResolver.NONE;
         private MaterialResolver.HeadResolver heads = MaterialResolver.HeadResolver.NONE;
         private PlayerNameResolver players = PlayerNameResolver.NONE;
+        private CooldownFormatter cooldownFormatter = CooldownFormatter.NONE;
         private Set<String> reservedPaths = Set.of();
         private Set<String> layoutReplaceKeys = Set.of();
 
@@ -117,6 +120,11 @@ public final class GuiManager {
             return this;
         }
 
+        public Builder cooldownFormatter(CooldownFormatter cooldownFormatter) {
+            this.cooldownFormatter = cooldownFormatter;
+            return this;
+        }
+
         public Builder reservedPaths(Set<String> reservedPaths) {
             this.reservedPaths = Set.copyOf(reservedPaths);
             return this;
@@ -134,7 +142,7 @@ public final class GuiManager {
             InputRegistry input = new InputRegistry(plugin, messenger);
             if (!input.load(new AliasExpander(registry.shared().aliases(), plugin.getLogger()))) return null;
 
-            return new GuiManager(plugin, registry, input, messenger, hooks, heads, players, animations);
+            return new GuiManager(plugin, registry, input, messenger, hooks, heads, players, animations, cooldownFormatter);
         }
     }
 
@@ -359,8 +367,6 @@ public final class GuiManager {
         return sessions.get(viewer.getUniqueId());
     }
 
-    // Name -> uuid lookup for 'target:<name>' navigation params, delegated to whatever player
-    // database the embedding project supplied - common/gui has no player store of its own.
     public @Nullable UUID resolvePlayerName(String name) {
         return players.resolve(name);
     }
@@ -521,7 +527,7 @@ public final class GuiManager {
     }
 
     private String formatCooldown(double seconds) {
-        return String.valueOf(Math.max(1L, (long) Math.ceil(seconds)));
+        return cooldownFormatter.format(seconds);
     }
 
     private void runActions(List<String> lines, Player viewer, GuiSession session, String itemKey) {
@@ -540,5 +546,12 @@ public final class GuiManager {
         PlayerNameResolver NONE = name -> null;
 
         @Nullable UUID resolve(String name);
+    }
+
+    @FunctionalInterface
+    public interface CooldownFormatter {
+        CooldownFormatter NONE = seconds -> String.valueOf(Math.max(1L, (long) Math.ceil(seconds)));
+
+        String format(double secondsRemaining);
     }
 }

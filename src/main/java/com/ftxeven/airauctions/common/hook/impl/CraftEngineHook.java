@@ -13,7 +13,7 @@ public final class CraftEngineHook implements ItemHook {
 
     @Override
     public @Nullable String rawId(ItemStack item) {
-        return CraftEngine.instance().<ItemStack>itemManager()
+        return CraftEngine.instance().itemManager()
                 .wrap(item)
                 .customId()
                 .map(Key::asString)
@@ -22,7 +22,9 @@ public final class CraftEngineHook implements ItemHook {
 
     @Override
     public @Nullable ItemStack buildItem(String id) {
-        return CraftEngine.instance().<ItemStack>itemManager()
-                .buildItemStack(Key.of(id), null);
+        return CraftEngine.instance().itemManager()
+                .getBuildableItem(Key.of(id))
+                .map(buildable -> (ItemStack) buildable.buildItem((net.momirealms.craftengine.core.entity.player.Player) null).platformItem())
+                .orElse(null);
     }
 }
