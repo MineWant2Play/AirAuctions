@@ -29,6 +29,16 @@ public final class CommandManager {
         registerPlayerCommand();
     }
 
+    public void unregisterAll() {
+        registry.unregisterAll();
+
+        PluginCommand command = plugin.getCommand("airauctions");
+        if (command != null) {
+            command.setExecutor(null);
+            command.setTabCompleter(null);
+        }
+    }
+
     private void registerAdminCommand() {
         PluginCommand command = plugin.getCommand("airauctions");
 

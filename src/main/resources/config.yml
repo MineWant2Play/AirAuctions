@@ -213,7 +213,9 @@ restrictions:
     item-models: []                  # Item model key (1.21.4+). Format: "namespace:path"
     # - "namespace:path/model"
 
-    plugin-items: []                 # Nexo, ItemsAdder, or CraftEngine item ID
+    plugin-items: []                 # UniItems provider item ID
     # - "nexo:item_id"
     # - "itemsadder:namespace:item_id"
     # - "craftengine:namespace:item_id"
+    # - "mmoitems:SWORD:CUTLASS"
+    # - "oraxen:item_id"
