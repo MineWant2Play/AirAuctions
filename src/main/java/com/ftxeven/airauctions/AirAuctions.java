@@ -96,6 +96,10 @@ public final class AirAuctions extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (commands != null) {
+            commands.unregisterAll();
+        }
+
         if (services != null) {
             services.expiry().stop();
         }
