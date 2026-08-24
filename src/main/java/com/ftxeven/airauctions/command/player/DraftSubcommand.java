@@ -276,7 +276,7 @@ public abstract class DraftSubcommand<E> implements SubCommand {
         }
 
         services.listings().finalizeCreation(player, context.snapshot(), context.amount(), context.slot(), context.provider(), fee,
-                feePlaceholders(context.provider(), fee),
+                feePlaceholders(player, context.provider(), fee),
                 item -> prepareListing(player, item, context.amount(), context.price(), context.provider(), context.extra()),
                 prepared -> {
                     services.validator().markListed(player.getUniqueId());
@@ -355,9 +355,11 @@ public abstract class DraftSubcommand<E> implements SubCommand {
         return OptionalInt.of(amount);
     }
 
-    private Map<String, String> feePlaceholders(EconomyProvider provider, EconomyService.ChargeResult fee) {
+    private Map<String, String> feePlaceholders(Player player, EconomyProvider provider, EconomyService.ChargeResult fee) {
+        EconomyService economy = services.economy();
         Map<String, String> placeholders = new HashMap<>();
-        services.economy().formatInto(placeholders, "fee", provider.id(), fee);
+        economy.formatInto(placeholders, "fee", provider.id(), fee);
+        economy.formatInto(placeholders, "amount", provider.id(), economy.missing(player, provider, fee.amount()));
         return placeholders;
     }
 

@@ -33,7 +33,14 @@ public final class GuiRenderer {
         if (dynamic != null) {
             dynamic.prepare(viewer, session);
         }
+        clampPage(session);
         writePaginationPlaceholders(session);
+    }
+
+    private void clampPage(GuiSession session) {
+        if (session.page() > session.totalPages()) {
+            session.page(session.totalPages());
+        }
     }
 
     private void writePaginationPlaceholders(GuiSession session) {

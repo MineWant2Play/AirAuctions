@@ -123,7 +123,7 @@ public final class AuctionService {
         }
         if (!provider.has(buyer, quote.price())) {
             Map<String, String> placeholders = new HashMap<>();
-            economy.formatInto(placeholders, "amount", info.economy(), quote.price());
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(buyer, provider, quote.price()));
             return Eligibility.denied("auctions.purchase.errors.insufficient-funds", placeholders);
         }
 
@@ -154,7 +154,7 @@ public final class AuctionService {
         double required = minimumPurchasePrice(auction, provider);
         if (!provider.has(buyer, required)) {
             Map<String, String> placeholders = new HashMap<>();
-            economy.formatInto(placeholders, "amount", info.economy(), required);
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(buyer, provider, required));
             return Eligibility.denied("auctions.purchase.errors.insufficient-funds", placeholders);
         }
 

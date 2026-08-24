@@ -47,7 +47,7 @@ public abstract class PreviewAction implements ActionRegistry.Handler {
             return;
         }
 
-        ScreenOpener.open(context, guiId(), attributes);
+        ScreenOpener.open(context, guiId(), args, attributes);
     }
 
     private @Nullable Map<String, Object> resolveListing(@Nullable String id) {

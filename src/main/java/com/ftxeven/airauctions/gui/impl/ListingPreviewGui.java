@@ -51,14 +51,11 @@ public abstract class ListingPreviewGui extends BaseGui {
     @Override
     public void render(Player viewer, GuiSession session) {
         LayoutConfig.ListingRender listingRender = layout(session).listing();
-        if (listingRender == null) {
-            return;
-        }
 
         Listing listing = targetListing(session);
         if (listing != null) {
             ListingScope scope = targetScope(session);
-            drawFeaturedEntry(viewer, session, listingRender.forType(null), listing.displayItem(),
+            drawFeaturedEntry(viewer, session, listingRender != null ? listingRender.forType(null) : null, listing.displayItem(),
                     guis.placeholders().forListing(listing), guis.flags().forListing(viewer, scope, listing));
             return;
         }
@@ -66,7 +63,7 @@ public abstract class ListingPreviewGui extends BaseGui {
         HistoryEntry history = resolvedHistory(session);
         if (history != null) {
             String variant = historyVariant(history, owner(viewer, session));
-            drawFeaturedEntry(viewer, session, listingRender.forType(variant), history.displayItem(),
+            drawFeaturedEntry(viewer, session, listingRender != null ? listingRender.forType(variant) : null, history.displayItem(),
                     guis.placeholders().forHistory(history), guis.flags().forHistory(viewer, history));
         }
     }

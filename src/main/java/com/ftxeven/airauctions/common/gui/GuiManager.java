@@ -2,10 +2,7 @@ package com.ftxeven.airauctions.common.gui;
 
 import com.ftxeven.airauctions.common.animation.AnimationManager;
 import com.ftxeven.airauctions.common.condition.ConditionEvaluator;
-import com.ftxeven.airauctions.common.gui.action.ActionContext;
-import com.ftxeven.airauctions.common.gui.action.ActionDispatcher;
-import com.ftxeven.airauctions.common.gui.action.ActionParser;
-import com.ftxeven.airauctions.common.gui.action.ActionRegistry;
+import com.ftxeven.airauctions.common.gui.action.*;
 import com.ftxeven.airauctions.common.gui.config.*;
 import com.ftxeven.airauctions.common.gui.flag.FlagGate;
 import com.ftxeven.airauctions.common.gui.input.InputRegistry;
@@ -302,7 +299,10 @@ public final class GuiManager {
             return;
         }
 
-        ScreenState restored = knownContext(viewer.getUniqueId(), back.screen());
+        ActionContext navContext = context(viewer, current, "<back-navigation>", current.placeholders(), current.flagResolver());
+        ScreenState currentLive = ScreenState.liveStateOf(current);
+        ScreenState restored = ForwardNavigation.resolveForwardState(navContext, back.screen(), currentLive, ForwardNavigation.parse("", navContext));
+
         OpenOptions options = OpenOptions.forScreen(current.flagResolver(), back.screen(), restored, back.previous(), back.originChain());
         open(viewer, back.screen().guiId(), new LinkedHashMap<>(current.placeholders()), options);
     }

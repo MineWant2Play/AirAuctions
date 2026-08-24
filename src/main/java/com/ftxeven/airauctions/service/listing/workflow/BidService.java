@@ -153,6 +153,7 @@ public final class BidService {
         if (!providerLookup.get().has(bidder, offer)) {
             Map<String, String> placeholders = new HashMap<>();
             economy.formatInto(placeholders, "offer", info.economy(), offer);
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(bidder, providerLookup.get(), offer));
             return Eligibility.denied("bids.place.errors.insufficient-funds", placeholders);
         }
 
@@ -175,6 +176,7 @@ public final class BidService {
         if (!providerLookup.get().has(bidder, minOffer)) {
             Map<String, String> placeholders = new HashMap<>();
             economy.formatInto(placeholders, "offer", info.economy(), minOffer);
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(bidder, providerLookup.get(), minOffer));
             return Eligibility.denied("bids.place.errors.insufficient-funds", placeholders);
         }
 

@@ -375,10 +375,9 @@ public abstract class BaseGui implements GuiRenderer.DynamicRenderer {
 
     protected @Nullable ItemStack drawFeaturedEntry(Player viewer, GuiSession session, @Nullable ItemConfig.Template template,
                                                     ItemStack item, Map<String, String> placeholders, Function<String, String> flags) {
-        if (template == null) {
-            return null;
+        if (template != null) {
+            drawEntries(viewer, session, List.of(new RenderEntry(template, item, placeholders, flags)), layout(session).listingSlots());
         }
-        drawEntries(viewer, session, List.of(new RenderEntry(template, item, placeholders, flags)), layout(session).listingSlots());
         drawShulkerContents(session, item);
         return item;
     }
