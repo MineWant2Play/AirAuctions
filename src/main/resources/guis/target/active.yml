@@ -76,7 +76,7 @@ items:
       - "<gray>Return to Marketplace."
     actions:
       any:
-        - "[open] gui:browsing/global"
+        - "[open] gui:browsing/global page:1"
         - "[sound] $click"
 
   filter-category:

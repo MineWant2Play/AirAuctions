@@ -1,8 +1,8 @@
 package com.ftxeven.airauctions.gui.action;
 
 import com.ftxeven.airauctions.config.ConfigManager;
-import com.ftxeven.airauctions.core.gui.action.ActionContext;
-import com.ftxeven.airauctions.core.gui.action.ActionRegistry;
+import com.ftxeven.airauctions.common.gui.action.ActionContext;
+import com.ftxeven.airauctions.common.gui.action.ActionRegistry;
 import com.ftxeven.airauctions.gui.BaseGui;
 import com.ftxeven.airauctions.gui.impl.ListingPreviewGui;
 import com.ftxeven.airauctions.model.HistoryEntry;
@@ -47,7 +47,7 @@ public abstract class PreviewAction implements ActionRegistry.Handler {
             return;
         }
 
-        ScreenOpener.open(context, guiId(), attributes);
+        ScreenOpener.open(context, guiId(), args, attributes);
     }
 
     private @Nullable Map<String, Object> resolveListing(@Nullable String id) {

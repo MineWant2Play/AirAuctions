@@ -1,10 +1,10 @@
 package com.ftxeven.airauctions.gui;
 
 import com.ftxeven.airauctions.config.ConfigManager;
-import com.ftxeven.airauctions.core.gui.GuiSession;
-import com.ftxeven.airauctions.core.gui.config.ItemConfig;
-import com.ftxeven.airauctions.core.gui.render.GuiRenderer;
-import com.ftxeven.airauctions.core.gui.render.RenderEntry;
+import com.ftxeven.airauctions.common.gui.GuiSession;
+import com.ftxeven.airauctions.common.gui.config.ItemConfig;
+import com.ftxeven.airauctions.common.gui.render.GuiRenderer;
+import com.ftxeven.airauctions.common.gui.render.RenderEntry;
 import com.ftxeven.airauctions.database.query.*;
 import com.ftxeven.airauctions.gui.config.LayoutConfig;
 import com.ftxeven.airauctions.gui.render.FilterOptions;
@@ -375,10 +375,9 @@ public abstract class BaseGui implements GuiRenderer.DynamicRenderer {
 
     protected @Nullable ItemStack drawFeaturedEntry(Player viewer, GuiSession session, @Nullable ItemConfig.Template template,
                                                     ItemStack item, Map<String, String> placeholders, Function<String, String> flags) {
-        if (template == null) {
-            return null;
+        if (template != null) {
+            drawEntries(viewer, session, List.of(new RenderEntry(template, item, placeholders, flags)), layout(session).listingSlots());
         }
-        drawEntries(viewer, session, List.of(new RenderEntry(template, item, placeholders, flags)), layout(session).listingSlots());
         drawShulkerContents(session, item);
         return item;
     }

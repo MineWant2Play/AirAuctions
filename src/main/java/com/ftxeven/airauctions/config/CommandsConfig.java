@@ -1,13 +1,13 @@
 package com.ftxeven.airauctions.config;
 
-import com.ftxeven.airauctions.core.command.DurationUnits.DurationUnit;
-import com.ftxeven.airauctions.core.command.DynamicCommand;
-import com.ftxeven.airauctions.core.command.RootCommand;
-import com.ftxeven.airauctions.core.command.Shortcuts.Shortcut;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition.CopyPosition;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition.EntriesPosition;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabPosition.TabEntry;
+import com.ftxeven.airauctions.common.command.DurationUnits.DurationUnit;
+import com.ftxeven.airauctions.common.command.DynamicCommand;
+import com.ftxeven.airauctions.common.command.RootCommand;
+import com.ftxeven.airauctions.common.command.Shortcuts.Shortcut;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition.CopyPosition;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition.EntriesPosition;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabPosition.TabEntry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -83,7 +83,7 @@ public final class CommandsConfig extends BaseConfig {
             return null;
         }
 
-        return new Shortcut(runs, getStringList(sec, "aliases"));
+        return new Shortcut(runs, optionalStringList(sec, "aliases"));
     }
 
     private Map<String, DurationUnit> readDurationUnits(ConfigurationSection sec) {
@@ -107,7 +107,7 @@ public final class CommandsConfig extends BaseConfig {
         sec = orEmpty(sec);
         return new RootCommand(
                 getString(sec, "name", "auctionhouse"),
-                getStringList(sec, "aliases"),
+                optionalStringList(sec, "aliases"),
                 getString(sec, "usage", "/%label% [subcommand] [...]")
         );
     }
@@ -128,7 +128,7 @@ public final class CommandsConfig extends BaseConfig {
         return new DynamicCommand(
                 getBoolean(sec, "enabled", true),
                 getString(sec, "name", key),
-                getStringList(sec, "aliases"),
+                optionalStringList(sec, "aliases"),
                 getString(sec, "usage", ""),
                 sec.getString("usage-others", ""),
                 readLabelMap(sec.getConfigurationSection("actions")),

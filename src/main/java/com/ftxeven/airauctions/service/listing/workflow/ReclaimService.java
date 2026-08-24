@@ -10,7 +10,6 @@ import com.ftxeven.airauctions.service.listing.ListingService;
 import com.ftxeven.airauctions.util.ItemDelivery;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -62,10 +61,9 @@ public final class ReclaimService {
             return ActionResult.denied(kind.key("errors.inventory-full"));
         }
 
-        Map<String, String> placeholders = PlaceholderMap.create()
-                .put("amount", amount)
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("amount", String.valueOf(amount));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
         messenger.send(player, configs.lang().get(kind.key("success")), placeholders);
         if (delivery == ItemDelivery.Result.DROPPED) {
             messenger.send(player, configs.lang().get(kind.key("dropped")));

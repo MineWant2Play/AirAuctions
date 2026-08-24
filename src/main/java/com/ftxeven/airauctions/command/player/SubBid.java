@@ -2,10 +2,10 @@ package com.ftxeven.airauctions.command.player;
 
 import com.ftxeven.airauctions.config.ConfigManager;
 import com.ftxeven.airauctions.config.MainConfig;
-import com.ftxeven.airauctions.core.command.CommandDispatch;
-import com.ftxeven.airauctions.core.command.DurationUnits;
-import com.ftxeven.airauctions.core.command.tabcomplete.TabCompleteEngine;
-import com.ftxeven.airauctions.core.gui.GuiManager;
+import com.ftxeven.airauctions.common.command.CommandDispatch;
+import com.ftxeven.airauctions.common.command.DurationUnits;
+import com.ftxeven.airauctions.common.command.tabcomplete.TabCompleteEngine;
+import com.ftxeven.airauctions.common.gui.GuiManager;
 import com.ftxeven.airauctions.economy.EconomyProvider;
 import com.ftxeven.airauctions.gui.impl.ListingDraft;
 import com.ftxeven.airauctions.service.ServiceManager;

@@ -78,20 +78,11 @@ templates:
         material: BARRIER
         display-name: "<red><bold>Empty"
         lore:
-          - "<gray>No listings in this category yet."
+          - "<gray>No listings in this GUI yet."
 
   switch-listings:
     material: CHEST_MINECART
     display-name: "<white><bold>Your Listings</bold>"
-    lore:
-      - "<dark_gray>Management"
-      - " "
-      - "<gray>View and manage your listings."
-      - " "
-      - "<white>Left-Click <gray>to view active listings"
-      - "<white>Right-Click <gray>to view expired listings"
-      - "<white>Shift-Left <gray>to view storage listings"
-      - "<white>Shift-Right <gray>to view history transactions"
     actions:
       left:
         - "[sound] $click"

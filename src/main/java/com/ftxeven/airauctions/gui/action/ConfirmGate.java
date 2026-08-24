@@ -1,10 +1,10 @@
 package com.ftxeven.airauctions.gui.action;
 
+import com.ftxeven.airauctions.common.gui.action.ActionTokens;
 import com.ftxeven.airauctions.config.ConfigManager;
-import com.ftxeven.airauctions.core.gui.GuiManager;
-import com.ftxeven.airauctions.core.gui.action.ActionArgs;
-import com.ftxeven.airauctions.core.gui.action.ActionContext;
-import com.ftxeven.airauctions.core.gui.action.ActionRegistry;
+import com.ftxeven.airauctions.common.gui.GuiManager;
+import com.ftxeven.airauctions.common.gui.action.ActionContext;
+import com.ftxeven.airauctions.common.gui.action.ActionRegistry;
 import com.ftxeven.airauctions.database.query.ListingQuery;
 import com.ftxeven.airauctions.gui.BaseGui;
 import com.ftxeven.airauctions.gui.impl.BuyAmountGui;
@@ -88,7 +88,7 @@ public final class ConfirmGate implements ActionRegistry.Handler {
     // confirm/claim_all, confirm/collect_all
     public static ConfirmGate forBulkReclaim(ServiceManager services, ConfigManager configs, ReclaimService.ReclaimKind kind) {
         return new ConfirmGate(configs, (context, args) -> {
-            boolean filtered = Boolean.parseBoolean(ActionArgs.parse(args).getOrDefault("filtered", "false"));
+            boolean filtered = Boolean.parseBoolean(ActionTokens.parse(args).getOrDefault("filtered", "false"));
             ListingQuery query = resolveQuery(context, kind, filtered);
             Eligibility eligibility = services.reclaims().availability(kind, context.viewer(), query).toEligibility(kind);
             return Optional.of(new Target(kind.confirmAllGuiId(), eligibility, Map.of(

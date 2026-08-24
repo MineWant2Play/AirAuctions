@@ -50,14 +50,12 @@ public abstract class BaseConfig {
 
     protected abstract void read(ConfigurationSection yaml);
 
-    // Parsing helpers shared by every config class
+    // Parsing helpers
 
     protected static ConfigurationSection orEmpty(ConfigurationSection section) {
         return section != null ? section : new YamlConfiguration();
     }
 
-    // ConfigurationSection keys come back in file order (LinkedHashMap-backed) - the
-    // sort/filter/provider cycle guis depend on that order being preserved
     protected static Map<String, String> readLabelMap(ConfigurationSection section) {
         if (section == null) {
             return Map.of();

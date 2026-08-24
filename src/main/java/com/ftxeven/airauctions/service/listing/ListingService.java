@@ -17,7 +17,7 @@ import com.ftxeven.airauctions.service.ActionResult;
 import com.ftxeven.airauctions.service.Eligibility;
 import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.service.player.PlayerService;
-import com.ftxeven.airauctions.core.command.CommandDispatch;
+import com.ftxeven.airauctions.common.command.CommandDispatch;
 import com.ftxeven.airauctions.util.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -127,13 +127,13 @@ public final class ListingService {
     }
 
     public Map<String, String> creationPlaceholders(Player seller, ItemStack item, int amount, String economyId, double price, EconomyService.ChargeResult fee) {
-        return PlaceholderMap.create()
-                .put("seller", seller.getName())
-                .put("amount", amount)
-                .put("item", ItemDisplay.name(item, configs.lang()))
-                .money(economy, "price", economyId, price)
-                .money(economy, "fee", economyId, fee)
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("seller", seller.getName());
+        placeholders.put("amount", String.valueOf(amount));
+        placeholders.put("item", ItemDisplay.name(item, configs.lang()));
+        economy.formatInto(placeholders, "price", economyId, price);
+        economy.formatInto(placeholders, "fee", economyId, fee);
+        return placeholders;
     }
 
     // Stock
@@ -226,10 +226,10 @@ public final class ListingService {
     }
 
     private Map<String, String> cancelPlaceholders(Listing.Info info, int amount) {
-        return PlaceholderMap.create()
-                .put("amount", amount)
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("amount", String.valueOf(amount));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        return placeholders;
     }
 
     // Deletion
@@ -253,21 +253,19 @@ public final class ListingService {
         if (!deletionFeedbackAllowed(admin, info.seller())) {
             return;
         }
-        Map<String, String> placeholders = PlaceholderMap.create()
-                .put("amount", info.amount())
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .put("admin", adminDisplayName(admin))
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("amount", String.valueOf(info.amount()));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        placeholders.put("admin", adminDisplayName(admin));
         messenger.send(info.seller(), configs.lang().get("listings.delete.notify-seller"), placeholders);
     }
 
     public void notifyAdminOfDeletion(Listing.Info info, CommandSender admin) {
-        Map<String, String> placeholders = PlaceholderMap.create()
-                .put("id", info.id())
-                .put("amount", info.amount())
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .put("seller", players.name(info.seller()))
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("id", info.id());
+        placeholders.put("amount", String.valueOf(info.amount()));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        placeholders.put("seller", players.name(info.seller()));
         messenger.send(admin, configs.lang().get("listings.delete.success"), placeholders);
     }
 

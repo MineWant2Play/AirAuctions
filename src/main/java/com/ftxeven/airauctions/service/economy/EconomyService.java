@@ -172,6 +172,10 @@ public final class EconomyService {
         return charge.waived() || provider.withdraw(seller, charge.amount());
     }
 
+    public double missing(Player player, EconomyProvider provider, double required) {
+        return Math.max(0, required - provider.balance(player));
+    }
+
     public Eligibility eligibleForFee(Player seller, EconomyProvider provider, ChargeResult fee) {
         if (fee.waived() || provider.has(seller, fee.amount())) {
             return Eligibility.eligible();
@@ -179,6 +183,7 @@ public final class EconomyService {
 
         Map<String, String> placeholders = new HashMap<>();
         formatInto(placeholders, "fee", provider.id(), fee);
+        formatInto(placeholders, "amount", provider.id(), missing(seller, provider, fee.amount()));
         return Eligibility.denied("errors.economy.insufficient-funds-fee", placeholders);
     }
 

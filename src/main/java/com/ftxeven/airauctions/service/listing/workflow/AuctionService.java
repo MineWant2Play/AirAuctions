@@ -19,7 +19,6 @@ import com.ftxeven.airauctions.service.player.PlayerService;
 import com.ftxeven.airauctions.util.ItemDelivery;
 import com.ftxeven.airauctions.util.ItemDisplay;
 import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
 import com.ftxeven.airauctions.util.TimeFormatter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -124,7 +123,7 @@ public final class AuctionService {
         }
         if (!provider.has(buyer, quote.price())) {
             Map<String, String> placeholders = new HashMap<>();
-            economy.formatInto(placeholders, "amount", info.economy(), quote.price());
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(buyer, provider, quote.price()));
             return Eligibility.denied("auctions.purchase.errors.insufficient-funds", placeholders);
         }
 
@@ -155,7 +154,7 @@ public final class AuctionService {
         double required = minimumPurchasePrice(auction, provider);
         if (!provider.has(buyer, required)) {
             Map<String, String> placeholders = new HashMap<>();
-            economy.formatInto(placeholders, "amount", info.economy(), required);
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(buyer, provider, required));
             return Eligibility.denied("auctions.purchase.errors.insufficient-funds", placeholders);
         }
 
@@ -280,24 +279,22 @@ public final class AuctionService {
     private void announcePurchased(Listing.Info info, Player buyer, int amount, int remainingAfter, Quote quote, ItemDelivery.Result delivery) {
         String itemName = ItemDisplay.name(info.item(), configs.lang());
 
-        Map<String, String> buyerPlaceholders = PlaceholderMap.create()
-                .put("amount", amount)
-                .put("item", itemName)
-                .put("seller", players.name(info.seller()))
-                .money(economy, "price", info.economy(), quote.price())
-                .build();
+        Map<String, String> buyerPlaceholders = new HashMap<>();
+        buyerPlaceholders.put("amount", String.valueOf(amount));
+        buyerPlaceholders.put("item", itemName);
+        buyerPlaceholders.put("seller", players.name(info.seller()));
+        economy.formatInto(buyerPlaceholders, "price", info.economy(), quote.price());
         messenger.send(buyer, configs.lang().get("auctions.purchase.success"), buyerPlaceholders);
         if (delivery == ItemDelivery.Result.DROPPED) {
             messenger.send(buyer, configs.lang().get("auctions.purchase.dropped"));
         }
 
-        Map<String, String> sellerPlaceholders = PlaceholderMap.create()
-                .put("amount", amount)
-                .put("item", itemName)
-                .put("buyer", buyer.getName())
-                .money(economy, "payout", info.economy(), quote.payout())
-                .money(economy, "tax", info.economy(), quote.tax(), EconomyService.ChargeKind.TAX)
-                .build();
+        Map<String, String> sellerPlaceholders = new HashMap<>();
+        sellerPlaceholders.put("amount", String.valueOf(amount));
+        sellerPlaceholders.put("item", itemName);
+        sellerPlaceholders.put("buyer", buyer.getName());
+        economy.formatInto(sellerPlaceholders, "payout", info.economy(), quote.payout());
+        economy.formatInto(sellerPlaceholders, "tax", info.economy(), quote.tax(), EconomyService.ChargeKind.TAX);
 
         if (remainingAfter <= 0) {
             messenger.send(info.seller(), configs.lang().get("auctions.sell.sold"), sellerPlaceholders);

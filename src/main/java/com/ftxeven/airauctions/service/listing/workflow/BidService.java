@@ -19,11 +19,7 @@ import com.ftxeven.airauctions.service.economy.EconomyService;
 import com.ftxeven.airauctions.service.listing.HistoryService;
 import com.ftxeven.airauctions.service.listing.ListingService;
 import com.ftxeven.airauctions.service.player.PlayerService;
-import com.ftxeven.airauctions.util.ItemDelivery;
-import com.ftxeven.airauctions.util.ItemDisplay;
-import com.ftxeven.airauctions.util.Messenger;
-import com.ftxeven.airauctions.util.PlaceholderMap;
-import com.ftxeven.airauctions.util.TimeFormatter;
+import com.ftxeven.airauctions.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -157,6 +153,7 @@ public final class BidService {
         if (!providerLookup.get().has(bidder, offer)) {
             Map<String, String> placeholders = new HashMap<>();
             economy.formatInto(placeholders, "offer", info.economy(), offer);
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(bidder, providerLookup.get(), offer));
             return Eligibility.denied("bids.place.errors.insufficient-funds", placeholders);
         }
 
@@ -179,6 +176,7 @@ public final class BidService {
         if (!providerLookup.get().has(bidder, minOffer)) {
             Map<String, String> placeholders = new HashMap<>();
             economy.formatInto(placeholders, "offer", info.economy(), minOffer);
+            economy.formatInto(placeholders, "amount", info.economy(), economy.missing(bidder, providerLookup.get(), minOffer));
             return Eligibility.denied("bids.place.errors.insufficient-funds", placeholders);
         }
 
@@ -288,16 +286,25 @@ public final class BidService {
                         info.fee(), tax, info.category(), info.searchName(), info.createdAt(), endedAt.get()),
                 bid.startingPrice(), bid.currentPrice(), bid.totalBidders()));
 
-        Optional<ItemDelivery.Result> delivery = tryInstantDeliver(bid);
-        announceWon(info, bid, winner, payout, tax, endedAt.get(), delivery);
+        settleDelivery(info, bid, winner, payout, tax, endedAt.get());
     }
 
-    private Optional<ItemDelivery.Result> tryInstantDeliver(Listing.Bid bid) {
-        if (!configs.main().bids().instantCollect() || !configs.main().listings().dropOnFullInventory()) {
+    private void settleDelivery(Listing.Info info, Listing.Bid bid, UUID winner, double payout, double tax, Instant endedAt) {
+        Player player = Bukkit.getPlayer(winner);
+        if (player == null) {
+            announceWon(info, bid, winner, payout, tax, endedAt, Optional.empty());
+            return;
+        }
+        Scheduler.runEntity(player,
+                () -> announceWon(info, bid, winner, payout, tax, endedAt, tryInstantDeliver(player, bid)),
+                () -> announceWon(info, bid, winner, payout, tax, endedAt, Optional.empty()));
+    }
+
+    private Optional<ItemDelivery.Result> tryInstantDeliver(Player player, Listing.Bid bid) {
+        if (!configs.main().bids().instantCollect()) {
             return Optional.empty();
         }
-        Player player = Bukkit.getPlayer(bid.currentBidder());
-        return player != null ? Optional.of(listings.deliver(player, bid)) : Optional.empty();
+        return Optional.of(listings.deliver(player, bid));
     }
 
     // Messaging
@@ -307,24 +314,27 @@ public final class BidService {
         String amount = String.valueOf(info.amount());
         String sellerName = players.name(info.seller());
 
-        Map<String, String> bidderPlaceholders = PlaceholderMap.create()
-                .put("amount", amount).put("item", itemName).put("seller", sellerName)
-                .money(economy, "offer", info.economy(), offer)
-                .build();
+        Map<String, String> bidderPlaceholders = new HashMap<>();
+        bidderPlaceholders.put("amount", amount);
+        bidderPlaceholders.put("item", itemName);
+        bidderPlaceholders.put("seller", sellerName);
+        economy.formatInto(bidderPlaceholders, "offer", info.economy(), offer);
         notify(bidder.getUniqueId(), "bids.place.success", bidderPlaceholders);
 
         if (previousBidder != null) {
-            Map<String, String> outbidPlaceholders = PlaceholderMap.create()
-                    .put("amount", amount).put("item", itemName).put("bidder", bidder.getName())
-                    .money(economy, "highest_offer", info.economy(), offer)
-                    .build();
+            Map<String, String> outbidPlaceholders = new HashMap<>();
+            outbidPlaceholders.put("amount", amount);
+            outbidPlaceholders.put("item", itemName);
+            outbidPlaceholders.put("bidder", bidder.getName());
+            economy.formatInto(outbidPlaceholders, "highest_offer", info.economy(), offer);
             notify(previousBidder, "bids.place.outbid-notify", outbidPlaceholders);
         }
 
-        Map<String, String> sellerPlaceholders = PlaceholderMap.create()
-                .put("amount", amount).put("item", itemName).put("bidder", bidder.getName())
-                .money(economy, "offer", info.economy(), offer)
-                .build();
+        Map<String, String> sellerPlaceholders = new HashMap<>();
+        sellerPlaceholders.put("amount", amount);
+        sellerPlaceholders.put("item", itemName);
+        sellerPlaceholders.put("bidder", bidder.getName());
+        economy.formatInto(sellerPlaceholders, "offer", info.economy(), offer);
         notify(info.seller(), "bids.place.seller-notify", sellerPlaceholders);
 
         discord.bidPlaced(info, bidderPlaceholders, sellerPlaceholders, totalBidders);
@@ -337,19 +347,21 @@ public final class BidService {
         String sellerName = players.name(info.seller());
         String winnerName = players.name(winner);
 
-        Map<String, String> sellerPlaceholders = PlaceholderMap.create()
-                .put("amount", amount).put("item", itemName).put("bidder", winnerName)
-                .money(economy, "payout", info.economy(), payout)
-                .money(economy, "tax", info.economy(), tax, EconomyService.ChargeKind.TAX)
-                .build();
+        Map<String, String> sellerPlaceholders = new HashMap<>();
+        sellerPlaceholders.put("amount", amount);
+        sellerPlaceholders.put("item", itemName);
+        sellerPlaceholders.put("bidder", winnerName);
+        economy.formatInto(sellerPlaceholders, "payout", info.economy(), payout);
+        economy.formatInto(sellerPlaceholders, "tax", info.economy(), tax, EconomyService.ChargeKind.TAX);
         notify(info.seller(), "bids.create.sold", sellerPlaceholders);
 
-        Map<String, String> winnerPlaceholders = PlaceholderMap.create()
-                .put("amount", amount).put("item", itemName).put("seller", sellerName)
-                .money(economy, "offer", info.economy(), bid.currentPrice())
-                .put("total_bidders", bid.totalBidders())
-                .put("purges", purgesPlaceholder(endedAt))
-                .build();
+        Map<String, String> winnerPlaceholders = new HashMap<>();
+        winnerPlaceholders.put("amount", amount);
+        winnerPlaceholders.put("item", itemName);
+        winnerPlaceholders.put("seller", sellerName);
+        economy.formatInto(winnerPlaceholders, "offer", info.economy(), bid.currentPrice());
+        winnerPlaceholders.put("total_bidders", String.valueOf(bid.totalBidders()));
+        winnerPlaceholders.put("purges", purgesPlaceholder(endedAt));
         notify(winner, "bids.end.winner", winnerPlaceholders);
         if (delivery.isPresent() && delivery.get() == ItemDelivery.Result.DROPPED) {
             notify(winner, "bids.end.dropped", Map.of());
@@ -362,12 +374,14 @@ public final class BidService {
             if (entry.bidder().equals(winner)) {
                 continue;
             }
-            Map<String, String> loserPlaceholders = PlaceholderMap.create()
-                    .put("amount", amount).put("item", itemName).put("seller", sellerName).put("winner", winnerName)
-                    .money(economy, "highest_offer", info.economy(), bid.currentPrice())
-                    .money(economy, "offer", info.economy(), entry.offer())
-                    .put("total_bidders", bid.totalBidders())
-                    .build();
+            Map<String, String> loserPlaceholders = new HashMap<>();
+            loserPlaceholders.put("amount", amount);
+            loserPlaceholders.put("item", itemName);
+            loserPlaceholders.put("seller", sellerName);
+            loserPlaceholders.put("winner", winnerName);
+            economy.formatInto(loserPlaceholders, "highest_offer", info.economy(), bid.currentPrice());
+            economy.formatInto(loserPlaceholders, "offer", info.economy(), entry.offer());
+            loserPlaceholders.put("total_bidders", String.valueOf(bid.totalBidders()));
             notify(entry.bidder(), "bids.end.loser", loserPlaceholders);
         }
     }
@@ -408,12 +422,11 @@ public final class BidService {
         if (!listings.deletionFeedbackAllowed(admin, bidder)) {
             return;
         }
-        Map<String, String> placeholders = PlaceholderMap.create()
-                .put("amount", info.amount())
-                .put("item", ItemDisplay.name(info.item(), configs.lang()))
-                .put("admin", listings.adminDisplayName(admin))
-                .money(economy, "refund", info.economy(), bid.currentPrice())
-                .build();
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("amount", String.valueOf(info.amount()));
+        placeholders.put("item", ItemDisplay.name(info.item(), configs.lang()));
+        placeholders.put("admin", listings.adminDisplayName(admin));
+        economy.formatInto(placeholders, "refund", info.economy(), bid.currentPrice());
         messenger.send(bidder, configs.lang().get("bids.end.errors.deleted"), placeholders);
     }
 

@@ -3,10 +3,10 @@ package com.ftxeven.airauctions;
 import com.ftxeven.airauctions.api.papi.AirAuctionsExpansion;
 import com.ftxeven.airauctions.command.CommandManager;
 import com.ftxeven.airauctions.config.ConfigManager;
-import com.ftxeven.airauctions.core.animation.AnimationManager;
-import com.ftxeven.airauctions.core.gui.GuiManager;
+import com.ftxeven.airauctions.common.animation.AnimationManager;
+import com.ftxeven.airauctions.common.gui.GuiManager;
 import com.ftxeven.airauctions.gui.ListingGuiManager;
-import com.ftxeven.airauctions.hook.HookRegistry;
+import com.ftxeven.airauctions.common.hook.HookRegistry;
 import com.ftxeven.airauctions.database.cache.CacheManager;
 import com.ftxeven.airauctions.database.DatabaseManager;
 import com.ftxeven.airauctions.economy.EconomyRegistry;
@@ -18,7 +18,6 @@ import com.ftxeven.airauctions.util.Placeholders;
 import com.ftxeven.airauctions.util.Scheduler;
 import com.ftxeven.airauctions.util.Version;
 import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -89,7 +88,6 @@ public final class AirAuctions extends JavaPlugin {
         }
 
         metrics = new Metrics(this, 33241);
-        metrics.addCustomChart(new SimplePie("server_platform", () -> Scheduler.isFolia() ? "Folia" : "Paper"));
 
         Version.check();
     }

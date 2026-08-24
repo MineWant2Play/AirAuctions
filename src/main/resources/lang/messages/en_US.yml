@@ -141,7 +141,7 @@ errors:
     price-too-low: "<ref:prefix> <red>Price must be at least %min%."
     price-too-high: "<ref:prefix> <red>Price cannot exceed %max%."
     insufficient-funds-fee:
-      - "<ref:prefix> <red>You cannot afford the %fee_plain% listing fee."
+      - "<ref:prefix> <red>You cannot afford the %fee_plain% listing fee. You need %amount%."
       - "<sound:block.note_block.didgeridoo:1:0.5>"
 
   limits:
@@ -322,7 +322,7 @@ bids:
     errors:
       below-minimum: "<ref:prefix> <red>Your bid must be at least %min_offer%."
       above-maximum: "<ref:prefix> <red>Your bid cannot exceed %max_offer%."
-      insufficient-funds: "<ref:prefix> <red>You cannot afford to bid %offer%."
+      insufficient-funds: "<ref:prefix> <red>You cannot afford to offer %offer%. You need %amount%."
       already-highest: "<ref:prefix> <red>You are already the highest bidder."
       self-bid: "<ref:prefix> <red>You cannot bid on your own listing."
       storage-limit: "<ref:prefix> <red>Collect your won items before placing a new bid! <gray>(Active: %count%<dark_gray>/<gray>%limit%)"
